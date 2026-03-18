@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { VibeBackgroundGlow } from "@/components/ui/vibe-background-glow";
+import { UniversalConverter } from "@/components/tools/universal-converter";
 
 const tools = [
   {
@@ -32,32 +33,23 @@ const tools = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="relative py-24 md:py-32">
+      {/* Hero + Tool */}
+      <section className="relative py-16 md:py-24">
         <VibeBackgroundGlow />
 
-        <div className="relative mx-auto max-w-3xl px-4 sm:px-6 text-center">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-            Subtitle tools that just work.
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Convert, sync, merge and clean subtitle files instantly.
-            Runs in your browser — files never leave your device.
-          </p>
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <Link
-              href="/tools/ass-to-srt"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-foreground px-6 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
-            >
-              Get started
-            </Link>
-            <Link
-              href="#tools"
-              className="inline-flex h-11 items-center justify-center rounded-full border px-6 text-sm font-medium hover:bg-accent transition-colors"
-            >
-              See all tools
-            </Link>
+        <div className="relative mx-auto max-w-3xl px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
+              Subtitle tools that just work.
+            </h1>
+            <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Drop any subtitle file — we auto-detect the format and let you convert instantly.
+              Everything runs in your browser.
+            </p>
           </div>
+
+          {/* Universal Converter — the interactive tool */}
+          <UniversalConverter />
         </div>
       </section>
 
@@ -81,7 +73,7 @@ export default function HomePage() {
             All tools
           </h2>
           <p className="text-center text-muted-foreground mb-12">
-            Pick a tool to get started. No sign-up needed.
+            Or pick a specific tool for dedicated features and SEO-optimized guides.
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             {tools.map((tool) => (
@@ -121,30 +113,24 @@ export default function HomePage() {
           </h2>
           <div className="grid gap-10 md:grid-cols-3 text-center">
             <div>
-              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">
-                01
-              </div>
-              <h3 className="font-semibold mb-2">Upload</h3>
+              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">01</div>
+              <h3 className="font-semibold mb-2">Drop any file</h3>
               <p className="text-sm text-muted-foreground">
-                Drag and drop or click to select your subtitle file
+                Drag and drop your subtitle file — format is auto-detected (SRT, ASS, VTT, TXT)
               </p>
             </div>
             <div>
-              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">
-                02
-              </div>
-              <h3 className="font-semibold mb-2">Convert</h3>
+              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">02</div>
+              <h3 className="font-semibold mb-2">Pick output format</h3>
               <p className="text-sm text-muted-foreground">
-                Processed locally in your browser — nothing is uploaded to any server
+                Choose your target format. Conversion happens locally — nothing leaves your browser
               </p>
             </div>
             <div>
-              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">
-                03
-              </div>
-              <h3 className="font-semibold mb-2">Download</h3>
+              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">03</div>
+              <h3 className="font-semibold mb-2">Preview & download</h3>
               <p className="text-sm text-muted-foreground">
-                Preview the result and download your converted file
+                See a before/after comparison and download your converted file with one click
               </p>
             </div>
           </div>
