@@ -11,18 +11,19 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "SubtitleOps - Free Online Subtitle Converter & Tools",
+    default: "Free Online Subtitle Converter & Tools",
     template: "%s | SubtitleOps",
   },
   description:
-    "Free online subtitle converter and editing tools. Convert ASS, VTT, TXT, SMI to SRT format instantly in your browser. No upload needed — 100% private.",
+    "Convert subtitle files between SRT, ASS, VTT, and TXT in your browser. Use free subtitle tools for format conversion, transcript extraction, and everyday subtitle workflows.",
   keywords: [
     "subtitle converter",
+    "subtitle tools",
+    "free subtitle converter",
+    "online subtitle converter",
     "srt converter",
     "ass to srt",
     "vtt to srt",
-    "subtitle tools",
-    "subtitle editor online",
   ],
   authors: [{ name: "SubtitleOps" }],
   openGraph: {
