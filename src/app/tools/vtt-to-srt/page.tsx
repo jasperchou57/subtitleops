@@ -24,6 +24,7 @@ const jsonLdData = toolPageJsonLd({
     { question: "Can I keep WebVTT styling in SRT?", answer: "Not fully. SRT is a simpler subtitle format and does not support most WebVTT positioning or browser styling features." },
     { question: "Is my file private?", answer: "Yes. The VTT to SRT conversion runs in the browser and does not upload your file to a server." },
     { question: "What is the difference between VTT and SRT timestamp format?", answer: "WebVTT uses dots for milliseconds (00:01:23.456) while SRT uses commas (00:01:23,456). WebVTT also allows omitting the hours portion, which SRT does not." },
+    { question: "Why do some VTT files fail in desktop subtitle workflows?", answer: "Because WebVTT carries browser-oriented syntax such as headers, cue settings, and optional web styling logic. Those features are useful on the web but often irrelevant or unsupported in simpler subtitle environments, which is exactly why VTT to SRT exists." },
   ],
 });
 
@@ -117,6 +118,9 @@ export default function VttToSrtPage() {
         <p className="text-sm text-muted-foreground leading-relaxed">
           The most common reason is compatibility. WebVTT is excellent for browser-based delivery, but SRT is often the more practical working format once the subtitle file leaves the web player and enters a broader toolchain. If you downloaded captions from a course platform, web app, or HTML5 video workflow, SRT is often the format that makes the next step easier. It is easier to import into editors, easier to share with collaborators who expect subtitle basics rather than browser-specific features, and easier to archive as a simple, readable subtitle file. For archiving purposes, SRT is especially attractive because it is a plain-text format with no dependency on browser rendering engines, meaning the file remains fully readable and usable decades later without specialized software. Many video editors such as DaVinci Resolve, Premiere Pro, and Final Cut Pro handle SRT imports natively, while WebVTT support in those tools is limited or requires an extra webvtt to srt conversion step before importing.
         </p>
+        <p className="text-sm text-muted-foreground leading-relaxed mt-4">
+          There is also a practical maintenance reason. WebVTT often appears in teams because a browser player produced it, not because everybody downstream prefers working with it. Once you leave the publishing surface and move into review, editing, distribution, or archival, the WebVTT-specific pieces can become noise. SRT reduces that complexity and gives you a cleaner base format for general-purpose subtitle work.
+        </p>
       </section>
 
       <section className="pb-12">
@@ -126,6 +130,7 @@ export default function VttToSrtPage() {
           <li className="flex gap-3"><span className="font-medium text-foreground shrink-0">Cleaning web-delivery subtitles for general playback:</span> If the subtitle file no longer needs cue positioning or browser logic, SRT is the simpler format to keep. Desktop players like VLC, MPC-HC, and PotPlayer all handle SRT reliably without any additional configuration.</li>
           <li className="flex gap-3"><span className="font-medium text-foreground shrink-0">Sharing subtitles with teams that expect SRT:</span> Not every collaborator wants to inspect WebVTT syntax. SRT is the lowest-friction exchange format for many subtitle tasks. Translation teams and localization vendors almost universally accept SRT as a standard delivery format.</li>
           <li className="flex gap-3"><span className="font-medium text-foreground shrink-0">Creating a portable archive copy:</span> For long-term storage, plain SRT is often easier to inspect, reuse, and convert later than a more web-specific caption format. Because SRT is plain text with a minimal structure, it can be opened in any text editor and remains human-readable without specialized subtitle software.</li>
+          <li className="flex gap-3"><span className="font-medium text-foreground shrink-0">Preparing subtitles for older or stricter software:</span> Some tools accept VTT in theory but behave more predictably with SRT in practice. Converting WebVTT to SRT can reduce surprises when the next system in the workflow is less browser-oriented than the source platform.</li>
         </ul>
       </section>
 
@@ -167,6 +172,12 @@ export default function VttToSrtPage() {
             <AccordionTrigger>What is the difference between VTT and SRT timestamp format?</AccordionTrigger>
             <AccordionContent>
               WebVTT uses dots for milliseconds (00:01:23.456) while SRT uses commas (00:01:23,456). WebVTT also allows omitting the hours portion, which SRT does not.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="vtt-desktop-fail">
+            <AccordionTrigger>Why do some VTT files fail in desktop subtitle workflows?</AccordionTrigger>
+            <AccordionContent>
+              Because WebVTT carries browser-oriented syntax such as headers, cue settings, and optional web styling logic. Those features are useful on the web but often irrelevant or unsupported in simpler subtitle environments, which is exactly why VTT to SRT exists.
             </AccordionContent>
           </AccordionItem>
         </Accordion>

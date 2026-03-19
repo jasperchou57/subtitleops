@@ -23,6 +23,7 @@ const jsonLdData = toolPageJsonLd({
     { question: "Does this work for non-English subtitles?", answer: "Yes. The SRT to TXT flow preserves UTF-8 text, so it works with multilingual subtitle content." },
     { question: "Is the subtitle file uploaded anywhere?", answer: "No. The extraction runs locally in the browser, and your file stays on your device." },
     { question: "Can I use the output for language learning?", answer: "Yes. Language learners often extract dialogue from foreign-language subtitle files to build vocabulary lists, study sentence patterns, and create study materials without timestamp distractions." },
+    { question: "Can I use the output for translation or review?", answer: "Yes. That is one of the strongest reasons to convert subtitle files into plain text. Once the timing layer is removed, the dialogue becomes easier to read, annotate, translate, and process in tools that are not designed for subtitle syntax." },
   ],
 });
 
@@ -135,6 +136,10 @@ export default function SrtToTxtPage() {
             <span className="font-medium text-foreground shrink-0">Language learning:</span>
             Extracting dialogue from foreign-language subtitles to build vocabulary lists and study materials. Learners can read through the full conversation at their own pace and highlight unfamiliar words without the visual clutter of timestamps.
           </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">Building transcript documents for people who do not want subtitle formatting:</span>
+            Not everyone reading subtitle content wants to see timestamps every few seconds. Teachers, editors, legal reviewers, translators, and researchers often want the dialogue in a simpler reading form. That is where subtitle to text extraction becomes much more useful than keeping the original subtitle container.
+          </li>
         </ul>
       </section>
 
@@ -146,7 +151,7 @@ export default function SrtToTxtPage() {
           is different because it keeps the SRT format while removing things like SDH annotations or formatting artifacts.
           If you still need timestamps, use SRT Cleaner. If you need readable text, use SRT to TXT.
           Think of it this way: SRT Cleaner tidies a subtitle file so it plays back better, while the subtitle to text converter produces a subtitle transcript that stands on its own as a readable document.
-          Choosing the right tool depends on whether your next step requires timed captions or a clean text export. If your workflow involves feeding subtitle dialogue into a translation memory tool, a text analysis pipeline, or a document review process, then extracting a plain text file is usually the more practical starting point. On the other hand, if you need to keep the SRT structure for player compatibility but want cleaner content inside that structure, SRT Cleaner is the better fit.
+          Choosing the right tool depends on the next step in your workflow. If the next step requires timed captions for playback, SRT Cleaner keeps the subtitle structure while removing noise. If the next step is reading, translating, or analyzing the spoken content as plain text, use SRT to TXT.
         </p>
       </section>
 
@@ -188,6 +193,12 @@ export default function SrtToTxtPage() {
             <AccordionTrigger>Can I use the output for language learning?</AccordionTrigger>
             <AccordionContent>
               Yes. Language learners often extract dialogue from foreign-language subtitle files to build vocabulary lists, study sentence patterns, and create study materials without timestamp distractions.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="translation-review">
+            <AccordionTrigger>Can I use the output for translation or review?</AccordionTrigger>
+            <AccordionContent>
+              Yes. That is one of the strongest reasons to convert subtitle files into plain text. Once the timing layer is removed, the dialogue becomes easier to read, annotate, translate, and process in tools that are not designed for subtitle syntax.
             </AccordionContent>
           </AccordionItem>
         </Accordion>

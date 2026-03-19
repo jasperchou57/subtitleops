@@ -6,6 +6,7 @@ import { convertSrtToTxt } from "@/lib/converters/srt-to-txt";
 export function SrtToTxtConverter() {
   return (
     <GenericConverter
+      toolId="srt-to-txt"
       accept=".srt"
       acceptLabel="Accepts .srt files"
       convert={(content) => {

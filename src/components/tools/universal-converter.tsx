@@ -3,13 +3,15 @@
 import { useCallback, useRef, useState } from "react";
 import { detectFormat, getAvailableOutputFormats, formatLabels, type SubtitleFormat } from "@/lib/converters/detect-format";
 import { universalConvert } from "@/lib/converters/universal";
+import { generateTraceId, logTrace } from "@/lib/trace";
+import { trackEvent } from "@/lib/analytics";
 
 export function UniversalConverter() {
   const [file, setFile] = useState<{ name: string; content: string } | null>(null);
   const [inputFormat, setInputFormat] = useState<SubtitleFormat | null>(null);
   const [outputFormat, setOutputFormat] = useState<SubtitleFormat>("srt");
   const [result, setResult] = useState<{ preview: string; full: string; originalPreview: string } | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ message: string; traceId: string } | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
 
@@ -32,13 +34,22 @@ export function UniversalConverter() {
   const handleConvert = useCallback(() => {
     if (!file || !inputFormat) return;
     setError(null);
+    const traceId = generateTraceId();
+    const startTime = performance.now();
 
     try {
       const output = universalConvert(file.content, inputFormat, outputFormat);
+      const duration = Math.round(performance.now() - startTime);
+
       if (!output.trim()) {
-        setError("No content could be converted. Please check the file.");
+        logTrace({ traceId, tool: "universal", action: "error", timestamp: Date.now(), fileName: file.name, error: "empty_output" });
+        trackEvent({ tool: "universal", action: "convert_error", error_type: "empty_output", trace_id: traceId });
+        setError({ message: "No content could be converted. Please check the file.", traceId });
         return;
       }
+
+      logTrace({ traceId, tool: "universal", action: "convert", timestamp: Date.now(), fileName: file.name, inputFormat, outputFormat, duration });
+      trackEvent({ tool: "universal", action: "convert_success", input_format: inputFormat, output_format: outputFormat, file_size: file.content.length, duration_ms: duration, trace_id: traceId });
 
       const originalLines = file.content.split(/\r?\n/).slice(0, 10).join("\n");
       const outputLines = output.split(/\r?\n/).slice(0, 10).join("\n");
@@ -53,7 +64,10 @@ export function UniversalConverter() {
         resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
     } catch {
-      setError("Conversion failed. Please check if the file format is valid.");
+      const errTraceId = generateTraceId();
+      logTrace({ traceId: errTraceId, tool: "universal", action: "error", timestamp: Date.now(), fileName: file?.name || "unknown", error: "conversion_failed" });
+      trackEvent({ tool: "universal", action: "convert_error", error_type: "conversion_failed", trace_id: errTraceId });
+      setError({ message: "Conversion failed. Please check if the file format is valid.", traceId: errTraceId });
     }
   }, [file, inputFormat, outputFormat]);
 
@@ -166,7 +180,8 @@ export function UniversalConverter() {
 
           {error && (
             <div className="mt-4 rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-sm text-destructive">
-              {error}
+              <p>{error.message}</p>
+              <p className="mt-1 text-xs text-muted-foreground font-mono">Trace ID: {error.traceId}</p>
             </div>
           )}
 

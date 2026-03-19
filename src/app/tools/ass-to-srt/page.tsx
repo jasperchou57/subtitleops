@@ -45,6 +45,7 @@ const jsonLdData = toolPageJsonLd({
     { question: "Will the timing stay accurate after conversion?", answer: "Yes. The purpose of the conversion is to preserve subtitle timing while rewriting the file into SRT syntax." },
     { question: "Is my subtitle file uploaded anywhere?", answer: "No. The ASS to SRT conversion runs in your browser. Your file is not uploaded to a remote server." },
     { question: "Can I convert ASS to SRT on my phone?", answer: "Yes. Because the converter runs entirely in the browser, it works on any device with a modern browser, including phones and tablets. No app installation is required." },
+    { question: "When should I keep ASS instead of converting to SRT?", answer: "Keep ASS when the visual layer is essential to the viewing experience. If subtitle placement, karaoke timing, signs, or animations carry meaning, ASS should remain the master version and SRT should only be used as a compatibility copy." },
   ],
 });
 
@@ -177,6 +178,12 @@ export default function AssToSrtPage() {
           enhances the viewing experience. For projects where typesetting, sign translations, or
           karaoke effects are essential to the content, staying with ASS is the better choice.
         </p>
+        <p className="text-sm text-muted-foreground leading-relaxed mt-4">
+          It is also worth knowing when not to convert. If your subtitles depend heavily on styling
+          for meaning, such as karaoke timing, sign placement, or layered text effects, SRT may be
+          too destructive. In those cases the cleaner editorial decision is to keep the ASS master
+          file and only create an SRT derivative for the systems that cannot handle the richer format.
+        </p>
       </section>
 
       <section className="pb-12">
@@ -208,6 +215,12 @@ export default function AssToSrtPage() {
             effects, converting ASS to SRT creates a much cleaner file. This is useful when
             repurposing subtitles as plain transcripts or feeding them into translation workflows
             where formatting tags would interfere with the process.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">Creating a simpler working copy for translators or reviewers:</span>
+            Some teams do not want to inspect ASS tags or style logic while reviewing subtitle text.
+            An SRT version can function as a cleaner review copy even when the styled ASS master
+            still exists in the project.
           </li>
         </ul>
       </section>
@@ -259,6 +272,14 @@ export default function AssToSrtPage() {
             <AccordionContent>
               Yes. Because the converter runs entirely in the browser, it works on any device with a
               modern browser, including phones and tablets. No app installation is required.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="keep-ass">
+            <AccordionTrigger>When should I keep ASS instead of converting to SRT?</AccordionTrigger>
+            <AccordionContent>
+              Keep ASS when the visual layer is essential to the viewing experience. If subtitle
+              placement, karaoke timing, signs, or animations carry meaning, ASS should remain the
+              master version and SRT should only be used as a compatibility copy.
             </AccordionContent>
           </AccordionItem>
         </Accordion>

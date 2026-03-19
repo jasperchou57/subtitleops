@@ -7,6 +7,7 @@ import { formatSrt } from "@/lib/converters/ass-to-srt";
 export function VttToSrtConverter() {
   return (
     <GenericConverter
+      toolId="vtt-to-srt"
       accept=".vtt"
       acceptLabel="Accepts .vtt files"
       convert={(content) => {

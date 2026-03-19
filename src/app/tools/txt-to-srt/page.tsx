@@ -24,6 +24,7 @@ const jsonLdData = toolPageJsonLd({
     { question: "Does this support non-English text?", answer: "Yes. The TXT to SRT workflow preserves UTF-8 text, so it works with multilingual subtitle content." },
     { question: "Is the text uploaded anywhere?", answer: "No. The tool runs in the browser, and your file stays on your device." },
     { question: "Can I convert song lyrics from TXT to SRT for a music video?", answer: "Yes. Converting lyrics from TXT to SRT is a common use case. Each line of your lyrics becomes a subtitle entry with default timing. You will likely need to adjust the timing afterward to match the song tempo." },
+    { question: "Can I use TXT to SRT for scripts, not just subtitle text?", answer: "Yes. As long as the text is structured line by line, the converter can turn it into a subtitle draft. Many users start with scripts, dialogue lists, notes, or lyric sheets rather than a ready-made subtitle file." },
   ],
 });
 
@@ -140,6 +141,10 @@ export default function TxtToSrtPage() {
             <span className="font-medium text-foreground shrink-0">Creating a first-pass subtitle file for editors:</span>
             Video editors that accept SRT need subtitle structure, not just text. This tool creates that structure automatically. Whether you are working in Premiere Pro, DaVinci Resolve, or a web-based editor, the generated SRT file can be imported directly and refined on the timeline.
           </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">Converting drafts before fine-grained timing work starts:</span>
+            Many subtitle workflows are staged. First, get the dialogue into subtitle form. Second, adjust timing against the actual video. TXT to SRT is valuable because it shortens the first stage dramatically and gives editors a file they can work with immediately.
+          </li>
         </ul>
       </section>
 
@@ -153,6 +158,9 @@ export default function TxtToSrtPage() {
           another, but TXT to SRT must infer structure where none exists. The converter fills in sequential numbering,
           calculates start and end timestamps, and inserts the required blank-line delimiters that the SRT specification
           demands between cues.
+        </p>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+          That is also why TXT to SRT should be described honestly. It is not a perfect timing solution. It is a fast drafting tool. The value is that it turns a raw text document into a structured subtitle file that can be previewed, shifted, imported, and refined. For many users that is exactly the bridge they need between transcript text and true subtitle editing.
         </p>
       </section>
 
@@ -197,6 +205,13 @@ export default function TxtToSrtPage() {
             <AccordionContent>
               Yes. Converting lyrics from TXT to SRT is a common use case. Each line of your lyrics becomes a subtitle
               entry with default timing. You will likely need to adjust the timing afterward to match the song tempo.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="scripts">
+            <AccordionTrigger>Can I use TXT to SRT for scripts, not just subtitle text?</AccordionTrigger>
+            <AccordionContent>
+              Yes. As long as the text is structured line by line, the converter can turn it into a subtitle draft. Many
+              users start with scripts, dialogue lists, notes, or lyric sheets rather than a ready-made subtitle file.
             </AccordionContent>
           </AccordionItem>
         </Accordion>

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | SubtitleOps",
   },
   description:
-    "Convert subtitle files between SRT, ASS, VTT, and TXT in your browser. Use free subtitle tools for format conversion, transcript extraction, and everyday subtitle workflows.",
+    "Convert subtitle files between SRT, ASS, VTT, and TXT in your browser. Use a free online subtitle converter for format conversion, transcript extraction, and transcript-to-subtitle drafting workflows.",
   keywords: [
     "subtitle converter",
     "subtitle tools",

@@ -6,6 +6,7 @@ import { convertSrtToVtt } from "@/lib/converters/srt-to-vtt";
 export function SrtToVttConverter() {
   return (
     <GenericConverter
+      toolId="srt-to-vtt"
       accept=".srt"
       acceptLabel="Accepts .srt files"
       convert={(content) => {

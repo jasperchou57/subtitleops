@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { VibeBackgroundGlow } from "@/components/ui/vibe-background-glow";
 import { UniversalConverter } from "@/components/tools/universal-converter";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const tools = [
   {
@@ -46,7 +47,9 @@ export default function HomePage() {
               Convert subtitle files between SRT, ASS, VTT, and TXT without leaving your browser.
               SubtitleOps gives you a fast universal subtitle converter for quick jobs, plus dedicated
               tool pages for format-specific workflows like ASS to SRT, VTT to SRT, TXT to SRT,
-              SRT to VTT, and SRT to TXT.
+              SRT to VTT, and SRT to TXT. If you arrived looking for a subtitle converter to SRT or
+              a transcript to subtitle converter, this page is designed to route you into the right
+              workflow without pretending every subtitle job is the same.
             </p>
           </div>
 
@@ -88,6 +91,36 @@ export default function HomePage() {
               work in the browser. Second, it explains what changes during the conversion so you can
               make better format decisions. The result is a subtitle converter that is useful both for
               one-click tasks and for real workflow decisions.
+            </p>
+            <p>
+              People searching for a subtitle converter are often not sure which specific page they need
+              yet. Some have an ASS file from a fansub workflow. Others have a VTT export from a course
+              platform. Others only have raw text. This homepage makes that decision easier by showing
+              which subtitle workflow each tool actually solves, so you land in the right place quickly.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* What This Subtitle Converter Covers */}
+      <section className="py-16 md:py-20 border-t">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
+            What This Subtitle Converter Covers Today
+          </h2>
+          <div className="text-sm text-muted-foreground leading-relaxed space-y-4">
+            <p>
+              People use the term &ldquo;subtitle converter&rdquo; loosely, so this page sorts intent
+              instead of flattening it. Today SubtitleOps covers three strong categories: subtitle format
+              conversion between existing subtitle files, subtitle-to-text extraction for transcript and
+              review workflows, and transcript-to-subtitle drafting through TXT to SRT.
+            </p>
+            <p>
+              That means the site already answers a meaningful share of searches like &ldquo;subtitle
+              converter to SRT&rdquo;, &ldquo;SRT to subtitle converter&rdquo;, and &ldquo;transcript
+              to subtitle converter&rdquo;. Looking for subtitle language conversion or FPS adjustment?
+              Those workflows are on our roadmap. Today SubtitleOps focuses on format conversion and
+              text extraction — the foundation most subtitle workflows need first.
             </p>
           </div>
         </div>
@@ -138,6 +171,16 @@ export default function HomePage() {
                 noise, the{" "}
                 <Link href="/tools/srt-to-txt" className="font-medium underline underline-offset-4 hover:text-foreground/70">SRT to TXT</Link>{" "}
                 page extracts readable text from subtitle files in one step.
+              </p>
+            </div>
+            <div className="rounded-xl border bg-card p-6 md:col-span-2">
+              <h3 className="font-semibold mb-2">From a quick conversion into a larger subtitle workflow</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                A single conversion is rarely the end of the job. A user may convert ASS to SRT, then
+                realize the file needs timing adjustments. Another may extract plain text from an SRT file,
+                translate it, and rebuild subtitles from the translated text. SubtitleOps is designed as a
+                connected workflow, not just a loose collection of standalone converters. Each tool links to
+                the next logical step so you can keep moving.
               </p>
             </div>
           </div>
@@ -216,6 +259,51 @@ export default function HomePage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Homepage FAQ */}
+      <section className="py-16 md:py-20 border-t">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+          <Accordion className="w-full">
+            <AccordionItem value="free">
+              <AccordionTrigger>Is SubtitleOps a free subtitle converter?</AccordionTrigger>
+              <AccordionContent>
+                Yes. SubtitleOps is a free subtitle converter for text-based subtitle workflows in the browser. All tools are free to use with no file size limits.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="to-srt">
+              <AccordionTrigger>Can I use this as a subtitle converter to SRT?</AccordionTrigger>
+              <AccordionContent>
+                Yes. ASS to SRT, VTT to SRT, and TXT to SRT are the clearest routes depending on the source material you start with.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="transcript">
+              <AccordionTrigger>Is this also a transcript to subtitle converter?</AccordionTrigger>
+              <AccordionContent>
+                For plain-text transcripts, yes. The TXT to SRT tool covers that workflow directly by generating subtitle timing from raw text.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="language">
+              <AccordionTrigger>Do you support subtitle language conversion?</AccordionTrigger>
+              <AccordionContent>
+                Not as a dedicated translation product today. The current scope is format conversion, subtitle text extraction, and subtitle drafting. Subtitle language conversion is on our roadmap.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="fps">
+              <AccordionTrigger>Do you support subtitle FPS conversion?</AccordionTrigger>
+              <AccordionContent>
+                Not with a dedicated frame-rate converter yet. That request sits closer to timing correction than basic file conversion. It is a planned addition.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="audio-video">
+              <AccordionTrigger>Is this an audio to subtitle converter or video to subtitle converter?</AccordionTrigger>
+              <AccordionContent>
+                Not today. The current product focus is subtitle files and transcript text rather than direct speech-to-text transcription. If you already have a transcript, use the TXT to SRT tool.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
     </>

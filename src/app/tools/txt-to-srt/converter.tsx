@@ -7,6 +7,7 @@ import { formatSrt } from "@/lib/converters/ass-to-srt";
 export function TxtToSrtConverter() {
   return (
     <GenericConverter
+      toolId="txt-to-srt"
       accept=".txt"
       acceptLabel="Accepts .txt files"
       convert={(content) => {
