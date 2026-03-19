@@ -1,5 +1,13 @@
 import Link from "next/link";
 
+const navTools = [
+  { name: "ASS to SRT", href: "/tools/ass-to-srt" },
+  { name: "VTT to SRT", href: "/tools/vtt-to-srt" },
+  { name: "TXT to SRT", href: "/tools/txt-to-srt" },
+  { name: "SRT to VTT", href: "/tools/srt-to-vtt" },
+  { name: "SRT to TXT", href: "/tools/srt-to-txt" },
+];
+
 export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -14,13 +22,16 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm">
-          <Link href="/tools/ass-to-srt" className="text-muted-foreground hover:text-foreground transition-colors">
-            Converters
-          </Link>
-          <Link href="#tools" className="text-muted-foreground hover:text-foreground transition-colors">
-            All Tools
-          </Link>
+        <nav className="hidden md:flex items-center gap-1 text-sm">
+          {navTools.map((tool) => (
+            <Link
+              key={tool.href}
+              href={tool.href}
+              className="px-3 py-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent"
+            >
+              {tool.name}
+            </Link>
+          ))}
         </nav>
       </div>
     </header>
