@@ -32,7 +32,6 @@ const relatedTools = [
   { name: "ASS to SRT", href: "/tools/ass-to-srt" },
   { name: "TXT to SRT", href: "/tools/txt-to-srt" },
   { name: "SRT to TXT", href: "/tools/srt-to-txt" },
-  { name: "Subtitle Merger", href: "/tools/subtitle-merger" },
 ];
 
 export default function SrtToVttPage() {

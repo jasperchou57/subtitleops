@@ -30,8 +30,6 @@ const relatedTools = [
   { name: "TXT to SRT", href: "/tools/txt-to-srt" },
   { name: "SRT to VTT", href: "/tools/srt-to-vtt" },
   { name: "SRT to TXT", href: "/tools/srt-to-txt" },
-  { name: "Subtitle Shifter", href: "/tools/subtitle-shifter" },
-  { name: "Subtitle Merger", href: "/tools/subtitle-merger" },
 ];
 
 const jsonLdData = toolPageJsonLd({
@@ -77,11 +75,7 @@ export default function AssToSrtPage() {
         {/* Workflow suggestion */}
         <div className="mt-6 rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
           <span className="font-medium text-foreground">Subtitle out of sync after conversion?</span>{" "}
-          Use{" "}
-          <Link href="/tools/subtitle-shifter" className="font-medium underline underline-offset-4 hover:text-foreground/70">
-            Subtitle Shifter
-          </Link>{" "}
-          next to offset timestamps without rebuilding the whole file.
+          A timestamp offset tool is coming soon. In the meantime, most video editors let you shift all subtitle timing after importing the SRT file.
         </div>
       </section>
 

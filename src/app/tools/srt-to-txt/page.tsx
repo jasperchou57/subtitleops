@@ -32,7 +32,6 @@ const relatedTools = [
   { name: "ASS to SRT", href: "/tools/ass-to-srt" },
   { name: "VTT to SRT", href: "/tools/vtt-to-srt" },
   { name: "SRT to VTT", href: "/tools/srt-to-vtt" },
-  { name: "SRT Cleaner", href: "/tools/srt-cleaner" },
 ];
 
 export default function SrtToTxtPage() {
@@ -147,7 +146,7 @@ export default function SrtToTxtPage() {
         <h2 className="text-2xl font-bold mb-4">SRT to TXT vs SRT Cleaner</h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
           These are not the same job. SRT to TXT extracts text only. It removes the subtitle container entirely and gives you a plain text file.{" "}
-          <Link href="/tools/srt-cleaner" className="font-medium underline underline-offset-4 hover:text-foreground/70">SRT Cleaner</Link>{" "}
+          SRT Cleaner (coming soon){" "}
           is different because it keeps the SRT format while removing things like SDH annotations or formatting artifacts.
           If you still need timestamps, use SRT Cleaner. If you need readable text, use SRT to TXT.
           Think of it this way: SRT Cleaner tidies a subtitle file so it plays back better, while the subtitle to text converter produces a subtitle transcript that stands on its own as a readable document.

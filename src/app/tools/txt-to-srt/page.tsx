@@ -33,7 +33,6 @@ const relatedTools = [
   { name: "VTT to SRT", href: "/tools/vtt-to-srt" },
   { name: "SRT to VTT", href: "/tools/srt-to-vtt" },
   { name: "SRT to TXT", href: "/tools/srt-to-txt" },
-  { name: "Subtitle Shifter", href: "/tools/subtitle-shifter" },
 ];
 
 export default function TxtToSrtPage() {
