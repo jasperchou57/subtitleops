@@ -8,17 +8,11 @@ const converters = [
   { name: "SRT to TXT", href: "/tools/srt-to-txt" },
 ];
 
-const workflowTools = [
-  { name: "Subtitle Shifter", href: "/tools/subtitle-shifter" },
-  { name: "Subtitle Merger", href: "/tools/subtitle-merger" },
-  { name: "SRT Cleaner", href: "/tools/srt-cleaner" },
-];
-
 export function Footer() {
   return (
     <footer className="border-t">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -48,24 +42,13 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-3">Tools</h3>
+            <h3 className="text-sm font-semibold mb-3">Company</h3>
             <ul className="space-y-2">
-              {workflowTools.map((tool) => (
-                <li key={tool.href}>
-                  <Link href={tool.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    {tool.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold mb-3">Resources</h3>
-            <ul className="space-y-2">
-              <li><Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</Link></li>
-              <li><Link href="/api" className="text-sm text-muted-foreground hover:text-foreground transition-colors">API</Link></li>
-              <li><Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link></li>
+              <li>
+                <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Home
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
