@@ -294,7 +294,7 @@ export default function AssToSrtPage() {
           <AccordionItem value="what-happens">
             <AccordionTrigger>What exactly happens during ASS to SRT conversion?</AccordionTrigger>
             <AccordionContent>
-              During ASS to SRT conversion, the converter extracts dialogue lines from the [Events] section
+              During the conversion, the converter extracts dialogue lines from the [Events] section
               and discards the [Script Info] and [V4+ Styles] sections entirely. All override tags inside
               curly braces are stripped from the dialogue text. Timestamps are converted from the ASS format
               (H:MM:SS.cc with centiseconds) to SRT format (HH:MM:SS,mmm with milliseconds) by multiplying
@@ -314,7 +314,7 @@ export default function AssToSrtPage() {
           <AccordionItem value="styling">
             <AccordionTrigger>Does ASS to SRT conversion preserve subtitle styling?</AccordionTrigger>
             <AccordionContent>
-              SRT format has very limited styling support compared to ASS. During ASS to SRT conversion,
+              SRT format has very limited styling support compared to ASS. During the conversion,
               all ASS-specific override tags are removed, including {"\\fs24"} (font size), {"\\c&H0000FF&"}
               (color), {"\\pos(320,50)"} (positioning), {"\\an8"} (alignment), {"\\fad(500,500)"} (fade),
               and {"\\t"} (animation) tags. The dialogue text and all timing information are fully preserved.
@@ -329,8 +329,8 @@ export default function AssToSrtPage() {
             <AccordionTrigger>How are ASS timestamps converted to SRT format?</AccordionTrigger>
             <AccordionContent>
               ASS uses the timestamp format H:MM:SS.cc where cc represents centiseconds (hundredths of a
-              second), while SRT uses HH:MM:SS,mmm with milliseconds (thousandths of a second). During ASS
-              to SRT conversion, the centisecond value is multiplied by 10 to produce the correct millisecond
+              second), while SRT uses HH:MM:SS,mmm with milliseconds (thousandths of a second). During the
+              conversion process, the centisecond value is multiplied by 10 to produce the correct millisecond
               value. For example, 0:02:15.38 in ASS becomes 00:02:15,380 in SRT. The single-digit hour in
               ASS is also zero-padded to two digits as required by the SRT specification.
             </AccordionContent>
@@ -338,18 +338,18 @@ export default function AssToSrtPage() {
           <AccordionItem value="batch">
             <AccordionTrigger>Can I batch convert multiple ASS files to SRT?</AccordionTrigger>
             <AccordionContent>
-              The free version of our ASS to SRT converter processes one file at a time. Batch ASS to SRT
-              conversion for multiple files will be available in our premium plan. Each file is processed
+              The free version of our converter processes one file at a time. Batch conversion for
+              multiple ASS files will be available in our premium plan. Each file is processed
               entirely in your browser for maximum privacy and speed — no files are ever uploaded to a server.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="privacy">
             <AccordionTrigger>Is my ASS subtitle file safe and private?</AccordionTrigger>
             <AccordionContent>
-              Absolutely. All ASS to SRT conversion processing happens directly in your web browser using
-              client-side JavaScript. Your subtitle file is never uploaded to any server, never transmitted
-              over the internet, and never stored anywhere. We have zero access to your files. This makes
-              our ASS to SRT converter the most private option available — your data stays on your device.
+              Absolutely. All conversion processing happens directly in your web browser using client-side
+              JavaScript. Your subtitle file is never uploaded to any server, never transmitted over the
+              internet, and never stored anywhere. We have zero access to your files. This makes our
+              converter the most private option available — your data stays on your device.
             </AccordionContent>
           </AccordionItem>
         </Accordion>

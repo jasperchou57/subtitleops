@@ -164,7 +164,7 @@ export default function TxtToSrtPage() {
           numbers, no formatting metadata. An .srt file, on the other hand, is a structured subtitle format where
           each entry has a sequential index number, a start and end timestamp in HH:MM:SS,mmm format, and the
           subtitle text itself. When you convert TXT to SRT, the converter must generate all of this missing
-          structure. That is what makes the text to SRT conversion fundamentally different from format-to-format
+          structure. That is what makes this conversion fundamentally different from format-to-format
           conversions like VTT to SRT or ASS to SRT, where timing already exists and only needs reformatting.
         </p>
       </section>
@@ -197,7 +197,7 @@ export default function TxtToSrtPage() {
           <AccordionItem value="blank-lines">
             <AccordionTrigger>What happens to blank lines in my text file?</AccordionTrigger>
             <AccordionContent>
-              Blank lines in the source TXT file are skipped during TXT to SRT conversion. Only non-empty lines
+              Blank lines in the source file are skipped during the conversion. Only non-empty lines
               become subtitle entries with assigned timestamps. This means you can freely use blank lines to
               separate sections, paragraphs, or scenes in your script without creating empty subtitle entries in
               the output SRT file.
@@ -206,10 +206,10 @@ export default function TxtToSrtPage() {
           <AccordionItem value="privacy">
             <AccordionTrigger>Is my text file safe and private?</AccordionTrigger>
             <AccordionContent>
-              Absolutely. All TXT to SRT conversion processing happens directly in your web browser using
-              client-side JavaScript. Your text file is never uploaded to any server, never transmitted over the
-              internet, and never stored anywhere. We have zero access to your content. This makes our text to SRT
-              converter the most private option available.
+              Absolutely. All conversion processing happens directly in your web browser using client-side
+              JavaScript. Your text file is never uploaded to any server, never transmitted over the internet, and
+              never stored anywhere. We have zero access to your content. This makes our converter the most private
+              option available for turning plain text into subtitles.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="languages">
@@ -217,7 +217,7 @@ export default function TxtToSrtPage() {
             <AccordionContent>
               Yes. The converter handles UTF-8 encoded text, which means it supports all languages and writing
               systems including Chinese, Japanese, Korean, Arabic, Hebrew, Cyrillic, Thai, and all European
-              languages. Character encoding is preserved exactly during the TXT to SRT conversion process.
+              languages. Character encoding is preserved exactly during the conversion process.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="video-editors">
