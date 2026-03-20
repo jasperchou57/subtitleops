@@ -33,7 +33,7 @@ export function Header() {
             <Link
               key={tool.href}
               href={tool.href}
-              className="px-3 py-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent"
+              className="px-3 py-2.5 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent"
             >
               {tool.name}
             </Link>

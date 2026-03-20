@@ -146,8 +146,7 @@ export default function SrtToTxtPage() {
         <h2 className="text-2xl font-bold mb-4">SRT to TXT vs SRT Cleaner</h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
           These are not the same job. SRT to TXT extracts text only. It removes the subtitle container entirely and gives you a plain text file.{" "}
-          SRT Cleaner (coming soon){" "}
-          is different because it keeps the SRT format while removing things like SDH annotations or formatting artifacts.
+          SRT Cleaner is a different kind of tool — it keeps the SRT format intact while removing things like SDH annotations or formatting artifacts.
           If you still need timestamps, use SRT Cleaner. If you need readable text, use SRT to TXT.
           Think of it this way: SRT Cleaner tidies a subtitle file so it plays back better, while the subtitle to text converter produces a subtitle transcript that stands on its own as a readable document.
           Choosing the right tool depends on the next step in your workflow. If the next step requires timed captions for playback, SRT Cleaner keeps the subtitle structure while removing noise. If the next step is reading, translating, or analyzing the spoken content as plain text, use SRT to TXT.

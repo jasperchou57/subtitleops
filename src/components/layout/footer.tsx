@@ -42,11 +42,16 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-3">Company</h3>
+            <h3 className="text-sm font-semibold mb-3">About</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/sitemap.xml" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Sitemap
                 </Link>
               </li>
             </ul>

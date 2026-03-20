@@ -134,7 +134,7 @@ export default function HomePage() {
           </h2>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-xl border bg-card p-6">
-              <h3 className="font-semibold mb-2">From styled subtitle files to universal playback</h3>
+              <h3 className="text-lg font-semibold mb-2">From styled subtitle files to universal playback</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 If you downloaded a heavily styled subtitle file from a fansub release or a karaoke
                 workflow, you usually need compatibility more than styling. The{" "}
@@ -144,7 +144,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="rounded-xl border bg-card p-6">
-              <h3 className="font-semibold mb-2">From web captions to desktop and editing tools</h3>
+              <h3 className="text-lg font-semibold mb-2">From web captions to desktop and editing tools</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 WebVTT is common on modern platforms, course sites, and browser-based players. But when
                 you move that subtitle file into a desktop player, editor, or archive, SRT is often the
@@ -154,7 +154,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="rounded-xl border bg-card p-6">
-              <h3 className="font-semibold mb-2">From scripts and transcripts to usable subtitles</h3>
+              <h3 className="text-lg font-semibold mb-2">From scripts and transcripts to usable subtitles</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Plain text is not a subtitle format. It has no timestamps, no cue structure, and no
                 playback logic. The{" "}
@@ -164,7 +164,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="rounded-xl border bg-card p-6">
-              <h3 className="font-semibold mb-2">From subtitle files to clean transcript text</h3>
+              <h3 className="text-lg font-semibold mb-2">From subtitle files to clean transcript text</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Sometimes the timing is the problem, not the solution. If you want to translate dialogue,
                 build a transcript, run text analysis, or review the spoken content without timestamp
@@ -174,7 +174,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="rounded-xl border bg-card p-6 md:col-span-2">
-              <h3 className="font-semibold mb-2">From a quick conversion into a larger subtitle workflow</h3>
+              <h3 className="text-lg font-semibold mb-2">From a quick conversion into a larger subtitle workflow</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 A single conversion is rarely the end of the job. A user may convert ASS to SRT, then
                 realize the file needs timing adjustments. Another may extract plain text from an SRT file,
@@ -235,7 +235,7 @@ export default function HomePage() {
           <div className="grid gap-10 md:grid-cols-3 text-center">
             <div>
               <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">01</div>
-              <h3 className="font-semibold mb-2">Drop any subtitle file</h3>
+              <h3 className="text-lg font-semibold mb-2">Drop any subtitle file</h3>
               <p className="text-sm text-muted-foreground">
                 Start with the universal subtitle converter if you want the quickest route. SubtitleOps
                 detects common subtitle formats like SRT, ASS, VTT, and TXT automatically.
@@ -243,7 +243,7 @@ export default function HomePage() {
             </div>
             <div>
               <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">02</div>
-              <h3 className="font-semibold mb-2">Pick the output you need</h3>
+              <h3 className="text-lg font-semibold mb-2">Pick the output you need</h3>
               <p className="text-sm text-muted-foreground">
                 Choose the output format based on where the file is going next. Some jobs are about
                 compatibility. Others are about web delivery, transcript extraction, or building
@@ -252,7 +252,7 @@ export default function HomePage() {
             </div>
             <div>
               <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">03</div>
-              <h3 className="font-semibold mb-2">Preview and download</h3>
+              <h3 className="text-lg font-semibold mb-2">Preview and download</h3>
               <p className="text-sm text-muted-foreground">
                 Each tool gives you a quick before-and-after view so you can verify the result before
                 downloading. Everything runs in the browser, so the workflow stays fast and private.

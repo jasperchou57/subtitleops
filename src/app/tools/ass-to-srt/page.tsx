@@ -75,7 +75,7 @@ export default function AssToSrtPage() {
         {/* Workflow suggestion */}
         <div className="mt-6 rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
           <span className="font-medium text-foreground">Subtitle out of sync after conversion?</span>{" "}
-          A timestamp offset tool is coming soon. In the meantime, most video editors let you shift all subtitle timing after importing the SRT file.
+          Most video editors like Premiere Pro and DaVinci Resolve let you shift all subtitle timing after importing the SRT file.
         </div>
       </section>
 
