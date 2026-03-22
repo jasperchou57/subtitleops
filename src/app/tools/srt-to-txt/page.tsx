@@ -29,10 +29,10 @@ const jsonLdData = toolPageJsonLd({
 });
 
 const relatedTools = [
-  { name: "TXT to SRT", href: "/tools/txt-to-srt" },
-  { name: "ASS to SRT", href: "/tools/ass-to-srt" },
-  { name: "VTT to SRT", href: "/tools/vtt-to-srt" },
-  { name: "SRT to VTT", href: "/tools/srt-to-vtt" },
+  { name: "TXT to SRT", href: "/tools/txt-to-srt", title: "Convert TXT to SRT subtitle format" },
+  { name: "ASS to SRT", href: "/tools/ass-to-srt", title: "Convert ASS to SRT subtitle format" },
+  { name: "VTT to SRT", href: "/tools/vtt-to-srt", title: "Convert VTT to SRT subtitle format" },
+  { name: "SRT to VTT", href: "/tools/srt-to-vtt", title: "Convert SRT to VTT subtitle format" },
 ];
 
 export default function SrtToTxtPage() {
@@ -55,7 +55,7 @@ export default function SrtToTxtPage() {
         <div className="mt-6 rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
           <span className="font-medium text-foreground">Need to turn transcript text back into timed subtitles later?</span>{" "}
           Use the{" "}
-          <Link href="/tools/txt-to-srt" className="font-medium underline underline-offset-4 hover:text-foreground/70">TXT to SRT</Link>{" "}
+          <Link href="/tools/txt-to-srt" title="Convert TXT to SRT subtitle format" className="font-medium underline underline-offset-4 hover:text-foreground/70">TXT to SRT</Link>{" "}
           page to rebuild subtitle structure from plain text.
         </div>
       </section>
@@ -207,7 +207,7 @@ export default function SrtToTxtPage() {
         <h2 className="text-lg font-semibold mb-4">Related Subtitle Tools</h2>
         <div className="flex flex-wrap gap-2">
           {relatedTools.map((t) => (
-            <Link key={t.href} href={t.href} className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">
+            <Link key={t.href} href={t.href} title={t.title} className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">
               {t.name}
             </Link>
           ))}

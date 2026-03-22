@@ -32,6 +32,7 @@ export default function AssVsSrtPost() {
       <header className="mb-10">
         <Link
           href="/blog"
+          title="Back to SubtitleOps blog"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 inline-block"
         >
           ← Back to blog
@@ -135,6 +136,7 @@ export default function AssVsSrtPost() {
           If you need to create that SRT copy right now, the{" "}
           <Link
             href="/tools/ass-to-srt"
+            title="Convert ASS to SRT subtitle format"
             className="font-medium underline underline-offset-4 hover:text-foreground/70"
           >
             ASS to SRT converter
@@ -177,9 +179,9 @@ export default function AssVsSrtPost() {
       <div className="mt-12 rounded-lg bg-muted/40 p-6">
         <h3 className="font-semibold mb-2">Related Tools</h3>
         <div className="flex flex-wrap gap-2">
-          <Link href="/tools/ass-to-srt" className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">ASS to SRT Converter</Link>
-          <Link href="/tools/srt-to-vtt" className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">SRT to VTT Converter</Link>
-          <Link href="/tools/srt-to-txt" className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">SRT to TXT Extractor</Link>
+          <Link href="/tools/ass-to-srt" title="Convert ASS to SRT subtitle format" className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">ASS to SRT Converter</Link>
+          <Link href="/tools/srt-to-vtt" title="Convert SRT to VTT subtitle format" className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">SRT to VTT Converter</Link>
+          <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">SRT to TXT Extractor</Link>
         </div>
       </div>
     </article>

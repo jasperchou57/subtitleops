@@ -15,30 +15,35 @@ const tools = [
     description:
       "Keep text and timing, remove ASS-only styling, and produce a clean SRT file that works almost everywhere.",
     href: "/tools/ass-to-srt",
+    title: "Convert ASS to SRT subtitle format",
   },
   {
     name: "VTT to SRT",
     description:
       "Remove WebVTT-specific syntax while preserving subtitle content for desktop players and editors.",
     href: "/tools/vtt-to-srt",
+    title: "Convert VTT to SRT subtitle format",
   },
   {
     name: "TXT to SRT",
     description:
       "Turn dialogue, lyrics, or a transcript into a usable subtitle draft that can be refined later.",
     href: "/tools/txt-to-srt",
+    title: "Convert TXT to SRT subtitle format",
   },
   {
     name: "SRT to VTT",
     description:
       "Add the WEBVTT header, rewrite timestamps, and produce browser-ready caption output.",
     href: "/tools/srt-to-vtt",
+    title: "Convert SRT to VTT subtitle format",
   },
   {
     name: "SRT to TXT",
     description:
       "Extract readable text from subtitle files by removing timestamps and formatting in one step.",
     href: "/tools/srt-to-txt",
+    title: "Convert SRT to TXT plain text",
   },
 ];
 
@@ -58,6 +63,7 @@ export default function ToolsPage() {
           <Link
             key={tool.href}
             href={tool.href}
+            title={tool.title}
             className="group flex items-center justify-between rounded-xl border p-5 hover:bg-accent transition-colors"
           >
             <div>

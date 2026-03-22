@@ -20,26 +20,31 @@ const tools = [
     name: "ASS to SRT",
     description: "Keep text and timing, remove ASS-only styling, and produce a clean SRT file that works almost everywhere.",
     href: "/tools/ass-to-srt",
+    title: "Convert ASS to SRT subtitle format",
   },
   {
     name: "VTT to SRT",
     description: "Remove WebVTT-specific syntax while preserving subtitle content for desktop players and editors.",
     href: "/tools/vtt-to-srt",
+    title: "Convert VTT to SRT subtitle format",
   },
   {
     name: "TXT to SRT",
     description: "Turn dialogue, lyrics, or a transcript into a usable subtitle draft that can be refined later.",
     href: "/tools/txt-to-srt",
+    title: "Convert TXT to SRT subtitle format",
   },
   {
     name: "SRT to VTT",
     description: "Add the WEBVTT header, rewrite timestamps, and produce browser-ready caption output.",
     href: "/tools/srt-to-vtt",
+    title: "Convert SRT to VTT subtitle format",
   },
   {
     name: "SRT to TXT",
     description: "Extract readable text from subtitle files by removing timestamps and formatting in one step.",
     href: "/tools/srt-to-txt",
+    title: "Convert SRT to TXT plain text",
   },
 ];
 
@@ -154,7 +159,7 @@ export default function HomePage() {
               <p className="text-sm text-muted-foreground leading-relaxed">
                 If you downloaded a heavily styled subtitle file from a fansub release or a karaoke
                 workflow, you usually need compatibility more than styling. The{" "}
-                <Link href="/tools/ass-to-srt" className="font-medium underline underline-offset-4 hover:text-foreground/70">ASS to SRT</Link>{" "}
+                <Link href="/tools/ass-to-srt" title="Convert ASS to SRT subtitle format" className="font-medium underline underline-offset-4 hover:text-foreground/70">ASS to SRT</Link>{" "}
                 page is designed for that exact job: keep text and timing, remove ASS-only styling, and
                 produce a clean SRT file that works almost everywhere.
               </p>
@@ -165,7 +170,7 @@ export default function HomePage() {
                 WebVTT is common on modern platforms, course sites, and browser-based players. But when
                 you move that subtitle file into a desktop player, editor, or archive, SRT is often the
                 format people expect. The{" "}
-                <Link href="/tools/vtt-to-srt" className="font-medium underline underline-offset-4 hover:text-foreground/70">VTT to SRT</Link>{" "}
+                <Link href="/tools/vtt-to-srt" title="Convert VTT to SRT subtitle format" className="font-medium underline underline-offset-4 hover:text-foreground/70">VTT to SRT</Link>{" "}
                 page handles that shift cleanly by removing WebVTT-specific syntax while preserving subtitle content.
               </p>
             </div>
@@ -174,7 +179,7 @@ export default function HomePage() {
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Plain text is not a subtitle format. It has no timestamps, no cue structure, and no
                 playback logic. The{" "}
-                <Link href="/tools/txt-to-srt" className="font-medium underline underline-offset-4 hover:text-foreground/70">TXT to SRT</Link>{" "}
+                <Link href="/tools/txt-to-srt" title="Convert TXT to SRT subtitle format" className="font-medium underline underline-offset-4 hover:text-foreground/70">TXT to SRT</Link>{" "}
                 page exists for users who already have dialogue, lyrics, or a transcript and need a
                 usable subtitle draft that can be refined later.
               </p>
@@ -185,7 +190,7 @@ export default function HomePage() {
                 Sometimes the timing is the problem, not the solution. If you want to translate dialogue,
                 build a transcript, run text analysis, or review the spoken content without timestamp
                 noise, the{" "}
-                <Link href="/tools/srt-to-txt" className="font-medium underline underline-offset-4 hover:text-foreground/70">SRT to TXT</Link>{" "}
+                <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="font-medium underline underline-offset-4 hover:text-foreground/70">SRT to TXT</Link>{" "}
                 page extracts readable text from subtitle files in one step.
               </p>
             </div>
@@ -217,6 +222,7 @@ export default function HomePage() {
               <Link
                 key={tool.href}
                 href={tool.href}
+                title={tool.title}
                 className="group flex items-center justify-between rounded-xl border p-5 hover:bg-accent transition-colors"
               >
                 <div>

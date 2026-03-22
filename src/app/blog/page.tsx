@@ -32,7 +32,7 @@ export default function BlogPage() {
       <div className="space-y-8">
         {posts.map((post) => (
           <article key={post.slug} className="group">
-            <Link href={`/blog/${post.slug}`} className="block">
+            <Link href={`/blog/${post.slug}`} title={post.title} className="block">
               <time className="text-xs text-muted-foreground">{post.date}</time>
               <h2 className="text-xl font-semibold mt-1 group-hover:underline underline-offset-4">
                 {post.title}

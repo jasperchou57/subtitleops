@@ -30,10 +30,10 @@ const jsonLdData = toolPageJsonLd({
 });
 
 const relatedTools = [
-  { name: "ASS to SRT", href: "/tools/ass-to-srt" },
-  { name: "VTT to SRT", href: "/tools/vtt-to-srt" },
-  { name: "SRT to VTT", href: "/tools/srt-to-vtt" },
-  { name: "SRT to TXT", href: "/tools/srt-to-txt" },
+  { name: "ASS to SRT", href: "/tools/ass-to-srt", title: "Convert ASS to SRT subtitle format" },
+  { name: "VTT to SRT", href: "/tools/vtt-to-srt", title: "Convert VTT to SRT subtitle format" },
+  { name: "SRT to VTT", href: "/tools/srt-to-vtt", title: "Convert SRT to VTT subtitle format" },
+  { name: "SRT to TXT", href: "/tools/srt-to-txt", title: "Convert SRT to TXT plain text" },
 ];
 
 export default function TxtToSrtPage() {
@@ -57,7 +57,7 @@ export default function TxtToSrtPage() {
         <div className="mt-6 rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
           <span className="font-medium text-foreground">Already have an SRT file and need the text back out?</span>{" "}
           Use the{" "}
-          <Link href="/tools/srt-to-txt" className="font-medium underline underline-offset-4 hover:text-foreground/70">SRT to TXT</Link>{" "}
+          <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="font-medium underline underline-offset-4 hover:text-foreground/70">SRT to TXT</Link>{" "}
           page to extract a plain transcript.
         </div>
       </section>
@@ -221,7 +221,7 @@ export default function TxtToSrtPage() {
         <h2 className="text-lg font-semibold mb-4">Related Subtitle Tools</h2>
         <div className="flex flex-wrap gap-2">
           {relatedTools.map((t) => (
-            <Link key={t.href} href={t.href} className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">
+            <Link key={t.href} href={t.href} title={t.title} className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors">
               {t.name}
             </Link>
           ))}

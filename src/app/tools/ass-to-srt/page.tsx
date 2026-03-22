@@ -27,10 +27,10 @@ export const metadata: Metadata = {
 };
 
 const relatedTools = [
-  { name: "VTT to SRT", href: "/tools/vtt-to-srt" },
-  { name: "TXT to SRT", href: "/tools/txt-to-srt" },
-  { name: "SRT to VTT", href: "/tools/srt-to-vtt" },
-  { name: "SRT to TXT", href: "/tools/srt-to-txt" },
+  { name: "VTT to SRT", href: "/tools/vtt-to-srt", title: "Convert VTT to SRT subtitle format" },
+  { name: "TXT to SRT", href: "/tools/txt-to-srt", title: "Convert TXT to SRT subtitle format" },
+  { name: "SRT to VTT", href: "/tools/srt-to-vtt", title: "Convert SRT to VTT subtitle format" },
+  { name: "SRT to TXT", href: "/tools/srt-to-txt", title: "Convert SRT to TXT plain text" },
 ];
 
 const jsonLdData = toolPageJsonLd({
@@ -288,6 +288,7 @@ export default function AssToSrtPage() {
             <Link
               key={tool.href}
               href={tool.href}
+              title={tool.title}
               className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent hover:border-primary/50 transition-colors"
             >
               {tool.name}
