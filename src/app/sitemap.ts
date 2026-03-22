@@ -11,6 +11,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/srt-to-txt",
   ];
 
+  const blogPosts = [
+    "/blog/ass-vs-srt-when-to-convert",
+  ];
+
   return [
     {
       url: BASE_URL,
@@ -23,6 +27,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.9,
+    })),
+    {
+      url: `${BASE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    ...blogPosts.map((post) => ({
+      url: `${BASE_URL}${post}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
     })),
   ];
 }
