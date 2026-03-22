@@ -6,15 +6,15 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { JsonLd, toolPageJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
-  title: "Free SRT to TXT Converter - Extract Text from SRT Subtitles Online",
-  description: "Convert SRT to TXT instantly by removing subtitle timing, index numbers, and basic formatting. Extract a clean subtitle transcript for translation, review, or text analysis.",
+  title: "Free SRT to TXT Converter Online",
+  description: "Convert SRT to TXT by removing timing and formatting. Extract a clean subtitle transcript for translation, review, or text analysis.",
   keywords: ["srt to txt", "srt to text", "subtitle to text", "subtitle transcript"],
   alternates: { canonical: "/tools/srt-to-txt" },
 };
 
 const jsonLdData = toolPageJsonLd({
   name: "SRT to TXT Converter",
-  description: "Convert SRT to TXT instantly by removing subtitle timing, index numbers, and basic formatting. Extract a clean subtitle transcript for translation, review, or text analysis.",
+  description: "Convert SRT to TXT by removing timing and formatting. Extract a clean subtitle transcript for translation, review, or text analysis.",
   url: "/tools/srt-to-txt",
   faqs: [
     { question: "What gets removed when I convert SRT to TXT?", answer: "The converter strips subtitle cue numbers, timestamp lines, separator syntax, and basic formatting tags so only readable text remains." },

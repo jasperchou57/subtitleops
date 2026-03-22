@@ -13,7 +13,7 @@ import {
 export const metadata: Metadata = {
   title: "Free ASS to SRT Converter Online",
   description:
-    "Convert ASS or SSA subtitle files to SRT format instantly in your browser. Keep dialogue and timing, remove styling tags, and export a clean SubRip file without uploads.",
+    "Convert ASS or SSA subtitle files to SRT in your browser. Keep dialogue and timing, remove styling tags, export a clean SubRip file.",
   keywords: [
     "ass to srt",
     "convert ass to srt",

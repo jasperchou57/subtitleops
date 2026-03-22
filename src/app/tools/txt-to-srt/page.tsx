@@ -6,16 +6,16 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { JsonLd, toolPageJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
-  title: "Free TXT to SRT Converter Online - Turn Plain Text into Subtitles",
+  title: "Free TXT to SRT Converter Online",
   description:
-    "Convert plain text to SRT subtitle format with auto-generated timestamps. Paste or upload a script, transcript, or lyrics file and get a ready-to-edit subtitle draft instantly.",
+    "Convert plain text to SRT subtitle format with auto-generated timestamps. Upload a script or lyrics file and get a subtitle draft instantly.",
   keywords: ["txt to srt", "text to srt", "convert text to srt", "create srt from text"],
   alternates: { canonical: "/tools/txt-to-srt" },
 };
 
 const jsonLdData = toolPageJsonLd({
   name: "TXT to SRT Converter",
-  description: "Convert plain text to SRT subtitle format with auto-generated timestamps. Paste or upload a script, transcript, or lyrics file and get a ready-to-edit subtitle draft instantly.",
+  description: "Convert plain text to SRT subtitle format with auto-generated timestamps. Upload a script or lyrics file and get a subtitle draft instantly.",
   url: "/tools/txt-to-srt",
   faqs: [
     { question: "How are timestamps generated when converting TXT to SRT?", answer: "The converter creates sequential timestamps automatically. Each non-empty line becomes a subtitle entry with a default duration and a short gap before the next cue." },

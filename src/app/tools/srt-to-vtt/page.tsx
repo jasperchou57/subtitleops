@@ -7,14 +7,14 @@ import { JsonLd, toolPageJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
   title: "Free SRT to VTT Converter Online",
-  description: "Convert SRT subtitle files to WebVTT format for browser-based video and HTML5 caption delivery. Add the required header, rewrite timestamps, and export a clean VTT file.",
+  description: "Convert SRT subtitle files to WebVTT for HTML5 video. Add the WEBVTT header, rewrite timestamps, and export a clean VTT file.",
   keywords: ["srt to vtt", "convert srt to vtt", "srt to webvtt", "subtitle to vtt"],
   alternates: { canonical: "/tools/srt-to-vtt" },
 };
 
 const jsonLdData = toolPageJsonLd({
   name: "SRT to VTT Converter",
-  description: "Convert SRT subtitle files to WebVTT format for browser-based video and HTML5 caption delivery. Add the required header, rewrite timestamps, and export a clean VTT file.",
+  description: "Convert SRT subtitle files to WebVTT for HTML5 video. Add the WEBVTT header, rewrite timestamps, and export a clean VTT file.",
   url: "/tools/srt-to-vtt",
   faqs: [
     { question: "Why do I need to convert SRT to VTT?", answer: "Because browser-based video workflows usually expect WebVTT rather than raw SRT. If the subtitle file is headed for web delivery, VTT is often the correct output format." },
