@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { VibeBackgroundGlow } from "@/components/ui/vibe-background-glow";
-import { UniversalConverter } from "@/components/tools/universal-converter";
+import { LazyUniversalConverter } from "@/components/tools/lazy-universal-converter";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { JsonLd, homepageJsonLd } from "@/components/seo/json-ld";
 
@@ -75,7 +75,7 @@ export default function HomePage() {
           </div>
 
           {/* Universal Converter */}
-          <UniversalConverter />
+          <LazyUniversalConverter />
         </div>
       </section>
 
