@@ -11,6 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://subtitleops.com"),
   title: {
     default: "Free Online Subtitle Converter & Tools",
     template: "%s | SubtitleOps",
@@ -29,6 +30,10 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "SubtitleOps",
+    url: "https://subtitleops.com",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
   robots: {
     index: true,

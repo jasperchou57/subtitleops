@@ -2,6 +2,18 @@ import Link from "next/link";
 import { VibeBackgroundGlow } from "@/components/ui/vibe-background-glow";
 import { UniversalConverter } from "@/components/tools/universal-converter";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { JsonLd, homepageJsonLd } from "@/components/seo/json-ld";
+
+const homepageFaqs = [
+  { question: "Is SubtitleOps a free subtitle converter?", answer: "Yes. SubtitleOps is a free subtitle converter for text-based subtitle workflows in the browser. All tools are free to use with no file size limits." },
+  { question: "Can I use this as a subtitle converter to SRT?", answer: "Yes. ASS to SRT, VTT to SRT, and TXT to SRT are the clearest routes depending on the source material you start with." },
+  { question: "Is this also a transcript to subtitle converter?", answer: "For plain-text transcripts, yes. The TXT to SRT tool covers that workflow directly by generating subtitle timing from raw text." },
+  { question: "Do you support subtitle language conversion?", answer: "Not as a dedicated translation product today. The current scope is format conversion, subtitle text extraction, and subtitle drafting. Subtitle language conversion is on our roadmap." },
+  { question: "Do you support subtitle FPS conversion?", answer: "Not with a dedicated frame-rate converter yet. That request sits closer to timing correction than basic file conversion. It is a planned addition." },
+  { question: "Is this an audio to subtitle converter or video to subtitle converter?", answer: "Not today. The current product focus is subtitle files and transcript text rather than direct speech-to-text transcription. If you already have a transcript, use the TXT to SRT tool." },
+];
+
+const homepageJsonLdData = homepageJsonLd(homepageFaqs);
 
 const tools = [
   {
@@ -34,6 +46,10 @@ const tools = [
 export default function HomePage() {
   return (
     <>
+      {homepageJsonLdData.map((data, i) => (
+        <JsonLd key={i} data={data} />
+      ))}
+
       {/* Hero + Tool */}
       <section className="relative py-16 md:py-24">
         <VibeBackgroundGlow />

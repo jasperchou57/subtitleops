@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     "Convert WebVTT subtitle files to SRT format in your browser. Remove WebVTT headers and cue settings, keep dialogue and timing, and download a clean SubRip file.",
   keywords: ["vtt to srt", "webvtt to srt", "convert vtt to srt", "vtt subtitle converter"],
   alternates: { canonical: "/tools/vtt-to-srt" },
+  openGraph: { url: "/tools/vtt-to-srt" },
 };
 
 const jsonLdData = toolPageJsonLd({

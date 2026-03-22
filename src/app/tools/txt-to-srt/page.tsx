@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     "Convert plain text to SRT subtitle format with auto-generated timestamps. Upload a script or lyrics file and get a subtitle draft instantly.",
   keywords: ["txt to srt", "text to srt", "convert text to srt", "create srt from text"],
   alternates: { canonical: "/tools/txt-to-srt" },
+  openGraph: { url: "/tools/txt-to-srt" },
 };
 
 const jsonLdData = toolPageJsonLd({

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description: "Convert SRT subtitle files to WebVTT for HTML5 video. Add the WEBVTT header, rewrite timestamps, and export a clean VTT file.",
   keywords: ["srt to vtt", "convert srt to vtt", "srt to webvtt", "subtitle to vtt"],
   alternates: { canonical: "/tools/srt-to-vtt" },
+  openGraph: { url: "/tools/srt-to-vtt" },
 };
 
 const jsonLdData = toolPageJsonLd({

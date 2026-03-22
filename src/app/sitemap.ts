@@ -3,42 +3,60 @@ import type { MetadataRoute } from "next";
 const BASE_URL = "https://subtitleops.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const tools = [
-    "/tools/ass-to-srt",
-    "/tools/vtt-to-srt",
-    "/tools/txt-to-srt",
-    "/tools/srt-to-vtt",
-    "/tools/srt-to-txt",
-  ];
-
-  const blogPosts = [
-    "/blog/ass-vs-srt-when-to-convert",
-  ];
-
   return [
     {
       url: BASE_URL,
-      lastModified: new Date(),
+      lastModified: "2026-03-22",
       changeFrequency: "weekly",
       priority: 1,
     },
-    ...tools.map((tool) => ({
-      url: `${BASE_URL}${tool}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
+    {
+      url: `${BASE_URL}/tools`,
+      lastModified: "2026-03-22",
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/tools/ass-to-srt`,
+      lastModified: "2026-03-22",
+      changeFrequency: "monthly",
       priority: 0.9,
-    })),
+    },
+    {
+      url: `${BASE_URL}/tools/vtt-to-srt`,
+      lastModified: "2026-03-22",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/tools/txt-to-srt`,
+      lastModified: "2026-03-22",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/tools/srt-to-vtt`,
+      lastModified: "2026-03-22",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/tools/srt-to-txt`,
+      lastModified: "2026-03-22",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
     {
       url: `${BASE_URL}/blog`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
+      lastModified: "2026-03-22",
+      changeFrequency: "weekly",
       priority: 0.7,
     },
-    ...blogPosts.map((post) => ({
-      url: `${BASE_URL}${post}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
+    {
+      url: `${BASE_URL}/blog/ass-vs-srt-when-to-convert`,
+      lastModified: "2026-03-22",
+      changeFrequency: "monthly",
       priority: 0.8,
-    })),
+    },
   ];
 }

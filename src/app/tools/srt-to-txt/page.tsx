@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description: "Convert SRT to TXT by removing timing and formatting. Extract a clean subtitle transcript for translation, review, or text analysis.",
   keywords: ["srt to txt", "srt to text", "subtitle to text", "subtitle transcript"],
   alternates: { canonical: "/tools/srt-to-txt" },
+  openGraph: { url: "/tools/srt-to-txt" },
 };
 
 const jsonLdData = toolPageJsonLd({

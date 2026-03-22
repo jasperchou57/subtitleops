@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "Learn about subtitle formats, conversion workflows, and best practices for working with SRT, ASS, VTT, and TXT subtitle files.",
   alternates: { canonical: "/blog" },
+  openGraph: { url: "/blog" },
 };
 
 const posts = [

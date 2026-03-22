@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd, blogPostJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
   title: "ASS vs SRT — When to Convert and When to Keep the Original",
@@ -13,11 +14,21 @@ export const metadata: Metadata = {
     "ass subtitle format",
   ],
   alternates: { canonical: "/blog/ass-vs-srt-when-to-convert" },
+  openGraph: { url: "/blog/ass-vs-srt-when-to-convert" },
 };
+
+const articleJsonLd = blogPostJsonLd({
+  headline: "ASS vs SRT — When Should You Convert and When Should You Keep the Original?",
+  description:
+    "Understand the real differences between ASS and SRT subtitle formats. Learn when converting ASS to SRT makes sense and when keeping the styled original is the better decision.",
+  url: "/blog/ass-vs-srt-when-to-convert",
+  datePublished: "2026-03-22",
+});
 
 export default function AssVsSrtPost() {
   return (
     <article className="mx-auto max-w-3xl px-4 sm:px-6 py-16">
+      <JsonLd data={articleJsonLd} />
       <header className="mb-10">
         <Link
           href="/blog"

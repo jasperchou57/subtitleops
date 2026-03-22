@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/tools/ass-to-srt",
   },
+  openGraph: { url: "/tools/ass-to-srt" },
 };
 
 const relatedTools = [
