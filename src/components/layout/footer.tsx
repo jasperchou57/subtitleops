@@ -12,7 +12,7 @@ export function Footer() {
   return (
     <footer className="border-t">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -50,8 +50,34 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Home
+                <Link href="/tools" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  All Tools
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold mb-3">Company</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Contact
                 </Link>
               </li>
             </ul>
