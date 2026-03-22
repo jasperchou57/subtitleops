@@ -61,10 +61,10 @@ export default function AboutPage() {
         <p>
           Have feedback, a bug report, or a feature request? Reach out at{" "}
           <a
-            href="mailto:contact@subtitleops.com"
+            href="mailto:help@subtitleops.com"
             className="font-medium underline underline-offset-4 hover:text-foreground/70"
           >
-            contact@subtitleops.com
+            help@subtitleops.com
           </a>
           .
         </p>

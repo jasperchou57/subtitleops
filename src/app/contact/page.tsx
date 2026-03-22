@@ -26,10 +26,10 @@ export default function ContactPage() {
           <p>
             Send us an email at{" "}
             <a
-              href="mailto:contact@subtitleops.com"
+              href="mailto:help@subtitleops.com"
               className="font-medium underline underline-offset-4 hover:text-foreground/70"
             >
-              contact@subtitleops.com
+              help@subtitleops.com
             </a>{" "}
             and we will get back to you as soon as possible.
           </p>
