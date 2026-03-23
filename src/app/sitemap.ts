@@ -59,6 +59,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${BASE_URL}/blog/srt-vs-vtt-which-subtitle-format`,
+      lastModified: "2026-03-23",
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/about`,
       lastModified: "2026-03-22",
       changeFrequency: "yearly",

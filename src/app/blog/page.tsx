@@ -11,6 +11,13 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "srt-vs-vtt-which-subtitle-format",
+    title: "SRT vs VTT — Which Subtitle Format Should You Use?",
+    excerpt:
+      "SRT and VTT look almost identical but behave differently in browsers, players, and editors. Learn when each format is the right choice and how to convert between them.",
+    date: "2026-03-23",
+  },
+  {
     slug: "ass-vs-srt-when-to-convert",
     title: "ASS vs SRT — When Should You Convert and When Should You Keep the Original?",
     excerpt:
