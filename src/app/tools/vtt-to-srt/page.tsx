@@ -51,11 +51,19 @@ export default function VttToSrtPage() {
           Use this free VTT to SRT converter to turn WebVTT caption files into clean SRT subtitles for editors, desktop players, and archive-friendly workflows. The converter removes the WEBVTT header, rewrites timestamp syntax, strips cue settings that SRT cannot represent, and preserves the subtitle text itself. Your file is processed locally in the browser from start to finish.
         </p>
         <div className="mt-8"><VttToSrtConverter /></div>
-        <div className="mt-6 rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Need to go the other way for browser playback?</span>{" "}
-          Use the{" "}
-          <Link href="/tools/srt-to-vtt" title="Convert SRT to VTT subtitle format" className="font-medium underline underline-offset-4 hover:text-foreground/70">SRT to VTT page</Link>{" "}
-          after you finish editing or cleaning your subtitle file.
+        <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
+          <svg className="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+          <div className="text-sm">
+            <p className="font-medium text-foreground">Don&apos;t lose your subtitle work</p>
+            <p className="text-muted-foreground mt-0.5">
+              Need to push this back to the web?{" "}
+              <Link href="/tools/srt-to-vtt" title="Convert SRT to VTT subtitle format" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Convert SRT to VTT</Link>.
+              Need just the text?{" "}
+              <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Extract with SRT to TXT</Link>.
+            </p>
+          </div>
         </div>
       </section>
 

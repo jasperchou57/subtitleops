@@ -52,11 +52,19 @@ export default function SrtToTxtPage() {
           that works as a subtitle transcript, translation input, review document, or text-analysis source.
         </p>
         <div className="mt-8"><SrtToTxtConverter /></div>
-        <div className="mt-6 rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Need to turn transcript text back into timed subtitles later?</span>{" "}
-          Use the{" "}
-          <Link href="/tools/txt-to-srt" title="Convert TXT to SRT subtitle format" className="font-medium underline underline-offset-4 hover:text-foreground/70">TXT to SRT</Link>{" "}
-          page to rebuild subtitle structure from plain text.
+        <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
+          <svg className="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+          <div className="text-sm">
+            <p className="font-medium text-foreground">Don&apos;t lose the subtitle structure</p>
+            <p className="text-muted-foreground mt-0.5">
+              Need to rebuild timed subtitles from this text?{" "}
+              <Link href="/tools/txt-to-srt" title="Convert TXT to SRT subtitle format" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Use TXT to SRT</Link>.
+              Need browser-ready captions?{" "}
+              <Link href="/tools/srt-to-vtt" title="Convert SRT to VTT subtitle format" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Convert SRT to VTT</Link>.
+            </p>
+          </div>
         </div>
       </section>
 

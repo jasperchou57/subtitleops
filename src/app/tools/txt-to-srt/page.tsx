@@ -54,11 +54,18 @@ export default function TxtToSrtPage() {
           start editing from a usable SRT draft instead of a raw text file.
         </p>
         <div className="mt-8"><TxtToSrtConverter /></div>
-        <div className="mt-6 rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Already have an SRT file and need the text back out?</span>{" "}
-          Use the{" "}
-          <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="font-medium underline underline-offset-4 hover:text-foreground/70">SRT to TXT</Link>{" "}
-          page to extract a plain transcript.
+        <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
+          <svg className="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+          <div className="text-sm">
+            <p className="font-medium text-foreground">Don&apos;t forget to check the timing</p>
+            <p className="text-muted-foreground mt-0.5">
+              Auto-generated timestamps are a draft — fine-tune in your editor.
+              Already have an SRT and need the text?{" "}
+              <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Extract with SRT to TXT</Link>.
+            </p>
+          </div>
         </div>
       </section>
 

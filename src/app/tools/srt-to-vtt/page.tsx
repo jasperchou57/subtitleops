@@ -50,11 +50,19 @@ export default function SrtToVttPage() {
           Use this free SRT to VTT converter when your subtitle file needs to work in a browser-based video player or any workflow built around WebVTT. The tool adds the WEBVTT header, rewrites timestamp punctuation, removes numbered cue indices, and produces browser-ready caption output while preserving your subtitle text and timing.
         </p>
         <div className="mt-8"><SrtToVttConverter /></div>
-        <div className="mt-6 rounded-lg bg-muted/40 p-4 text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Need a universal subtitle format again after editing?</span>{" "}
-          Use the{" "}
-          <Link href="/tools/vtt-to-srt" title="Convert VTT to SRT subtitle format" className="font-medium underline underline-offset-4 hover:text-foreground/70">VTT to SRT page</Link>{" "}
-          to move WebVTT captions back into a simpler delivery format.
+        <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
+          <svg className="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+          <div className="text-sm">
+            <p className="font-medium text-foreground">Don&apos;t skip the compatibility check</p>
+            <p className="text-muted-foreground mt-0.5">
+              Need to go back to a universal format?{" "}
+              <Link href="/tools/vtt-to-srt" title="Convert VTT to SRT subtitle format" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Convert VTT to SRT</Link>.
+              Need a plain transcript?{" "}
+              <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Extract with SRT to TXT</Link>.
+            </p>
+          </div>
         </div>
       </section>
 
