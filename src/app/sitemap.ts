@@ -47,6 +47,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/tools/sbv-to-srt`,
+      lastModified: "2026-03-30",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/tools/srt-to-ass`,
+      lastModified: "2026-03-30",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/tools/vtt-to-txt`,
+      lastModified: "2026-03-30",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${BASE_URL}/blog`,
       lastModified: "2026-03-30",
       changeFrequency: "weekly",

@@ -4,6 +4,8 @@ import { convertVttToSrt } from "./vtt-to-srt";
 import { convertTxtToSrt } from "./txt-to-srt";
 import { convertSrtToVtt } from "./srt-to-vtt";
 import { convertSrtToTxt } from "./srt-to-txt";
+import { convertSbvToSrt } from "./sbv-to-srt";
+import { convertSrtToAss } from "./srt-to-ass";
 
 /**
  * Universal converter: any supported input format → any supported output format.
@@ -30,6 +32,9 @@ export function universalConvert(
     case "txt":
       srtContent = formatSrt(convertTxtToSrt(content));
       break;
+    case "sbv":
+      srtContent = convertSbvToSrt(content);
+      break;
     default:
       throw new Error(`Unsupported input format: ${inputFormat}`);
   }
@@ -42,6 +47,8 @@ export function universalConvert(
   switch (outputFormat) {
     case "srt":
       return srtContent;
+    case "ass":
+      return convertSrtToAss(srtContent);
     case "vtt":
       return convertSrtToVtt(srtContent);
     case "txt":

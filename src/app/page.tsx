@@ -46,6 +46,24 @@ const tools = [
     href: "/tools/srt-to-txt",
     title: "Convert SRT to TXT plain text",
   },
+  {
+    name: "SBV to SRT",
+    description: "Convert YouTube SBV caption files to universally compatible SRT format with proper cue numbers.",
+    href: "/tools/sbv-to-srt",
+    title: "Convert SBV to SRT subtitle format",
+  },
+  {
+    name: "SRT to ASS",
+    description: "Generate a styled ASS file from plain SRT subtitles for editing in Aegisub with fonts, colors, and positioning.",
+    href: "/tools/srt-to-ass",
+    title: "Convert SRT to ASS subtitle format",
+  },
+  {
+    name: "VTT to TXT",
+    description: "Extract clean transcript text from WebVTT caption files by stripping timestamps, headers, and cue settings.",
+    href: "/tools/vtt-to-txt",
+    title: "Extract text from VTT captions",
+  },
 ];
 
 export default function HomePage() {

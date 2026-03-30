@@ -112,7 +112,7 @@ export function UniversalConverter() {
         >
           <input
             type="file"
-            accept=".srt,.ass,.ssa,.vtt,.txt"
+            accept=".srt,.ass,.ssa,.vtt,.txt,.sbv"
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) handleFile(f);
@@ -128,7 +128,7 @@ export function UniversalConverter() {
             {isDragOver ? "Drop your file here" : "Drop any subtitle file here"}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            SRT, ASS, VTT, TXT &middot; Auto-detected
+            SRT, ASS, VTT, TXT, SBV &middot; Auto-detected
           </p>
         </div>
       ) : (

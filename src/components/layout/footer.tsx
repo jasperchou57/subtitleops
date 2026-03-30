@@ -6,6 +6,9 @@ const converters = [
   { name: "TXT to SRT", href: "/tools/txt-to-srt", title: "Convert TXT to SRT subtitle format" },
   { name: "SRT to VTT", href: "/tools/srt-to-vtt", title: "Convert SRT to VTT subtitle format" },
   { name: "SRT to TXT", href: "/tools/srt-to-txt", title: "Convert SRT to TXT plain text" },
+  { name: "SBV to SRT", href: "/tools/sbv-to-srt", title: "Convert SBV to SRT subtitle format" },
+  { name: "SRT to ASS", href: "/tools/srt-to-ass", title: "Convert SRT to ASS subtitle format" },
+  { name: "VTT to TXT", href: "/tools/vtt-to-txt", title: "Extract text from VTT captions" },
 ];
 
 export function Footer() {
