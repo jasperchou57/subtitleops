@@ -11,6 +11,13 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "what-is-srt-file",
+    title: "What Is an SRT File? Format Structure Explained",
+    excerpt:
+      "Learn what an SRT file is, how the SubRip subtitle format works, and where SRT files are used. Includes format anatomy, real examples, and common problems.",
+    date: "2026-03-30",
+  },
+  {
     slug: "srt-vs-vtt-which-subtitle-format",
     title: "SRT vs VTT — Which Subtitle Format Should You Use?",
     excerpt:

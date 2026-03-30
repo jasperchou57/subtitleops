@@ -48,9 +48,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/blog`,
-      lastModified: "2026-03-22",
+      lastModified: "2026-03-30",
       changeFrequency: "weekly",
       priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/blog/what-is-srt-file`,
+      lastModified: "2026-03-30",
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
     {
       url: `${BASE_URL}/blog/ass-vs-srt-when-to-convert`,
