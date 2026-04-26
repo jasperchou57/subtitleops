@@ -8,8 +8,9 @@ const homepageFaqs = [
   { question: "Is SubtitleOps a free subtitle converter?", answer: "Yes. SubtitleOps is a free subtitle converter for text-based subtitle workflows in the browser. All tools are free to use with no file size limits." },
   { question: "Can I use this as a subtitle converter to SRT?", answer: "Yes. ASS to SRT, VTT to SRT, and TXT to SRT are the clearest routes depending on the source material you start with." },
   { question: "Is this also a transcript to subtitle converter?", answer: "For plain-text transcripts, yes. The TXT to SRT tool covers that workflow directly by generating subtitle timing from raw text." },
-  { question: "Do you support subtitle language conversion?", answer: "Not as a dedicated translation product today. The current scope is format conversion, subtitle text extraction, and subtitle drafting. Subtitle language conversion is on our roadmap." },
-  { question: "Do you support subtitle FPS conversion?", answer: "Not with a dedicated frame-rate converter yet. That request sits closer to timing correction than basic file conversion. It is a planned addition." },
+  { question: "Can I fix out-of-sync subtitles on SubtitleOps?", answer: "Yes. The Subtitle Timing Shift tool moves every cue forward or backward by a fixed number of seconds. For subtitles that drift further off over time due to a frame-rate mismatch, the Subtitle FPS Converter rescales the whole timeline." },
+  { question: "Do you support subtitle FPS conversion?", answer: "Yes. The Subtitle FPS Converter rescales SRT and VTT subtitle timing between frame rates such as 23.976, 25, 29.97, and 30 fps, with a custom FPS option for non-standard rates." },
+  { question: "Do you support subtitle language conversion?", answer: "Not as a dedicated translation product today. The current scope is format conversion, subtitle text extraction, subtitle drafting, and timing correction. Subtitle language conversion is on our roadmap." },
   { question: "Is this an audio to subtitle converter or video to subtitle converter?", answer: "Not today. The current product focus is subtitle files and transcript text rather than direct speech-to-text transcription. If you already have a transcript, use the TXT to SRT tool." },
 ];
 
@@ -63,6 +64,18 @@ const tools = [
     description: "Extract clean transcript text from WebVTT caption files by stripping timestamps, headers, and cue settings.",
     href: "/tools/vtt-to-txt",
     title: "Extract text from VTT captions",
+  },
+  {
+    name: "Subtitle Timing Shift",
+    description: "Fix out-of-sync subtitles by shifting every cue forward or backward by a fixed number of seconds. Supports decimals and negative values.",
+    href: "/tools/subtitle-shift",
+    title: "Shift subtitles forward or backward by a fixed offset",
+  },
+  {
+    name: "Subtitle FPS Converter",
+    description: "Rescale subtitle timing between frame rates like 23.976, 25, 29.97, and 30 fps. Fixes subtitles that drift further off as the video plays.",
+    href: "/tools/subtitle-fps-converter",
+    title: "Rescale subtitle timing between frame rates",
   },
 ];
 
@@ -150,16 +163,18 @@ export default function HomePage() {
           <div className="text-sm text-muted-foreground leading-relaxed space-y-4">
             <p>
               People use the term &ldquo;subtitle converter&rdquo; loosely, so this page sorts intent
-              instead of flattening it. Today SubtitleOps covers three strong categories: subtitle format
+              instead of flattening it. Today SubtitleOps covers four categories: subtitle format
               conversion between existing subtitle files, subtitle-to-text extraction for transcript and
-              review workflows, and transcript-to-subtitle drafting through TXT to SRT.
+              review workflows, transcript-to-subtitle drafting through TXT to SRT, and subtitle timing
+              correction through shift and FPS conversion.
             </p>
             <p>
               That means the site already answers a meaningful share of searches like &ldquo;subtitle
-              converter to SRT&rdquo;, &ldquo;SRT to subtitle converter&rdquo;, and &ldquo;transcript
-              to subtitle converter&rdquo;. Looking for subtitle language conversion or FPS adjustment?
-              Those workflows are on our roadmap. Today SubtitleOps focuses on format conversion and
-              text extraction — the foundation most subtitle workflows need first.
+              converter to SRT&rdquo;, &ldquo;SRT to subtitle converter&rdquo;, &ldquo;transcript
+              to subtitle converter&rdquo;, &ldquo;fix subtitle delay&rdquo;, and &ldquo;subtitle FPS
+              converter&rdquo;. Looking for subtitle language conversion? That workflow is still on our
+              roadmap. Today SubtitleOps focuses on format conversion, text extraction, and timing
+              correction — the foundation most subtitle workflows need first.
             </p>
           </div>
         </div>
@@ -325,16 +340,25 @@ export default function HomePage() {
                 For plain-text transcripts, yes. The TXT to SRT tool covers that workflow directly by generating subtitle timing from raw text.
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="language">
-              <AccordionTrigger>Do you support subtitle language conversion?</AccordionTrigger>
+            <AccordionItem value="sync">
+              <AccordionTrigger>Can I fix out-of-sync subtitles on SubtitleOps?</AccordionTrigger>
               <AccordionContent>
-                Not as a dedicated translation product today. The current scope is format conversion, subtitle text extraction, and subtitle drafting. Subtitle language conversion is on our roadmap.
+                Yes. The{" "}
+                <Link href="/tools/subtitle-shift" title="Shift subtitles forward or backward by a fixed offset" className="font-medium underline underline-offset-4">Subtitle Timing Shift</Link>{" "}
+                tool moves every cue forward or backward by a fixed number of seconds. For subtitles that drift further off over time due to a frame-rate mismatch, use the{" "}
+                <Link href="/tools/subtitle-fps-converter" title="Rescale subtitle timing between frame rates" className="font-medium underline underline-offset-4">Subtitle FPS Converter</Link>.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="fps">
               <AccordionTrigger>Do you support subtitle FPS conversion?</AccordionTrigger>
               <AccordionContent>
-                Not with a dedicated frame-rate converter yet. That request sits closer to timing correction than basic file conversion. It is a planned addition.
+                Yes. The Subtitle FPS Converter rescales SRT and VTT subtitle timing between frame rates such as 23.976, 25, 29.97, and 30 fps, with a custom FPS option for non-standard rates.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="language">
+              <AccordionTrigger>Do you support subtitle language conversion?</AccordionTrigger>
+              <AccordionContent>
+                Not as a dedicated translation product today. The current scope is format conversion, subtitle text extraction, subtitle drafting, and timing correction. Subtitle language conversion is on our roadmap.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="audio-video">

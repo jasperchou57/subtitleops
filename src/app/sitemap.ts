@@ -65,6 +65,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/tools/subtitle-shift`,
+      lastModified: "2026-04-23",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/tools/subtitle-fps-converter`,
+      lastModified: "2026-04-23",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${BASE_URL}/blog`,
       lastModified: "2026-03-30",
       changeFrequency: "weekly",

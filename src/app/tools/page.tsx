@@ -66,6 +66,20 @@ const tools = [
     href: "/tools/vtt-to-txt",
     title: "Extract text from VTT captions",
   },
+  {
+    name: "Subtitle Timing Shift",
+    description:
+      "Fix out-of-sync subtitles by shifting every cue forward or backward by a fixed number of seconds. Supports decimals and negative values.",
+    href: "/tools/subtitle-shift",
+    title: "Shift subtitles forward or backward by a fixed offset",
+  },
+  {
+    name: "Subtitle FPS Converter",
+    description:
+      "Rescale subtitle timing between frame rates like 23.976, 25, 29.97, and 30 fps. Fixes subtitles that drift further off as the video plays.",
+    href: "/tools/subtitle-fps-converter",
+    title: "Rescale subtitle timing between frame rates",
+  },
 ];
 
 export default function ToolsPage() {

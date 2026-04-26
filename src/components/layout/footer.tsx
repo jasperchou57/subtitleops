@@ -11,11 +11,16 @@ const converters = [
   { name: "VTT to TXT", href: "/tools/vtt-to-txt", title: "Extract text from VTT captions" },
 ];
 
+const timing = [
+  { name: "Subtitle Timing Shift", href: "/tools/subtitle-shift", title: "Shift subtitles forward or backward by a fixed offset" },
+  { name: "Subtitle FPS Converter", href: "/tools/subtitle-fps-converter", title: "Rescale subtitle timing between frame rates" },
+];
+
 export function Footer() {
   return (
     <footer className="border-t">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" title="SubtitleOps — Free Online Subtitle Converter" className="flex items-center gap-2.5 mb-4">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -35,6 +40,19 @@ export function Footer() {
             <h3 className="text-sm font-semibold mb-3">Converters</h3>
             <ul className="space-y-2">
               {converters.map((tool) => (
+                <li key={tool.href}>
+                  <Link href={tool.href} title={tool.title} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    {tool.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold mb-3">Timing</h3>
+            <ul className="space-y-2">
+              {timing.map((tool) => (
                 <li key={tool.href}>
                   <Link href={tool.href} title={tool.title} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                     {tool.name}

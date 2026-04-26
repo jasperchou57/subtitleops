@@ -81,10 +81,10 @@ export default function AssToSrtPage() {
           <div className="text-sm">
             <p className="font-medium text-foreground">Don&apos;t leave timing errors unfixed</p>
             <p className="text-muted-foreground mt-0.5">
-              Need clean text for translation?{" "}
-              <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Extract text with SRT to TXT</Link>.
-              Need browser-ready captions?{" "}
-              <Link href="/tools/srt-to-vtt" title="Convert SRT to VTT subtitle format" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Convert to VTT</Link>.
+              Subtitles out of sync after conversion?{" "}
+              <Link href="/tools/subtitle-shift" title="Shift subtitles forward or backward by a fixed offset" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Shift the timing</Link>.
+              Frame rate mismatch?{" "}
+              <Link href="/tools/subtitle-fps-converter" title="Rescale subtitle timing between frame rates" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Run FPS conversion</Link>.
             </p>
           </div>
         </div>
