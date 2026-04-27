@@ -48,11 +48,18 @@ export default function AboutPage() {
           What We Support Today
         </h2>
         <p>
-          SubtitleOps currently supports conversion between SRT, ASS (Advanced
-          SubStation Alpha), VTT (WebVTT), and TXT formats. This covers the
-          most common subtitle workflows including format conversion, transcript
-          extraction, and subtitle drafting from plain text. More formats and
-          tools are on our roadmap.
+          SubtitleOps currently covers four kinds of subtitle work. Format
+          conversion between SRT, ASS (Advanced SubStation Alpha), VTT (WebVTT),
+          SBV (YouTube), and TXT. Transcript extraction for translation and
+          review workflows. Subtitle drafting from plain text scripts. And
+          subtitle timing correction through the Subtitle Timing Shift tool
+          for fixing constant offsets, plus the Subtitle FPS Converter for
+          rescaling between frame rates like 23.976, 25, 29.97, and 30 fps.
+        </p>
+        <p>
+          More formats and tools are on our roadmap, including subtitle
+          language translation. If a workflow you need is missing, send us a
+          note — feature requests genuinely move the priority list.
         </p>
 
         <h2 className="text-xl font-semibold text-foreground pt-4">
