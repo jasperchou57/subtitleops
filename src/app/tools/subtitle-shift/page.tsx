@@ -203,9 +203,10 @@ export default function SubtitleShiftPage() {
           </li>
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0 w-44">Growing drift:</span>
-            The subtitles start close to correct but drift further off over time. By the end of a 90-minute
-            film, the gap might be several seconds even though the first scene looked fine. That is a frame-rate
-            mismatch, not a shift. Use the{" "}
+            The subtitles start close to correct but drift further off over time. The gap might be a few
+            seconds at the end of a feature film for a small mismatch like 29.97 vs 30 fps, or close to four
+            minutes for a larger one like 23.976 vs 25 fps. Either way it is a frame-rate mismatch, not a
+            shift. Use the{" "}
             <Link
               href="/tools/subtitle-fps-converter"
               title="Rescale subtitle timing between frame rates"
