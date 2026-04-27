@@ -53,7 +53,7 @@ export default function AssVsSrtPost() {
         <h2 className="text-2xl font-bold mt-10 mb-4">What ASS Actually Does That SRT Cannot</h2>
 
         <p>
-          ASS stands for Advanced SubStation Alpha. The word "Advanced" is not marketing — it describes a genuinely more capable subtitle format. ASS files contain three distinct sections that SRT files simply do not have:
+          ASS stands for Advanced SubStation Alpha. The word &ldquo;Advanced&rdquo; is not marketing — it describes a genuinely more capable subtitle format. ASS files contain three distinct sections that SRT files simply do not have:
         </p>
 
         <p>
