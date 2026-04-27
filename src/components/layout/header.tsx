@@ -6,9 +6,10 @@ import Link from "next/link";
 const navTools = [
   { name: "ASS to SRT", href: "/tools/ass-to-srt", title: "Convert ASS to SRT subtitle format" },
   { name: "VTT to SRT", href: "/tools/vtt-to-srt", title: "Convert VTT to SRT subtitle format" },
-  { name: "TXT to SRT", href: "/tools/txt-to-srt", title: "Convert TXT to SRT subtitle format" },
   { name: "SRT to VTT", href: "/tools/srt-to-vtt", title: "Convert SRT to VTT subtitle format" },
-  { name: "SRT to TXT", href: "/tools/srt-to-txt", title: "Convert SRT to TXT plain text" },
+  { name: "TXT to SRT", href: "/tools/txt-to-srt", title: "Convert TXT to SRT subtitle format" },
+  { name: "Fix Timing", href: "/tools/subtitle-shift", title: "Shift subtitles forward or backward by a fixed offset" },
+  { name: "All Tools", href: "/tools", title: "Browse all free subtitle conversion tools" },
 ];
 
 export function Header() {

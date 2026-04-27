@@ -1,84 +1,85 @@
 import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://subtitleops.com";
+const LAST_MODIFIED = "2026-04-27";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: BASE_URL,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${BASE_URL}/tools`,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${BASE_URL}/tools/ass-to-srt`,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/vtt-to-srt`,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/txt-to-srt`,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/srt-to-vtt`,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/srt-to-txt`,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/sbv-to-srt`,
-      lastModified: "2026-03-30",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/srt-to-ass`,
-      lastModified: "2026-03-30",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/vtt-to-txt`,
-      lastModified: "2026-03-30",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/subtitle-shift`,
-      lastModified: "2026-04-23",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/tools/subtitle-fps-converter`,
-      lastModified: "2026-04-23",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${BASE_URL}/blog`,
-      lastModified: "2026-03-30",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "weekly",
       priority: 0.7,
     },
@@ -90,7 +91,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/blog/ass-vs-srt-when-to-convert`,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 0.8,
     },
@@ -102,7 +103,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/about`,
-      lastModified: "2026-03-22",
+      lastModified: LAST_MODIFIED,
       changeFrequency: "yearly",
       priority: 0.4,
     },
