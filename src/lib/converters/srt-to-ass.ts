@@ -42,15 +42,22 @@ function parseSrt(content: string): SrtEntry[] {
 
 function srtTimestampToAss(ts: string): string {
   // SRT: HH:MM:SS,mmm → ASS: H:MM:SS.cc
+  // Convert to total centiseconds first so rounding (e.g. 999 ms → 100 cs)
+  // carries cleanly into the next second instead of producing invalid ".100".
   const match = ts.match(/(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
   if (!match) return ts;
 
-  const h = parseInt(match[1], 10); // no leading zero in ASS
-  const mm = match[2];
-  const ss = match[3];
-  const cs = Math.round(parseInt(match[4], 10) / 10)
-    .toString()
-    .padStart(2, "0");
+  const totalMs =
+    parseInt(match[1], 10) * 3_600_000 +
+    parseInt(match[2], 10) * 60_000 +
+    parseInt(match[3], 10) * 1_000 +
+    parseInt(match[4], 10);
+  const totalCs = Math.round(totalMs / 10);
+
+  const h = Math.floor(totalCs / 360_000); // no leading zero in ASS
+  const mm = String(Math.floor((totalCs % 360_000) / 6_000)).padStart(2, "0");
+  const ss = String(Math.floor((totalCs % 6_000) / 100)).padStart(2, "0");
+  const cs = String(totalCs % 100).padStart(2, "0");
 
   return `${h}:${mm}:${ss}.${cs}`;
 }
