@@ -96,12 +96,8 @@ export default function HomePage() {
               Free Online Subtitle Converter & Tools
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Convert subtitle files between SRT, ASS, VTT, and TXT without leaving your browser.
-              SubtitleOps gives you a fast universal subtitle converter for quick jobs, plus dedicated
-              tool pages for format-specific workflows like ASS to SRT, VTT to SRT, TXT to SRT,
-              SRT to VTT, and SRT to TXT. If you arrived looking for a subtitle converter to SRT or
-              a transcript to subtitle converter, this page is designed to route you into the right
-              workflow without pretending every subtitle job is the same.
+              Convert SRT, ASS, VTT, TXT, and SBV subtitle files directly in your browser.
+              Drop a file to auto-detect the format, choose your output, preview the result, and download.
             </p>
           </div>
 
