@@ -5,7 +5,7 @@ import { JsonLd, toolsItemListJsonLd } from "@/components/seo/json-ld";
 export const metadata: Metadata = {
   title: "Free Subtitle Tools — Convert, Extract & Draft Subtitles",
   description:
-    "Browse all free subtitle tools on SubtitleOps. Convert between SRT, ASS, VTT, and TXT formats, extract transcript text, or draft subtitles from plain text.",
+    "Browse all free subtitle tools on SubtitleOps. Convert between SRT, ASS, VTT, SBV, and TXT formats, extract transcript text, draft subtitles, or fix timing.",
   alternates: { canonical: "/tools" },
   openGraph: { url: "/tools" },
 };
@@ -116,6 +116,21 @@ export default function ToolsPage() {
         Pick a specific tool for dedicated features and format-specific guides.
         Every tool runs in your browser — no uploads, no sign-ups.
       </p>
+
+      <div className="mb-12 grid gap-4 text-sm text-muted-foreground md:grid-cols-3">
+        <p>
+          Use format converters when you need compatibility between players, editors, web captions,
+          and YouTube caption exports.
+        </p>
+        <p>
+          Use transcript tools when you need plain text for review, translation, analysis, or a first
+          timed subtitle draft.
+        </p>
+        <p>
+          Use timing tools when subtitles are consistently delayed or drift because the video frame
+          rate does not match the file.
+        </p>
+      </div>
 
       <div className="space-y-12">
         {toolCategories.map((category) => (

@@ -65,7 +65,7 @@ export function FileDropzone({ accept, acceptLabel, onFileSelect }: FileDropzone
         </svg>
       </div>
       <p className="text-base font-medium">
-        {isDragOver ? "Drop your file here" : "Drag & drop your file here"}
+        {isDragOver ? "Drop your file here" : "Upload or drop your subtitle file"}
       </p>
       <span className="mt-4 inline-flex items-center rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background">
         Choose File

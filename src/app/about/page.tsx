@@ -17,11 +17,11 @@ export default function AboutPage() {
 
       <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
         <p>
-          SubtitleOps is a free, browser-based subtitle tool suite built for
-          people who work with subtitle files regularly. Whether you need to
-          convert between formats, extract transcript text, or draft subtitles
-          from a plain script, SubtitleOps handles it without uploads, accounts,
-          or installations.
+          SubtitleOps is a browser-based subtitle toolkit for converting,
+          extracting, drafting, and timing subtitle files without uploading them
+          to a server. Whether you need to convert between formats, extract
+          transcript text, or draft subtitles from a plain script, SubtitleOps
+          handles it without uploads, accounts, or installations.
         </p>
 
         <h2 className="text-xl font-semibold text-foreground pt-4">

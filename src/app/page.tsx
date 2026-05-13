@@ -79,6 +79,10 @@ const tools = [
   },
 ];
 
+const popularTools = tools.filter((tool) =>
+  ["ASS to SRT", "VTT to SRT", "TXT to SRT", "SRT to VTT", "Subtitle Timing Shift", "Subtitle FPS Converter"].includes(tool.name)
+);
+
 export default function HomePage() {
   return (
     <>
@@ -119,59 +123,118 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why SubtitleOps Exists */}
+      {/* Popular Tools */}
       <section className="py-16 md:py-20">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
-            Why SubtitleOps Exists
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            Popular tools
           </h2>
-          <div className="text-sm text-muted-foreground leading-relaxed space-y-4">
-            <p>
-              Most subtitle tools do only one of two things: they either give you a button with no
-              explanation, or they bury a simple converter under generic SEO filler. SubtitleOps is
-              built for a different kind of user. Sometimes you need a clean subtitle conversion right
-              away. Sometimes you need to understand why a styled ASS file breaks in your editor, why
-              a WebVTT export does not work in VLC, or why a plain text transcript still is not a
-              usable subtitle file.
-            </p>
-            <p>
-              That is why each page on SubtitleOps has two jobs. First, it does the actual subtitle
-              work in the browser. Second, it explains what changes during the conversion so you can
-              make better format decisions. The result is a subtitle converter that is useful both for
-              one-click tasks and for real workflow decisions.
-            </p>
-            <p>
-              People searching for a subtitle converter are often not sure which specific page they need
-              yet. Some have an ASS file from a fansub workflow. Others have a VTT export from a course
-              platform. Others only have raw text. This homepage makes that decision easier by showing
-              which subtitle workflow each tool actually solves, so you land in the right place quickly.
-            </p>
+          <p className="text-center text-muted-foreground mb-10">
+            Start with the most common subtitle conversion and timing workflows.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {popularTools.map((tool) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                title={tool.title}
+                className="group flex items-center justify-between rounded-xl border p-5 hover:bg-accent transition-colors"
+              >
+                <div>
+                  <h3 className="font-semibold group-hover:underline underline-offset-4">
+                    {tool.name}
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {tool.description}
+                  </p>
+                </div>
+                <svg
+                  className="h-5 w-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors ml-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* What This Subtitle Converter Covers */}
+      {/* How it works */}
       <section className="py-16 md:py-20 border-t">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
-            What This Subtitle Converter Covers Today
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            How It Works
           </h2>
-          <div className="text-sm text-muted-foreground leading-relaxed space-y-4">
-            <p>
-              People use the term &ldquo;subtitle converter&rdquo; loosely, so this page sorts intent
-              instead of flattening it. Today SubtitleOps covers four categories: subtitle format
-              conversion between existing subtitle files, subtitle-to-text extraction for transcript and
-              review workflows, transcript-to-subtitle drafting through TXT to SRT, and subtitle timing
-              correction through shift and FPS conversion.
-            </p>
-            <p>
-              That means the site already answers a meaningful share of searches like &ldquo;subtitle
-              converter to SRT&rdquo;, &ldquo;SRT to subtitle converter&rdquo;, &ldquo;transcript
-              to subtitle converter&rdquo;, &ldquo;fix subtitle delay&rdquo;, and &ldquo;subtitle FPS
-              converter&rdquo;. Looking for subtitle language conversion? That workflow is still on our
-              roadmap. Today SubtitleOps focuses on format conversion, text extraction, and timing
-              correction — the foundation most subtitle workflows need first.
-            </p>
+          <div className="grid gap-10 md:grid-cols-3 text-center">
+            <div>
+              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">01</div>
+              <h3 className="text-lg font-semibold mb-2">Drop any subtitle file</h3>
+              <p className="text-sm text-muted-foreground">
+                Start with the universal subtitle converter if you want the quickest route. SubtitleOps
+                detects common subtitle formats like SRT, ASS, VTT, TXT, and SBV automatically.
+              </p>
+            </div>
+            <div>
+              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">02</div>
+              <h3 className="text-lg font-semibold mb-2">Pick the output you need</h3>
+              <p className="text-sm text-muted-foreground">
+                Choose the output format based on where the file is going next. Some jobs are about
+                compatibility. Others are about web delivery, transcript extraction, or building
+                subtitles from plain text.
+              </p>
+            </div>
+            <div>
+              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">03</div>
+              <h3 className="text-lg font-semibold mb-2">Preview and download</h3>
+              <p className="text-sm text-muted-foreground">
+                Each tool gives you a quick before-and-after view so you can verify the result before
+                downloading. Everything runs in the browser, so the workflow stays fast and private.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Tools Grid */}
+      <section id="tools" className="py-16 md:py-20 border-t">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            All tools
+          </h2>
+          <p className="text-center text-muted-foreground mb-12">
+            Pick a specific tool for dedicated features and format-specific guides.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {tools.map((tool) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                title={tool.title}
+                className="group flex items-center justify-between rounded-xl border p-5 hover:bg-accent transition-colors"
+              >
+                <div>
+                  <h3 className="font-semibold group-hover:underline underline-offset-4">
+                    {tool.name}
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {tool.description}
+                  </p>
+                </div>
+                <svg
+                  className="h-5 w-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors ml-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -237,78 +300,63 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Tools Grid */}
-      <section id="tools" className="py-16 md:py-20 border-t">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            All tools
+      {/* Why SubtitleOps Exists */}
+      <section className="py-16 md:py-20 border-t">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
+            Why SubtitleOps Exists
           </h2>
-          <p className="text-center text-muted-foreground mb-12">
-            Pick a specific tool for dedicated features and format-specific guides.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {tools.map((tool) => (
-              <Link
-                key={tool.href}
-                href={tool.href}
-                title={tool.title}
-                className="group flex items-center justify-between rounded-xl border p-5 hover:bg-accent transition-colors"
-              >
-                <div>
-                  <h3 className="font-semibold group-hover:underline underline-offset-4">
-                    {tool.name}
-                  </h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {tool.description}
-                  </p>
-                </div>
-                <svg
-                  className="h-5 w-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors ml-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-              </Link>
-            ))}
+          <div className="text-sm text-muted-foreground leading-relaxed space-y-4">
+            <p>
+              SubtitleOps is a browser-based subtitle toolkit for converting, extracting, drafting,
+              and timing subtitle files without uploading them to a server.
+            </p>
+            <p>
+              Most subtitle tools do only one of two things: they either give you a button with no
+              explanation, or they bury a simple converter under generic SEO filler. SubtitleOps is
+              built for a different kind of user. Sometimes you need a clean subtitle conversion right
+              away. Sometimes you need to understand why a styled ASS file breaks in your editor, why
+              a WebVTT export does not work in VLC, or why a plain text transcript still is not a
+              usable subtitle file.
+            </p>
+            <p>
+              That is why each page on SubtitleOps has two jobs. First, it does the actual subtitle
+              work in the browser. Second, it explains what changes during the conversion so you can
+              make better format decisions. The result is a subtitle converter that is useful both for
+              one-click tasks and for real workflow decisions.
+            </p>
+            <p>
+              People searching for a subtitle converter are often not sure which specific page they need
+              yet. Some have an ASS file from a fansub workflow. Others have a VTT export from a course
+              platform. Others only have raw text. This homepage makes that decision easier by showing
+              which subtitle workflow each tool actually solves, so you land in the right place quickly.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* How it works */}
+      {/* What This Subtitle Converter Covers */}
       <section className="py-16 md:py-20 border-t">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            How It Works
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
+            What This Subtitle Converter Covers Today
           </h2>
-          <div className="grid gap-10 md:grid-cols-3 text-center">
-            <div>
-              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">01</div>
-              <h3 className="text-lg font-semibold mb-2">Drop any subtitle file</h3>
-              <p className="text-sm text-muted-foreground">
-                Start with the universal subtitle converter if you want the quickest route. SubtitleOps
-                detects common subtitle formats like SRT, ASS, VTT, and TXT automatically.
-              </p>
-            </div>
-            <div>
-              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">02</div>
-              <h3 className="text-lg font-semibold mb-2">Pick the output you need</h3>
-              <p className="text-sm text-muted-foreground">
-                Choose the output format based on where the file is going next. Some jobs are about
-                compatibility. Others are about web delivery, transcript extraction, or building
-                subtitles from plain text.
-              </p>
-            </div>
-            <div>
-              <div className="mx-auto mb-4 text-4xl font-bold text-muted-foreground/30">03</div>
-              <h3 className="text-lg font-semibold mb-2">Preview and download</h3>
-              <p className="text-sm text-muted-foreground">
-                Each tool gives you a quick before-and-after view so you can verify the result before
-                downloading. Everything runs in the browser, so the workflow stays fast and private.
-              </p>
-            </div>
+          <div className="text-sm text-muted-foreground leading-relaxed space-y-4">
+            <p>
+              People use the term &ldquo;subtitle converter&rdquo; loosely, so this page sorts intent
+              instead of flattening it. Today SubtitleOps covers four categories: subtitle format
+              conversion between existing subtitle files, subtitle-to-text extraction for transcript and
+              review workflows, transcript-to-subtitle drafting through TXT to SRT, and subtitle timing
+              correction through shift and FPS conversion.
+            </p>
+            <p>
+              That means the site already answers a meaningful share of searches like &ldquo;subtitle
+              converter to SRT&rdquo;, &ldquo;SRT to subtitle converter&rdquo;, &ldquo;transcript
+              to subtitle converter&rdquo;, &ldquo;fix subtitle delay&rdquo;, and &ldquo;subtitle FPS
+              converter&rdquo;. Looking for subtitle language conversion? That workflow is still on our
+              roadmap. Today SubtitleOps focuses on format conversion, text extraction, and timing
+              correction — the foundation most subtitle workflows need first.
+            </p>
           </div>
         </div>
       </section>

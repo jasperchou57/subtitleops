@@ -125,7 +125,7 @@ export function UniversalConverter() {
             </svg>
           </div>
           <p className="text-base font-medium">
-            {isDragOver ? "Drop your file here" : "Drop any subtitle file here"}
+            {isDragOver ? "Drop your file here" : "Upload or drop a subtitle file"}
           </p>
           <span className="mt-4 inline-flex items-center rounded-xl bg-foreground px-6 py-3 text-sm font-medium text-background">
             Choose File
@@ -135,6 +135,9 @@ export function UniversalConverter() {
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
             Files are processed locally in your browser.
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Preview converted subtitles before downloading.
           </p>
         </div>
       ) : (
