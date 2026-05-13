@@ -17,12 +17,13 @@ export const metadata: Metadata = {
     template: "%s | SubtitleOps",
   },
   description:
-    "Convert subtitle files between SRT, ASS, VTT, and TXT in your browser. Free online subtitle converter for format conversion and transcript extraction.",
+    "Convert SRT, ASS, VTT, TXT, and SBV subtitle files in your browser. Free subtitle tools for format conversion, transcript extraction, drafting, timing shift, and FPS conversion.",
   keywords: [
     "subtitle converter",
     "subtitle tools",
     "free subtitle converter",
     "srt converter",
+    "subtitle timing",
   ],
   alternates: { canonical: "https://subtitleops.com" },
   authors: [{ name: "SubtitleOps" }],

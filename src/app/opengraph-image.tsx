@@ -48,7 +48,7 @@ export default function Image() {
               fontSize: "40px",
               fontWeight: 700,
               color: "#fafafa",
-              letterSpacing: "-0.02em",
+              letterSpacing: 0,
             }}
           >
             SubtitleOps
@@ -62,7 +62,7 @@ export default function Image() {
             textAlign: "center",
             lineHeight: 1.2,
             maxWidth: "900px",
-            letterSpacing: "-0.02em",
+            letterSpacing: 0,
           }}
         >
           Free Online Subtitle Converter & Tools
@@ -83,6 +83,10 @@ export default function Image() {
           <span>VTT</span>
           <span>·</span>
           <span>TXT</span>
+          <span>·</span>
+          <span>SBV</span>
+          <span>·</span>
+          <span>Timing</span>
         </div>
       </div>
     ),
