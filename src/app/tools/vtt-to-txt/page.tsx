@@ -70,6 +70,35 @@ export default function VttToTxtPage() {
 
       {/* ===== Zone 2: Landing Page Content ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is a VTT to TXT Converter?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+          A VTT to TXT converter extracts the visible caption text from a WebVTT file while removing the WEBVTT
+          header, cue timestamps, cue settings, NOTE comments, voice tags, and styling tags. The output is a plain
+          transcript, not a timed caption file.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold mb-3">VTT input</h3>
+            <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-mono">{`WEBVTT
+
+00:00:01.000 --> 00:00:03.000 align:center
+<v Alex>Welcome to the tutorial.
+
+NOTE Internal comment
+
+00:00:04.500 --> 00:00:06.000
+Open the file menu.`}</pre>
+          </div>
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold mb-3">TXT output</h3>
+            <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-mono">{`Welcome to the tutorial.
+
+Open the file menu.`}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">How to Extract Text from VTT in 3 Steps</h2>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">
@@ -134,6 +163,24 @@ export default function VttToTxtPage() {
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0">Building accessible content archives:</span>
             Plain text transcripts are the most accessible format for screen readers, search indexing, and long-term archiving. Converting VTT to TXT creates a permanent text record of the spoken content.
+          </li>
+        </ul>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">Format References</h2>
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          <li>
+            <a href="https://www.w3.org/TR/webvtt1/" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+              W3C WebVTT specification
+            </a>{" "}
+            documents cue syntax, settings, NOTE blocks, and text-track structure.
+          </li>
+          <li>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+              MDN WebVTT API documentation
+            </a>{" "}
+            explains WebVTT usage in browser video captions.
           </li>
         </ul>
       </section>

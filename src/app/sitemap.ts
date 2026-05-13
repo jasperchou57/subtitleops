@@ -84,6 +84,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${BASE_URL}/blog/how-to-fix-subtitle-delay-online`,
+      lastModified: "2026-05-13",
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/blog/what-is-ass-subtitle-file`,
+      lastModified: "2026-05-13",
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/blog/what-is-vtt-file`,
+      lastModified: "2026-05-13",
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/blog/what-is-srt-file`,
       lastModified: "2026-03-30",
       changeFrequency: "monthly",

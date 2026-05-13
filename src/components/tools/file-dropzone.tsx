@@ -67,8 +67,11 @@ export function FileDropzone({ accept, acceptLabel, onFileSelect }: FileDropzone
       <p className="text-base font-medium">
         {isDragOver ? "Drop your file here" : "Drag & drop your file here"}
       </p>
-      <p className="mt-1 text-sm text-muted-foreground">
-        or click to browse &middot; {acceptLabel}
+      <span className="mt-4 inline-flex items-center rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background">
+        Choose File
+      </span>
+      <p className="mt-3 text-sm text-muted-foreground">
+        {acceptLabel} &middot; processed locally in your browser
       </p>
     </div>
   );

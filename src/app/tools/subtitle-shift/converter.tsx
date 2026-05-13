@@ -64,6 +64,29 @@ export function SubtitleShiftConverter() {
       const { output, cueCount, clampedCount } = shiftSubtitles(file.content, format, shiftMs);
       const duration = Math.round(performance.now() - startTime);
 
+      if (cueCount === 0) {
+        logTrace({
+          traceId,
+          tool: TOOL_ID,
+          action: "error",
+          timestamp: Date.now(),
+          fileName: file.name,
+          inputFormat: format,
+          duration,
+          error: "no_timing_cues",
+        });
+        trackEvent({
+          tool: TOOL_ID,
+          action: "convert_error",
+          error_type: "no_timing_cues",
+          file_size: file.content.length,
+          duration_ms: duration,
+          trace_id: traceId,
+        });
+        setError({ message: "No subtitle timing lines were found in this file.", traceId });
+        return;
+      }
+
       logTrace({
         traceId,
         tool: TOOL_ID,

@@ -124,6 +124,23 @@ export default function SubtitleShiftPage() {
 
       {/* ===== Zone 2: Landing Page Content ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is Subtitle Timing Shift?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+          Subtitle timing shift moves every cue in a subtitle file by the same fixed offset. It is the right fix when
+          subtitles are consistently early or late for the entire video. If the first subtitle is two seconds late and
+          the last subtitle is also two seconds late, a -2 second shift will realign the whole file.
+        </p>
+        <div className="rounded-xl border bg-card p-5 text-sm text-muted-foreground">
+          <p className="font-medium text-foreground mb-2">Example</p>
+          <p>
+            A cue at <span className="font-mono">00:01:10,000</span> becomes{" "}
+            <span className="font-mono">00:01:08,000</span> after a{" "}
+            <span className="font-mono">-2</span> second shift. Every other cue moves by the same amount.
+          </p>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">How to Shift Subtitle Timing in 3 Steps</h2>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">

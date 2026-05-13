@@ -9,7 +9,13 @@ export function SrtToAssConverter() {
       toolId="srt-to-ass"
       accept=".srt"
       acceptLabel="Accepts .srt files"
-      convert={convertSrtToAss}
+      convert={(content) => {
+        const ass = convertSrtToAss(content);
+        if (!ass.split(/\r?\n/).some((line) => line.startsWith("Dialogue:"))) {
+          throw new Error("No subtitle cues found");
+        }
+        return ass;
+      }}
       outputExtension="ass"
     />
   );

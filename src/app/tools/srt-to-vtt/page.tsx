@@ -68,6 +68,28 @@ export default function SrtToVttPage() {
 
       {/* ===== Zone 2: Landing Page Content ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is an SRT to VTT Converter?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          An SRT to VTT converter turns SubRip subtitle files into WebVTT caption files for browser-based video. It adds the required WEBVTT header, switches comma-based milliseconds to dots, removes SRT cue numbers, and keeps the same subtitle text and timing.
+        </p>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div>
+            <h3 className="text-sm font-semibold mb-2">SRT input</h3>
+            <pre className="rounded-lg bg-muted/50 p-3 text-xs leading-relaxed overflow-auto font-mono">{`1
+00:00:01,000 --> 00:00:04,500
+Hello world`}</pre>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">VTT output</h3>
+            <pre className="rounded-lg bg-muted/50 p-3 text-xs leading-relaxed overflow-auto font-mono">{`WEBVTT
+
+00:00:01.000 --> 00:00:04.500
+Hello world`}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">How to Convert SRT to VTT in 3 Steps</h2>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">
@@ -166,6 +188,23 @@ export default function SrtToVttPage() {
             Sometimes the subtitle work was done elsewhere and the web team simply needs a browser-compatible file. Converting to the browser-native format is often the handoff step between post-production and implementation.
           </li>
         </ul>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">Format References</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          For browser caption delivery, see the{" "}
+          <a href="https://www.w3.org/TR/webvtt1/" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            W3C WebVTT specification
+          </a>{" "}
+          and{" "}
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            MDN WebVTT API documentation
+          </a>. For SRT format context, see the Library of Congress{" "}
+          <a href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000569.shtml" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            SubRip Subtitle format entry
+          </a>.
+        </p>
       </section>
 
       {/* ===== Zone 3: FAQ + Related Tools ===== */}

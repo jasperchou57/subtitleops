@@ -11,11 +11,16 @@ interface SubtitleStats {
 
 function analyzeOutput(content: string, format: string): SubtitleStats {
   const lines = content.split(/\r?\n/);
+  const normalizedFormat = format.toLowerCase();
 
   // Count entries
   let entryCount = 0;
-  if (format === "txt") {
+  if (normalizedFormat === "txt") {
     entryCount = lines.filter((l) => l.trim()).length;
+  } else if (normalizedFormat === "ass" || normalizedFormat === "ssa") {
+    entryCount = lines.filter((l) => l.startsWith("Dialogue:")).length;
+  } else if (normalizedFormat === "srt" || normalizedFormat === "vtt") {
+    entryCount = lines.filter((l) => l.includes("-->")).length;
   } else {
     entryCount = content.split(/\n\s*\n/).filter(Boolean).length;
   }
@@ -28,13 +33,18 @@ function analyzeOutput(content: string, format: string): SubtitleStats {
   }
 
   // Count lines exceeding 42 characters (subtitle best practice)
-  const textLines = lines.filter(
-    (l) =>
-      l.trim() &&
-      !/^\d+$/.test(l.trim()) &&
-      !/-->/.test(l) &&
-      !/^WEBVTT/.test(l)
-  );
+  const textLines =
+    normalizedFormat === "ass" || normalizedFormat === "ssa"
+      ? lines
+          .filter((l) => l.startsWith("Dialogue:"))
+          .flatMap((l) => (l.split(",,").pop() || "").replace(/\\N/g, "\n").split("\n"))
+      : lines.filter(
+          (l) =>
+            l.trim() &&
+            !/^\d+$/.test(l.trim()) &&
+            !/-->/.test(l) &&
+            !/^WEBVTT/.test(l)
+        );
   const longLineCount = textLines.filter((l) => l.trim().length > 42).length;
 
   return { entryCount, duration, longLineCount };

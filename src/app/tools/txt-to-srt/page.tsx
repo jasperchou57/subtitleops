@@ -71,13 +71,37 @@ export default function TxtToSrtPage() {
 
       {/* ===== Zone 2: Landing Page Content ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is a TXT to SRT Converter?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          A TXT to SRT converter turns plain text into a first-pass SubRip subtitle file. Because TXT has no timing data, this tool treats each non-empty line as one subtitle cue and generates sequential timestamps that you can refine later in a subtitle editor.
+        </p>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div>
+            <h3 className="text-sm font-semibold mb-2">TXT input</h3>
+            <pre className="rounded-lg bg-muted/50 p-3 text-xs leading-relaxed overflow-auto font-mono">{`Welcome to the course.
+Let's begin with the basics.`}</pre>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">SRT output</h3>
+            <pre className="rounded-lg bg-muted/50 p-3 text-xs leading-relaxed overflow-auto font-mono">{`1
+00:00:00,000 --> 00:00:03,000
+Welcome to the course.
+
+2
+00:00:03,500 --> 00:00:06,500
+Let's begin with the basics.`}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">How to Convert TXT to SRT in 3 Steps</h2>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background text-sm font-bold mb-3">1</span>
-            <h3 className="font-semibold mb-1">Upload or Paste Your Plain Text</h3>
+            <h3 className="font-semibold mb-1">Upload Your Plain Text File</h3>
             <p className="text-sm text-muted-foreground">
-              Add a .txt file or paste text directly into the tool. This works well for scripts, lyric sheets,
+              Add a .txt file to the tool. This works well for scripts, lyric sheets,
               transcript drafts, or dialogue lists.
             </p>
           </li>
@@ -168,6 +192,12 @@ export default function TxtToSrtPage() {
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           That is also why TXT to SRT should be described honestly. It is not a perfect timing solution. It is a fast drafting tool. The value is that it turns a raw text document into a structured subtitle file that can be previewed, shifted, imported, and refined. For many users that is exactly the bridge they need between transcript text and true subtitle editing.
+        </p>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          For SRT format details, see the Library of Congress{" "}
+          <a href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000569.shtml" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            SubRip Subtitle format entry
+          </a>.
         </p>
       </section>
 

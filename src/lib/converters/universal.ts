@@ -42,6 +42,9 @@ export function universalConvert(
   if (!srtContent.trim()) {
     throw new Error("No subtitle content found in the file.");
   }
+  if (!srtContent.split(/\r?\n/).some((line) => line.includes("-->"))) {
+    throw new Error("No subtitle cues found in the file.");
+  }
 
   // Step 2: Convert SRT to desired output
   switch (outputFormat) {

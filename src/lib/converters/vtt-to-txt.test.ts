@@ -35,6 +35,20 @@ describe("convertVttToTxt", () => {
     expect(convertVttToTxt(vtt)).toBe("Hello");
   });
 
+  it("skips NOTE blocks that appear between cues", () => {
+    const vtt =
+      "WEBVTT\n\n00:00:01.000 --> 00:00:05.000\nA\n\n" +
+      "NOTE internal editor note\nnot visible to viewers\n\n" +
+      "00:00:06.000 --> 00:00:10.000\nB\n";
+    expect(convertVttToTxt(vtt)).toBe("A\nB");
+  });
+
+  it("decodes common HTML entities from visible caption text", () => {
+    expect(
+      convertVttToTxt("WEBVTT\n\n00:00:01.000 --> 00:00:05.000\nA &amp; B &lt;tag&gt;\n")
+    ).toBe("A & B <tag>");
+  });
+
   it("skips a cue identifier on the line before a timestamp", () => {
     const out = convertVttToTxt(
       "WEBVTT\n\ncue-1\n00:00:01.000 --> 00:00:05.000\nHello\n"

@@ -13,15 +13,15 @@ export function convertVttToTxt(content: string): string {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
+    if (line.trim().startsWith("NOTE")) {
+      while (i + 1 < lines.length && lines[i + 1].trim() !== "") i++;
+      continue;
+    }
+
     // Skip the WEBVTT header and any metadata lines following it
     if (!pastHeader) {
       if (line.startsWith("WEBVTT")) continue;
       if (line.startsWith("Kind:") || line.startsWith("Language:")) continue;
-      if (line.startsWith("NOTE")) {
-        // Skip multi-line NOTE blocks
-        while (i + 1 < lines.length && lines[i + 1].trim() !== "") i++;
-        continue;
-      }
       if (line.trim() === "") continue;
       pastHeader = true;
     }
@@ -50,6 +50,10 @@ export function convertVttToTxt(content: string): string {
       .replace(/<\/c>/g, "")
       .replace(/<\/?[biuBIU]>/g, "")
       .replace(/<\d{2}:\d{2}:\d{2}\.\d{3}>/g, "") // timestamp tags
+      .replace(/<\/?[^>]+>/g, "")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&amp;/g, "&")
       .trim();
 
     if (cleaned) {

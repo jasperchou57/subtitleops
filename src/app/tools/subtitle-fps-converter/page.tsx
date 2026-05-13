@@ -124,6 +124,24 @@ export default function SubtitleFpsConverterPage() {
 
       {/* ===== Zone 2: Landing Page Content ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is Subtitle FPS Conversion?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+          Subtitle FPS conversion rescales every subtitle timestamp by the ratio between the frame rate the subtitles
+          were timed against and the frame rate of the video you are using now. It is the right fix for subtitles that
+          start close to correct but drift further out of sync as the video plays.
+        </p>
+        <div className="rounded-xl border bg-card p-5 text-sm text-muted-foreground">
+          <p className="font-medium text-foreground mb-2">Example</p>
+          <p>
+            In a <span className="font-mono">23.976 → 25</span> conversion, timestamps are multiplied by{" "}
+            <span className="font-mono">23.976 / 25</span>. A cue at{" "}
+            <span className="font-mono">00:10:00,000</span> becomes approximately{" "}
+            <span className="font-mono">00:09:35,424</span>.
+          </p>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">How to Convert Subtitle FPS in 3 Steps</h2>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">

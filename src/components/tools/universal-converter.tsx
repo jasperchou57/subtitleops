@@ -127,8 +127,14 @@ export function UniversalConverter() {
           <p className="text-base font-medium">
             {isDragOver ? "Drop your file here" : "Drop any subtitle file here"}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <span className="mt-4 inline-flex items-center rounded-xl bg-foreground px-6 py-3 text-sm font-medium text-background">
+            Choose File
+          </span>
+          <p className="mt-3 text-sm text-muted-foreground">
             SRT, ASS, VTT, TXT, SBV &middot; Auto-detected
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Files are processed locally in your browser.
           </p>
         </div>
       ) : (

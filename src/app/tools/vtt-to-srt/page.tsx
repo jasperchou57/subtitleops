@@ -69,6 +69,28 @@ export default function VttToSrtPage() {
 
       {/* ===== Zone 2: Landing Page Content ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is a VTT to SRT Converter?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          A VTT to SRT converter rewrites WebVTT captions into SubRip subtitle syntax. It removes the WEBVTT header and cue settings, converts dot-based timestamps to comma-based SRT timestamps, and keeps the visible caption text in a numbered SRT timeline.
+        </p>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div>
+            <h3 className="text-sm font-semibold mb-2">VTT input</h3>
+            <pre className="rounded-lg bg-muted/50 p-3 text-xs leading-relaxed overflow-auto font-mono">{`WEBVTT
+
+00:00:01.000 --> 00:00:04.500 line:90%
+Hello world`}</pre>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">SRT output</h3>
+            <pre className="rounded-lg bg-muted/50 p-3 text-xs leading-relaxed overflow-auto font-mono">{`1
+00:00:01,000 --> 00:00:04,500
+Hello world`}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">How to Convert VTT to SRT in 3 Steps</h2>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">
@@ -116,7 +138,7 @@ export default function VttToSrtPage() {
           </li>
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0 w-40">Browser styling logic does not survive:</span>
-            WebVTT supports browser-oriented styling approaches, including class-based tags and ::cue styling. SRT is not designed for that layer, so the output focuses on text and timing instead. Basic formatting tags like bold and italic may be preserved where SRT players support them, but advanced CSS-based styling is removed entirely.
+            WebVTT supports browser-oriented styling approaches, including class-based tags and ::cue styling. SRT is not designed for that layer, so this converter strips formatting tags and focuses the output on plain text and timing.
           </li>
         </ul>
       </section>
@@ -140,6 +162,23 @@ export default function VttToSrtPage() {
           <li className="flex gap-3"><span className="font-medium text-foreground shrink-0">Creating a portable archive copy:</span> For long-term storage, plain SRT is often easier to inspect, reuse, and convert later than a more web-specific caption format. Because SRT is plain text with a minimal structure, it can be opened in any text editor and remains human-readable without specialized subtitle software.</li>
           <li className="flex gap-3"><span className="font-medium text-foreground shrink-0">Preparing subtitles for older or stricter software:</span> Some tools accept VTT in theory but behave more predictably with SRT in practice. Converting WebVTT to SRT can reduce surprises when the next system in the workflow is less browser-oriented than the source platform.</li>
         </ul>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">Format References</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          For WebVTT syntax and browser behavior, see the{" "}
+          <a href="https://www.w3.org/TR/webvtt1/" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            W3C WebVTT specification
+          </a>{" "}
+          and{" "}
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            MDN WebVTT API documentation
+          </a>. For SRT structure, see the Library of Congress{" "}
+          <a href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000569.shtml" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            SubRip Subtitle format entry
+          </a>.
+        </p>
       </section>
 
       {/* ===== Zone 3: FAQ + Related Tools ===== */}

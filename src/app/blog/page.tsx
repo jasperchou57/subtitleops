@@ -11,6 +11,27 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "how-to-fix-subtitle-delay-online",
+    title: "How to Fix Subtitle Delay Online",
+    excerpt:
+      "Learn how to fix subtitles that appear too early, too late, or drift out of sync. Includes when to use timing shift versus FPS conversion.",
+    date: "2026-05-13",
+  },
+  {
+    slug: "what-is-ass-subtitle-file",
+    title: "What Is an ASS Subtitle File? Advanced SubStation Alpha Explained",
+    excerpt:
+      "Learn what an ASS subtitle file is, why it supports styling and positioning, and when to keep ASS instead of converting to SRT.",
+    date: "2026-05-13",
+  },
+  {
+    slug: "what-is-vtt-file",
+    title: "What Is a VTT File? WebVTT Captions Explained",
+    excerpt:
+      "Learn what a VTT file is, how WebVTT captions work, and when to use VTT instead of SRT. Includes syntax examples, browser use cases, and conversion tips.",
+    date: "2026-05-13",
+  },
+  {
     slug: "what-is-srt-file",
     title: "What Is an SRT File? Format Structure Explained",
     excerpt:

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd, toolsItemListJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
   title: "Free Subtitle Tools — Convert, Extract & Draft Subtitles",
@@ -82,9 +83,32 @@ const tools = [
   },
 ];
 
+const toolCategories = [
+  {
+    name: "Format Converters",
+    description: "Move subtitle files between SRT, ASS, VTT, SBV, and related working formats.",
+    tools: tools.filter((tool) =>
+      ["ASS to SRT", "VTT to SRT", "SRT to VTT", "SBV to SRT", "SRT to ASS"].includes(tool.name)
+    ),
+  },
+  {
+    name: "Transcript Tools",
+    description: "Extract readable text from subtitle files or create a first subtitle draft from plain text.",
+    tools: tools.filter((tool) => ["TXT to SRT", "SRT to TXT", "VTT to TXT"].includes(tool.name)),
+  },
+  {
+    name: "Timing Tools",
+    description: "Fix subtitle delay, constant offsets, and frame-rate drift without uploading files.",
+    tools: tools.filter((tool) => tool.name.startsWith("Subtitle")),
+  },
+];
+
+const toolsJsonLd = toolsItemListJsonLd(tools);
+
 export default function ToolsPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-16">
+      <JsonLd data={toolsJsonLd} />
       <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
         All Subtitle Tools
       </h1>
@@ -93,36 +117,44 @@ export default function ToolsPage() {
         Every tool runs in your browser — no uploads, no sign-ups.
       </p>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {tools.map((tool) => (
-          <Link
-            key={tool.href}
-            href={tool.href}
-            title={tool.title}
-            className="group flex items-center justify-between rounded-xl border p-5 hover:bg-accent transition-colors"
-          >
-            <div>
-              <h2 className="font-semibold group-hover:underline underline-offset-4">
-                {tool.name}
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {tool.description}
-              </p>
+      <div className="space-y-12">
+        {toolCategories.map((category) => (
+          <section key={category.name}>
+            <h2 className="text-xl font-semibold mb-2">{category.name}</h2>
+            <p className="text-sm text-muted-foreground mb-5">{category.description}</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {category.tools.map((tool) => (
+                <Link
+                  key={tool.href}
+                  href={tool.href}
+                  title={tool.title}
+                  className="group flex items-center justify-between rounded-xl border p-5 hover:bg-accent transition-colors"
+                >
+                  <div>
+                    <h3 className="font-semibold group-hover:underline underline-offset-4">
+                      {tool.name}
+                    </h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {tool.description}
+                    </p>
+                  </div>
+                  <svg
+                    className="h-5 w-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors ml-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                    />
+                  </svg>
+                </Link>
+              ))}
             </div>
-            <svg
-              className="h-5 w-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors ml-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          </Link>
+          </section>
         ))}
       </div>
     </div>

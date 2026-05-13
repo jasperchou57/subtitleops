@@ -94,6 +94,23 @@ export function toolPageJsonLd({
   ];
 }
 
+export function toolsItemListJsonLd(
+  tools: { name: string; description: string; href: string }[]
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "SubtitleOps subtitle tools",
+    itemListElement: tools.map((tool, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${BASE_URL}${tool.href}`,
+      name: tool.name,
+      description: tool.description,
+    })),
+  };
+}
+
 export function blogPostJsonLd({
   headline,
   description,

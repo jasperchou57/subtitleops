@@ -79,6 +79,29 @@ export function SubtitleFpsConverter() {
       const res = convertFps(file.content, format, resolvedSource, resolvedTarget);
       const duration = Math.round(performance.now() - startTime);
 
+      if (res.cueCount === 0) {
+        logTrace({
+          traceId,
+          tool: TOOL_ID,
+          action: "error",
+          timestamp: Date.now(),
+          fileName: file.name,
+          inputFormat: format,
+          duration,
+          error: "no_timing_cues",
+        });
+        trackEvent({
+          tool: TOOL_ID,
+          action: "convert_error",
+          error_type: "no_timing_cues",
+          file_size: file.content.length,
+          duration_ms: duration,
+          trace_id: traceId,
+        });
+        setError({ message: "No subtitle timing lines were found in this file.", traceId });
+        return;
+      }
+
       logTrace({
         traceId,
         tool: TOOL_ID,

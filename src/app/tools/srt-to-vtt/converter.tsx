@@ -11,7 +11,8 @@ export function SrtToVttConverter() {
       acceptLabel="Accepts .srt files"
       convert={(content) => {
         const vtt = convertSrtToVtt(content);
-        if (!vtt || vtt.trim() === "WEBVTT\n") throw new Error("No content found");
+        const cueBody = vtt.replace(/^WEBVTT\s*/i, "").trim();
+        if (!cueBody) throw new Error("No subtitle cues found");
         return vtt;
       }}
       outputExtension="vtt"

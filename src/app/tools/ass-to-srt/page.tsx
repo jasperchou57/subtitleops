@@ -92,6 +92,26 @@ export default function AssToSrtPage() {
 
       {/* ===== Zone 2: Landing Page Content (SEO) ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is an ASS to SRT Converter?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          An ASS to SRT converter turns Advanced SubStation Alpha subtitle files into SubRip subtitle files by preserving dialogue and timing while removing styling, positioning, animation, and karaoke instructions that SRT cannot represent. Use it when compatibility matters more than the visual layer.
+        </p>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div>
+            <h3 className="text-sm font-semibold mb-2">ASS input</h3>
+            <pre className="rounded-lg bg-muted/50 p-3 text-xs leading-relaxed overflow-auto font-mono">{`Dialogue: 0,0:00:01.00,0:00:04.50,Default,,0,0,0,,{\\i1}Hello\\Nworld`}</pre>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">SRT output</h3>
+            <pre className="rounded-lg bg-muted/50 p-3 text-xs leading-relaxed overflow-auto font-mono">{`1
+00:00:01,000 --> 00:00:04,500
+Hello
+world`}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">
           How to Convert ASS to SRT in 3 Steps
         </h2>
@@ -228,6 +248,20 @@ export default function AssToSrtPage() {
             still exists in the project.
           </li>
         </ul>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">Format References</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          For format details, see the{" "}
+          <a href="https://aegisub.org/docs/latest/ass_tags/" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            Aegisub ASS override tags reference
+          </a>{" "}
+          and the Library of Congress description of the{" "}
+          <a href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000569.shtml" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            SubRip Subtitle format
+          </a>.
+        </p>
       </section>
 
       {/* ===== Zone 3: FAQ + Related Tools ===== */}

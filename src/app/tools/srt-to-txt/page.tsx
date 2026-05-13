@@ -70,6 +70,33 @@ export default function SrtToTxtPage() {
 
       {/* ===== Zone 2: Landing Page Content ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is an SRT to TXT Converter?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+          An SRT to TXT converter extracts the readable subtitle text from a SubRip file by removing cue numbers,
+          timestamp lines, subtitle arrows, and basic markup. The result is not a playable subtitle file anymore; it
+          is a clean transcript that works better for reading, translation, review, and text analysis.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold mb-3">SRT input</h3>
+            <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-mono">{`1
+00:00:01,000 --> 00:00:03,000
+Welcome to the tutorial.
+
+2
+00:00:04,500 --> 00:00:06,000
+Open the file menu.`}</pre>
+          </div>
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold mb-3">TXT output</h3>
+            <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-mono">{`Welcome to the tutorial.
+
+Open the file menu.`}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">How to Convert SRT to TXT in 3 Steps</h2>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">
@@ -152,13 +179,23 @@ export default function SrtToTxtPage() {
       </section>
 
       <section className="pb-12">
-        <h2 className="text-2xl font-bold mb-4">SRT to TXT vs SRT Cleaner</h2>
+        <h2 className="text-2xl font-bold mb-4">SRT to TXT vs SRT Cleaning</h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
           These are not the same job. SRT to TXT extracts text only. It removes the subtitle container entirely and gives you a plain text file.{" "}
-          SRT Cleaner is a different kind of tool — it keeps the SRT format intact while removing things like SDH annotations or formatting artifacts.
-          If you still need timestamps, use SRT Cleaner. If you need readable text, use SRT to TXT.
-          Think of it this way: SRT Cleaner tidies a subtitle file so it plays back better, while the subtitle to text converter produces a subtitle transcript that stands on its own as a readable document.
-          Choosing the right tool depends on the next step in your workflow. If the next step requires timed captions for playback, SRT Cleaner keeps the subtitle structure while removing noise. If the next step is reading, translating, or analyzing the spoken content as plain text, use SRT to TXT.
+          Cleaning an SRT file is a different job because it keeps the SRT format intact while removing things like SDH annotations or formatting artifacts.
+          If you still need timestamps, keep the subtitle structure and clean the file in a subtitle editor. If you need readable text, use SRT to TXT.
+          Think of it this way: SRT cleaning tidies a subtitle file so it plays back better, while this subtitle to text converter produces a subtitle transcript that stands on its own as a readable document.
+          Choosing the right workflow depends on the next step. If the next step requires timed captions for playback, keep the subtitle structure. If the next step is reading, translating, or analyzing the spoken content as plain text, use SRT to TXT.
+        </p>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">Format Reference</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          For background on the SubRip format this tool extracts from, see the{" "}
+          <a href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000569.shtml" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+            Library of Congress format description for SRT / SubRip
+          </a>.
         </p>
       </section>
 

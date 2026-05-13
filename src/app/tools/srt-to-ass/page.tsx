@@ -70,6 +70,35 @@ export default function SrtToAssPage() {
 
       {/* ===== Zone 2: Landing Page Content ===== */}
       <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">What Is an SRT to ASS Converter?</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+          An SRT to ASS converter turns plain SubRip subtitles into an Advanced SubStation Alpha subtitle file by
+          preserving dialogue and timing, generating the required ASS script sections, and adding a default editable
+          style. It does not invent advanced effects automatically; it creates a valid starting point for styling in
+          an ASS editor.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold mb-3">SRT input</h3>
+            <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-mono">{`1
+00:00:01,000 --> 00:00:03,000
+Welcome to the tutorial.
+
+2
+00:00:04,500 --> 00:00:06,000
+Open the file menu.`}</pre>
+          </div>
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold mb-3">ASS output excerpt</h3>
+            <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-mono">{`[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:01.00,0:00:03.00,Default,,0,0,0,,Welcome to the tutorial.
+Dialogue: 0,0:00:04.50,0:00:06.00,Default,,0,0,0,,Open the file menu.`}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
         <h2 className="text-2xl font-bold mb-6">How to Convert SRT to ASS in 3 Steps</h2>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">
@@ -130,6 +159,24 @@ export default function SrtToAssPage() {
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0">Building karaoke or lyric videos:</span>
             ASS supports syllable-level timing for karaoke effects. The converted file gives you the base timing from SRT, and you can add karaoke tags in Aegisub.
+          </li>
+        </ul>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">Format References</h2>
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          <li>
+            <a href="https://aegisub.org/docs/latest/ass_tags/" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+              Aegisub ASS tags documentation
+            </a>{" "}
+            explains the ASS override tags used for styling, positioning, and karaoke effects.
+          </li>
+          <li>
+            <a href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000569.shtml" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4 hover:text-foreground/70">
+              Library of Congress SRT / SubRip description
+            </a>{" "}
+            documents the source format this converter reads.
           </li>
         </ul>
       </section>
