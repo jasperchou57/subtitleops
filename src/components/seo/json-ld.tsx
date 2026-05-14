@@ -21,7 +21,7 @@ export function homepageJsonLd(faqs: { question: string; answer: string }[]) {
       name: "SubtitleOps",
       url: BASE_URL,
       description:
-        "Convert SRT, ASS, VTT, TXT, and SBV subtitle files in your browser. Free subtitle tools for format conversion, transcript extraction, drafting, timing shift, and FPS conversion.",
+        "Convert SRT, ASS, VTT, TXT, and SBV subtitles in your browser. Free tools for format conversion, text extraction, timing shift, and FPS fixes.",
     },
     {
       "@context": "https://schema.org",
