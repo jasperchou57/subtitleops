@@ -59,7 +59,7 @@ export function AssToSrtConverter() {
           trace_id: traceId,
         });
         setError({
-          message: "No dialogue entries found. Please make sure this is a valid ASS/SSA file.",
+          message: "No valid ASS/SSA dialogue entries were found in this file. Please check the file format.",
           traceId,
         });
         return;
@@ -128,7 +128,7 @@ export function AssToSrtConverter() {
       });
 
       setError({
-        message: "Failed to parse the file. Please check if it is a valid ASS/SSA subtitle file.",
+        message: "No valid ASS/SSA dialogue entries were found in this file. Please check the file format.",
         traceId,
       });
     }

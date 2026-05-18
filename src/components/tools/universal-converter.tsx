@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { CopyOutputButton } from "@/components/tools/copy-output-button";
 import { detectFormat, getAvailableOutputFormats, formatLabels, type SubtitleFormat } from "@/lib/converters/detect-format";
 import { universalConvert } from "@/lib/converters/universal";
 import { generateTraceId, logTrace } from "@/lib/trace";
@@ -44,7 +45,7 @@ export function UniversalConverter() {
       if (!output.trim()) {
         logTrace({ traceId, tool: "universal", action: "error", timestamp: Date.now(), fileName: file.name, error: "empty_output" });
         trackEvent({ tool: "universal", action: "convert_error", error_type: "empty_output", trace_id: traceId });
-        setError({ message: "No content could be converted. Please check the file.", traceId });
+        setError({ message: "No valid subtitle cues were found in this file. Please check the file format.", traceId });
         return;
       }
 
@@ -67,7 +68,7 @@ export function UniversalConverter() {
       const errTraceId = generateTraceId();
       logTrace({ traceId: errTraceId, tool: "universal", action: "error", timestamp: Date.now(), fileName: file?.name || "unknown", error: "conversion_failed" });
       trackEvent({ tool: "universal", action: "convert_error", error_type: "conversion_failed", trace_id: errTraceId });
-      setError({ message: "Conversion failed. Please check if the file format is valid.", traceId: errTraceId });
+      setError({ message: "No valid subtitle cues were found in this file. Please check the file format.", traceId: errTraceId });
     }
   }, [file, inputFormat, outputFormat]);
 
@@ -219,15 +220,18 @@ export function UniversalConverter() {
                   </div>
                 </div>
 
-                <button
-                  onClick={handleDownload}
-                  className="inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
-                >
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                  </svg>
-                  Save .{outputFormat} file
-                </button>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={handleDownload}
+                    className="inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Save .{outputFormat} file
+                  </button>
+                  <CopyOutputButton content={result.full} className="rounded-xl px-6 py-3" />
+                </div>
                 <p className="mt-2 text-xs text-muted-foreground">
                   Your file is processed locally and won&apos;t be available after you leave this page.
                 </p>

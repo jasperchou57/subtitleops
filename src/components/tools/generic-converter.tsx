@@ -57,7 +57,7 @@ export function GenericConverter({
       const duration = Math.round(performance.now() - startTime);
 
       if (!output || output.trim().length === 0) {
-        const errMsg = "No content could be extracted. Please check if this is a valid subtitle file.";
+        const errMsg = "No valid subtitle cues were found in this file. Please check the file format.";
         logTrace({
           traceId,
           tool: toolId,
@@ -144,7 +144,7 @@ export function GenericConverter({
       });
 
       setError({
-        message: "Failed to process the file. Please check the file format.",
+        message: "No valid subtitle cues were found in this file. Please check the file format.",
         traceId,
       });
     }

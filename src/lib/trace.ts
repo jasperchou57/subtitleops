@@ -1,7 +1,8 @@
 /**
  * Lightweight trace ID system for client-side debugging.
  * Each conversion operation gets a unique trace ID.
- * On error, the trace ID is shown to the user and logged to console.
+ * On expected user-facing errors, the trace ID is shown to the user and logged without
+ * creating browser console error noise.
  */
 
 let counter = 0;
@@ -33,7 +34,7 @@ const LOG_KEY = "subtitleops_trace_logs";
 export function logTrace(entry: TraceLog): void {
   // Console log for dev debugging
   if (entry.action === "error") {
-    console.error(`[SubtitleOps] ${entry.traceId}`, entry);
+    console.warn(`[SubtitleOps] ${entry.traceId}`, entry);
   } else {
     console.log(`[SubtitleOps] ${entry.traceId}`, entry);
   }
