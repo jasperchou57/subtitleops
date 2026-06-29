@@ -1,18 +1,36 @@
 import type { SrtEntry } from "./ass-to-srt";
 
+export interface TxtToSrtOptions {
+  secondsPerLine?: number;
+  gap?: number;
+  startSeconds?: number;
+  splitMode?: "line" | "sentence";
+  maxCharsPerLine?: number;
+}
+
 /**
  * Convert plain text lines to SRT format.
  * Each non-empty line becomes one subtitle entry.
  * Default duration: 3 seconds per line with 0.5s gap.
  */
-export function convertTxtToSrt(txtContent: string, secondsPerLine = 3, gap = 0.5): SrtEntry[] {
-  const lines = txtContent
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0);
+export function convertTxtToSrt(
+  txtContent: string,
+  secondsPerLineOrOptions: number | TxtToSrtOptions = 3,
+  gap = 0.5
+): SrtEntry[] {
+  const options =
+    typeof secondsPerLineOrOptions === "number"
+      ? { secondsPerLine: secondsPerLineOrOptions, gap }
+      : secondsPerLineOrOptions;
+  const secondsPerLine = options.secondsPerLine ?? 3;
+  const gapSeconds = options.gap ?? 0.5;
+  const startSeconds = options.startSeconds ?? 0;
+  const splitMode = options.splitMode ?? "line";
+  const maxCharsPerLine = options.maxCharsPerLine ?? 0;
+  const lines = getTextUnits(txtContent, splitMode).map((line) => wrapSubtitleLine(line, maxCharsPerLine));
 
   const entries: SrtEntry[] = [];
-  let currentTime = 0;
+  let currentTime = startSeconds;
 
   for (let i = 0; i < lines.length; i++) {
     const start = formatSrtTime(currentTime);
@@ -25,10 +43,50 @@ export function convertTxtToSrt(txtContent: string, secondsPerLine = 3, gap = 0.
       text: lines[i],
     });
 
-    currentTime += secondsPerLine + gap;
+    currentTime += secondsPerLine + gapSeconds;
   }
 
   return entries;
+}
+
+function getTextUnits(txtContent: string, splitMode: TxtToSrtOptions["splitMode"]): string[] {
+  if (splitMode === "sentence") {
+    const normalized = txtContent.replace(/\s+/g, " ").trim();
+    return (normalized.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [])
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+  }
+
+  return txtContent
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+}
+
+function wrapSubtitleLine(text: string, maxCharsPerLine: number): string {
+  if (maxCharsPerLine < 12 || text.length <= maxCharsPerLine) return text;
+
+  const wrapped: string[] = [];
+  let currentLine = "";
+
+  for (const word of text.split(/\s+/)) {
+    if (!currentLine) {
+      currentLine = word;
+      continue;
+    }
+
+    if (`${currentLine} ${word}`.length <= maxCharsPerLine) {
+      currentLine += ` ${word}`;
+      continue;
+    }
+
+    wrapped.push(currentLine);
+    currentLine = word;
+  }
+
+  if (currentLine) wrapped.push(currentLine);
+
+  return wrapped.join("\n");
 }
 
 function formatSrtTime(totalSeconds: number): string {

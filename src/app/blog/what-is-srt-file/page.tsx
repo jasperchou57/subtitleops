@@ -3,9 +3,9 @@ import Link from "next/link";
 import { JsonLd, blogPostJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
-  title: "What Is an SRT File? Format Structure Explained",
+  title: "What Is an SRT File? Structure, Example & Tools",
   description:
-    "Learn what an SRT file is, how the SubRip subtitle format works, and where SRT files are used. Includes format anatomy, real examples, and common problems.",
+    "Learn what an SRT file is, see its timestamp format and example, then open, create, convert, or extract SRT subtitles with free tools.",
   keywords: [
     "what is srt file",
     "srt file format",
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 };
 
 const articleJsonLd = blogPostJsonLd({
-  headline: "What Is an SRT File? Format Structure Explained",
+  headline: "What Is an SRT File? Structure, Example & Tools",
   description:
-    "Learn what an SRT file is, how the SubRip subtitle format works, and where SRT files are used. Includes format anatomy, real examples, and common problems.",
+    "Learn what an SRT file is, see its timestamp format and example, then open, create, convert, or extract SRT subtitles with free tools.",
   url: "/blog/what-is-srt-file",
   datePublished: "2026-03-30",
 });
@@ -41,7 +41,7 @@ export default function WhatIsSrtFilePage() {
           March 30, 2026
         </time>
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3 leading-tight">
-          What Is an SRT File? Format Structure Explained
+          What Is an SRT File? Structure, Example & Tools
         </h1>
         <p className="mt-4 text-muted-foreground leading-relaxed">
           An SRT file is a plain-text subtitle file that stores dialogue lines with numbered entries,
@@ -57,11 +57,12 @@ export default function WhatIsSrtFilePage() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
         </svg>
         <p className="text-sm">
-          <span className="font-medium text-foreground">Already have an SRT file that needs converting?</span>{" "}
+          <span className="font-medium text-foreground">Working with an SRT file right now?</span>{" "}
           <Link href="/tools/srt-to-vtt" title="Convert SRT to VTT subtitle format" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">Convert SRT to VTT</Link>{" "}
-          for web players, or{" "}
+          for web players,{" "}
           <Link href="/tools/srt-to-txt" title="Convert SRT to TXT plain text" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">extract text with SRT to TXT</Link>{" "}
-          for translation and review.
+          for translation and review, or{" "}
+          <Link href="/tools/txt-to-srt" title="Convert TXT to SRT subtitle format" className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800">create an SRT from text</Link>.
         </p>
       </div>
 

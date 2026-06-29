@@ -3,9 +3,9 @@ import Link from "next/link";
 import { JsonLd, blogPostJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
-  title: "SRT vs VTT — Which Subtitle Format Should You Use?",
+  title: "SRT vs VTT: Differences, Examples & Converters",
   description:
-    "SRT and VTT look almost identical but behave differently in browsers, players, and editors. Learn when to use each and how to convert between them.",
+    "Compare SRT and WebVTT for players, HTML5 video, captions, and metadata. Convert SRT to VTT or VTT to SRT when needed.",
   keywords: [
     "srt vs vtt",
     "srt or vtt",
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 };
 
 const articleJsonLd = blogPostJsonLd({
-  headline: "SRT vs VTT — Which Subtitle Format Should You Use?",
+  headline: "SRT vs VTT: Differences, Examples & Converters",
   description:
-    "SRT and VTT look almost identical but behave differently in browsers, players, and editors. Learn when to use each and how to convert between them.",
+    "Compare SRT and WebVTT for players, HTML5 video, captions, and metadata. Convert SRT to VTT or VTT to SRT when needed.",
   url: "/blog/srt-vs-vtt-which-subtitle-format",
   datePublished: "2026-03-23",
 });
@@ -41,7 +41,7 @@ export default function SrtVsVttPost() {
           March 23, 2026
         </time>
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">
-          SRT vs VTT — Which Subtitle Format Should You Use?
+          SRT vs VTT: Differences, Examples & Converters
         </h1>
       </header>
 

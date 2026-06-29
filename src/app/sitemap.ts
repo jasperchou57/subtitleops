@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://subtitleops.com";
 const LAST_MODIFIED = "2026-04-27";
+const SEO_REFRESHED = "2026-06-29";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -31,7 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/tools/txt-to-srt`,
-      lastModified: LAST_MODIFIED,
+      lastModified: SEO_REFRESHED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
@@ -43,7 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/tools/srt-to-txt`,
-      lastModified: LAST_MODIFIED,
+      lastModified: SEO_REFRESHED,
       changeFrequency: "monthly",
       priority: 0.9,
     },
@@ -103,7 +104,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/blog/what-is-srt-file`,
-      lastModified: "2026-03-30",
+      lastModified: SEO_REFRESHED,
       changeFrequency: "monthly",
       priority: 0.8,
     },
@@ -115,7 +116,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/blog/srt-vs-vtt-which-subtitle-format`,
-      lastModified: "2026-03-23",
+      lastModified: SEO_REFRESHED,
       changeFrequency: "monthly",
       priority: 0.8,
     },

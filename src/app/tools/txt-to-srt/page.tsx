@@ -6,9 +6,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { JsonLd, toolPageJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
-  title: "Free TXT to SRT Converter Online",
+  title: "TXT to SRT Converter - Paste Text or Upload Files",
   description:
-    "Convert plain text to SRT subtitle format with auto-generated timestamps. Upload a script or lyrics file and get a subtitle draft instantly.",
+    "Convert plain text, transcripts, scripts, or lyrics to SRT subtitles with auto timestamps. Paste text or upload a TXT file and export locally in your browser.",
   keywords: ["txt to srt", "text to srt", "convert text to srt", "create srt from text"],
   alternates: { canonical: "/tools/txt-to-srt" },
   openGraph: { url: "/tools/txt-to-srt" },
@@ -16,10 +16,10 @@ export const metadata: Metadata = {
 
 const jsonLdData = toolPageJsonLd({
   name: "TXT to SRT Converter",
-  description: "Convert plain text to SRT subtitle format with auto-generated timestamps. Upload a script or lyrics file and get a subtitle draft instantly.",
+  description: "Convert plain text, transcripts, scripts, or lyrics to SRT subtitles with auto timestamps. Paste text or upload a TXT file and export locally in your browser.",
   url: "/tools/txt-to-srt",
   faqs: [
-    { question: "How are timestamps generated when converting TXT to SRT?", answer: "The converter creates sequential timestamps automatically. Each non-empty line becomes a subtitle entry with a default duration and a short gap before the next cue." },
+    { question: "How are timestamps generated when converting TXT to SRT?", answer: "The converter creates sequential timestamps automatically. Each non-empty line or sentence becomes a subtitle entry. You can adjust the start time, cue duration, gap, and line length before exporting." },
     { question: "Can I edit the timing later?", answer: "Yes. The generated timing is meant as a starting point. You can shift the file later or fine-tune entries in a subtitle editor." },
     { question: "What happens to blank lines?", answer: "Blank lines are skipped. They do not create empty subtitle entries in the output." },
     { question: "Does this support non-English text?", answer: "Yes. The TXT to SRT workflow preserves UTF-8 text, so it works with multilingual subtitle content." },
@@ -45,13 +45,12 @@ export default function TxtToSrtPage() {
       <section className="relative py-10 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          Convert TXT to SRT - Turn Plain Text into Subtitles
+          TXT to SRT Converter
         </h1>
         <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Use this free TXT to SRT converter when you have dialogue, lyrics, a script, or a transcript but no subtitle
-          timing yet. Unlike format-to-format tools, this page creates subtitle structure from scratch. Each non-empty
-          line becomes one subtitle entry, and the converter generates sequential timestamps automatically so you can
-          start editing from a usable SRT draft instead of a raw text file.
+          Paste text directly or upload a .txt file when you have dialogue, lyrics, a script, or a transcript but no
+          subtitle timing yet. Each non-empty line becomes one subtitle cue, and the converter generates sequential
+          timestamps automatically so you can export a usable SRT draft from raw text.
         </p>
         <div className="mt-8"><TxtToSrtConverter /></div>
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
@@ -99,18 +98,18 @@ Let's begin with the basics.`}</pre>
         <ol className="grid gap-4 md:grid-cols-3 mb-8">
           <li className="rounded-lg border bg-card p-5">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background text-sm font-bold mb-3">1</span>
-            <h3 className="font-semibold mb-1">Upload Your Plain Text File</h3>
+            <h3 className="font-semibold mb-1">Paste Text or Upload a TXT File</h3>
             <p className="text-sm text-muted-foreground">
-              Add a .txt file to the tool. This works well for scripts, lyric sheets,
-              transcript drafts, or dialogue lists.
+              Paste text into the box or add a .txt file. This works well for scripts, lyric sheets, transcript drafts,
+              or dialogue lists.
             </p>
           </li>
           <li className="rounded-lg border bg-card p-5">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background text-sm font-bold mb-3">2</span>
             <h3 className="font-semibold mb-1">Generate Subtitle Timing Automatically</h3>
             <p className="text-sm text-muted-foreground">
-              Because plain text has no timestamps, the converter creates them for you. Each line becomes a subtitle
-              cue with a default display duration and a small gap before the next line begins.
+              Because plain text has no timestamps, the converter creates them for you. Set the start time, cue
+              duration, gap, split mode, and line length before generating the subtitle draft.
             </p>
           </li>
           <li className="rounded-lg border bg-card p-5">
@@ -139,8 +138,8 @@ Let's begin with the basics.`}</pre>
             The generated SRT begins at 00:00:00,000, giving you a clean starting point for later editing. You can use a subtitle shifter afterward to offset all timestamps if your video has an intro or delay before dialogue begins.
           </li>
           <li className="flex gap-3">
-            <span className="font-medium text-foreground shrink-0 w-44">A default duration is assigned to each line:</span>
-            Each subtitle line gets a readable default on-screen duration. This is not meant to replace detailed subtitle timing, but it gives you a useful first pass. Longer lines may need extended durations, which you can adjust in any SRT-compatible editor.
+            <span className="font-medium text-foreground shrink-0 w-44">Cue duration is adjustable:</span>
+            Each subtitle cue gets an on-screen duration before export. This is not meant to replace detailed subtitle timing, but it gives you a useful first pass. Longer lines may need extended durations, which you can refine in the control panel or any SRT-compatible editor.
           </li>
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0 w-44">A small gap separates entries:</span>
@@ -208,8 +207,8 @@ Let's begin with the basics.`}</pre>
           <AccordionItem value="timestamps">
             <AccordionTrigger>How are timestamps generated when converting TXT to SRT?</AccordionTrigger>
             <AccordionContent>
-              The converter creates sequential timestamps automatically. Each non-empty line becomes a subtitle entry
-              with a default duration and a short gap before the next cue.
+              The converter creates sequential timestamps automatically. Each non-empty line or sentence becomes a
+              subtitle entry. You can adjust the start time, cue duration, gap, and line length before exporting.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="edit-timing">

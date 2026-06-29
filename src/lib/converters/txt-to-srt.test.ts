@@ -18,6 +18,33 @@ describe("convertTxtToSrt", () => {
     expect(entries[1].start).toBe("00:00:06,000");
   });
 
+  it("respects object options with a custom start time", () => {
+    const entries = convertTxtToSrt("A\nB", {
+      secondsPerLine: 4,
+      gap: 0.25,
+      startSeconds: 12.5,
+    });
+
+    expect(entries[0]).toMatchObject({ start: "00:00:12,500", end: "00:00:16,500" });
+    expect(entries[1]).toMatchObject({ start: "00:00:16,750", end: "00:00:20,750" });
+  });
+
+  it("can split pasted paragraphs into sentence cues", () => {
+    const entries = convertTxtToSrt("First sentence. Second sentence! Third?", {
+      splitMode: "sentence",
+    });
+
+    expect(entries.map((e) => e.text)).toEqual(["First sentence.", "Second sentence!", "Third?"]);
+  });
+
+  it("wraps long cue text when maxCharsPerLine is set", () => {
+    const entries = convertTxtToSrt("Alpha beta gamma delta", {
+      maxCharsPerLine: 12,
+    });
+
+    expect(entries[0].text).toBe("Alpha beta\ngamma delta");
+  });
+
   it("skips blank lines", () => {
     const entries = convertTxtToSrt("A\n\n\nB\n");
     expect(entries.map((e) => e.text)).toEqual(["A", "B"]);

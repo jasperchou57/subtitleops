@@ -6,7 +6,14 @@
 
 type GtagEvent = {
   tool: string;
-  action: "convert_success" | "convert_error" | "file_download" | "file_upload";
+  action:
+    | "convert_success"
+    | "convert_error"
+    | "file_download"
+    | "file_upload"
+    | "paste_start"
+    | "convert_click"
+    | "settings_changed";
   input_format?: string;
   output_format?: string;
   file_size?: number;
@@ -14,6 +21,8 @@ type GtagEvent = {
   duration_ms?: number;
   error_type?: string;
   trace_id?: string;
+  setting_name?: string;
+  setting_value?: string;
 };
 
 declare global {
@@ -35,6 +44,8 @@ export function trackEvent(event: GtagEvent): void {
       duration_ms: event.duration_ms,
       error_type: event.error_type,
       trace_id: event.trace_id,
+      setting_name: event.setting_name,
+      setting_value: event.setting_value,
     });
   } else if (process.env.NODE_ENV === "development") {
     console.log(`[Analytics] ${eventName}`, event);

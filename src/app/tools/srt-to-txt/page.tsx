@@ -6,8 +6,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { JsonLd, toolPageJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
-  title: "Free SRT to TXT Converter Online",
-  description: "Convert SRT to TXT by removing timing and formatting. Extract a clean subtitle transcript for translation, review, or text analysis.",
+  title: "SRT to TXT Converter - Remove Timestamps",
+  description: "Convert SRT subtitles to clean TXT. Remove timestamps, cue numbers, and basic markup for transcripts, translation, review, or text analysis.",
   keywords: ["srt to txt", "srt to text", "subtitle to text", "subtitle transcript"],
   alternates: { canonical: "/tools/srt-to-txt" },
   openGraph: { url: "/tools/srt-to-txt" },
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 const jsonLdData = toolPageJsonLd({
   name: "SRT to TXT Converter",
-  description: "Convert SRT to TXT by removing timing and formatting. Extract a clean subtitle transcript for translation, review, or text analysis.",
+  description: "Convert SRT subtitles to clean TXT. Remove timestamps, cue numbers, and basic markup for transcripts, translation, review, or text analysis.",
   url: "/tools/srt-to-txt",
   faqs: [
     { question: "What gets removed when I convert SRT to TXT?", answer: "The converter strips subtitle cue numbers, timestamp lines, separator syntax, and basic formatting tags so only readable text remains." },
@@ -44,7 +44,7 @@ export default function SrtToTxtPage() {
       <section className="relative py-10 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          SRT to TXT - Extract Text from SRT Subtitles
+          SRT to TXT Converter
         </h1>
         <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
           Use this free SRT to TXT converter to pull readable text out of subtitle files.
