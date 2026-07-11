@@ -29,6 +29,12 @@ export function SubtitleShiftConverter() {
 
     const content = await f.text();
     const detected = detectTimingFormat(content, f.name);
+    trackEvent({
+      tool: TOOL_ID,
+      action: "file_upload",
+      input_format: detected || f.name.split(".").pop() || "unknown",
+      file_size: f.size,
+    });
 
     if (!detected) {
       const traceId = generateTraceId();
@@ -44,14 +50,23 @@ export function SubtitleShiftConverter() {
 
   const handleShift = useCallback(() => {
     if (!file || !format) return;
+    trackEvent({
+      tool: TOOL_ID,
+      action: "convert_click",
+      input_format: format,
+      output_format: format,
+      file_size: file.content.length,
+    });
     const seconds = parseFloat(shiftInput);
     if (!isFinite(seconds)) {
       const traceId = generateTraceId();
+      trackEvent({ tool: TOOL_ID, action: "convert_error", error_type: "invalid_shift", trace_id: traceId });
       setError({ message: "Enter a valid number of seconds (e.g. 2.5 or -1.25).", traceId });
       return;
     }
     if (seconds === 0) {
       const traceId = generateTraceId();
+      trackEvent({ tool: TOOL_ID, action: "convert_error", error_type: "zero_shift", trace_id: traceId });
       setError({ message: "Shift is zero — nothing to change. Enter a non-zero value.", traceId });
       return;
     }
@@ -162,7 +177,7 @@ export function SubtitleShiftConverter() {
   }, []);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div data-analytics-area="timing_shift_converter" data-analytics-tool={TOOL_ID} className="w-full max-w-2xl mx-auto">
       {!file ? (
         <div
           onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
@@ -180,6 +195,7 @@ export function SubtitleShiftConverter() {
           }`}
         >
           <input
+            data-analytics-control="choose_file"
             type="file"
             accept=".srt,.vtt"
             onChange={(e) => {
@@ -225,7 +241,7 @@ export function SubtitleShiftConverter() {
                 Detected as {format?.toUpperCase()} subtitle file
               </p>
             </div>
-            <button onClick={handleReset} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
+            <button data-analytics-control="change_file" onClick={handleReset} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
               Change file
             </button>
           </div>
@@ -236,6 +252,7 @@ export function SubtitleShiftConverter() {
             </label>
             <div className="flex items-center gap-2">
               <button
+                data-analytics-control="decrease_shift"
                 type="button"
                 onClick={() =>
                   setShiftInput((v) => (Math.round(((parseFloat(v) || 0) - 0.5) * 1000) / 1000).toString())
@@ -246,6 +263,7 @@ export function SubtitleShiftConverter() {
                 &minus;
               </button>
               <input
+                data-analytics-control="shift_seconds"
                 id="shift-seconds"
                 type="number"
                 inputMode="decimal"
@@ -256,6 +274,7 @@ export function SubtitleShiftConverter() {
                 placeholder="0"
               />
               <button
+                data-analytics-control="increase_shift"
                 type="button"
                 onClick={() =>
                   setShiftInput((v) => (Math.round(((parseFloat(v) || 0) + 0.5) * 1000) / 1000).toString())
@@ -273,6 +292,7 @@ export function SubtitleShiftConverter() {
           </div>
 
           <button
+            data-analytics-control="shift_subtitles"
             onClick={handleShift}
             className="w-full rounded-xl bg-foreground text-background py-3 text-sm font-medium hover:bg-foreground/90 transition-colors"
           >
@@ -321,6 +341,7 @@ export function SubtitleShiftConverter() {
 
                 <div className="flex flex-wrap gap-3">
                   <button
+                    data-analytics-control="download_output"
                     onClick={handleDownload}
                     className="inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
                   >
@@ -329,7 +350,12 @@ export function SubtitleShiftConverter() {
                     </svg>
                     Save shifted .{format} file
                   </button>
-                  <CopyOutputButton content={result.full} className="rounded-xl px-6 py-3" />
+                  <CopyOutputButton
+                    content={result.full}
+                    toolId={TOOL_ID}
+                    outputFormat={format || undefined}
+                    className="rounded-xl px-6 py-3"
+                  />
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
                   Your file is processed locally and won&apos;t be available after you leave this page.

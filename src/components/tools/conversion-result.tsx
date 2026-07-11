@@ -107,7 +107,7 @@ export function ConversionResult({
   const stats = analyzeOutput(downloadContent, outputFormat || ext);
 
   return (
-    <div className="mt-6 rounded-xl border bg-card p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div data-analytics-area="conversion_result" className="mt-6 rounded-xl border bg-card p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-2 mb-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-600">
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -153,6 +153,7 @@ export function ConversionResult({
 
       <div className="flex flex-wrap gap-3">
         <button
+          data-analytics-control="download_output"
           onClick={handleDownload}
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
         >
@@ -161,7 +162,11 @@ export function ConversionResult({
           </svg>
           Save .{ext} file
         </button>
-        <CopyOutputButton content={downloadContent} />
+        <CopyOutputButton
+          content={downloadContent}
+          toolId={toolId || "unknown"}
+          outputFormat={outputFormat}
+        />
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
         Your file is processed locally and won&apos;t be available after you leave this page.

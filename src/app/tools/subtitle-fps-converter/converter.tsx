@@ -43,6 +43,12 @@ export function SubtitleFpsConverter() {
 
     const content = await f.text();
     const detected = detectTimingFormat(content, f.name);
+    trackEvent({
+      tool: TOOL_ID,
+      action: "file_upload",
+      input_format: detected || f.name.split(".").pop() || "unknown",
+      file_size: f.size,
+    });
 
     if (!detected) {
       const traceId = generateTraceId();
@@ -58,13 +64,22 @@ export function SubtitleFpsConverter() {
 
   const handleConvert = useCallback(() => {
     if (!file || !format) return;
+    trackEvent({
+      tool: TOOL_ID,
+      action: "convert_click",
+      input_format: format,
+      output_format: format,
+      file_size: file.content.length,
+    });
     if (!isFinite(resolvedSource) || resolvedSource <= 0 || !isFinite(resolvedTarget) || resolvedTarget <= 0) {
       const traceId = generateTraceId();
+      trackEvent({ tool: TOOL_ID, action: "convert_error", error_type: "invalid_fps", trace_id: traceId });
       setError({ message: "Source and target FPS must be positive numbers.", traceId });
       return;
     }
     if (resolvedSource === resolvedTarget) {
       const traceId = generateTraceId();
+      trackEvent({ tool: TOOL_ID, action: "convert_error", error_type: "same_fps", trace_id: traceId });
       setError({
         message: "Source and target FPS are the same — nothing to rescale. Pick different values.",
         traceId,
@@ -178,7 +193,16 @@ export function SubtitleFpsConverter() {
     <select
       id={id}
       value={value}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) => {
+        const nextValue = e.target.value;
+        setValue(nextValue);
+        trackEvent({
+          tool: TOOL_ID,
+          action: "settings_changed",
+          setting_name: id.replace(/-/g, "_"),
+          setting_value: nextValue,
+        });
+      }}
       className="w-full h-10 rounded-lg border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-foreground/20"
     >
       {COMMON_FPS.map((fps) => (
@@ -191,7 +215,7 @@ export function SubtitleFpsConverter() {
   );
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div data-analytics-area="fps_converter" data-analytics-tool={TOOL_ID} className="w-full max-w-2xl mx-auto">
       {!file ? (
         <div
           onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
@@ -209,6 +233,7 @@ export function SubtitleFpsConverter() {
           }`}
         >
           <input
+            data-analytics-control="choose_file"
             type="file"
             accept=".srt,.vtt"
             onChange={(e) => {
@@ -254,7 +279,7 @@ export function SubtitleFpsConverter() {
                 Detected as {format?.toUpperCase()} subtitle file
               </p>
             </div>
-            <button onClick={handleReset} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
+            <button data-analytics-control="change_file" onClick={handleReset} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
               Change file
             </button>
           </div>
@@ -265,6 +290,7 @@ export function SubtitleFpsConverter() {
               {renderFpsSelect("source-fps", sourceFps, setSourceFps)}
               {sourceFps === CUSTOM && (
                 <input
+                  data-analytics-control="custom_source_fps"
                   type="number"
                   inputMode="decimal"
                   step="0.001"
@@ -281,6 +307,7 @@ export function SubtitleFpsConverter() {
               {renderFpsSelect("target-fps", targetFps, setTargetFps)}
               {targetFps === CUSTOM && (
                 <input
+                  data-analytics-control="custom_target_fps"
                   type="number"
                   inputMode="decimal"
                   step="0.001"
@@ -306,6 +333,7 @@ export function SubtitleFpsConverter() {
           </p>
 
           <button
+            data-analytics-control="convert_fps"
             onClick={handleConvert}
             className="w-full rounded-xl bg-foreground text-background py-3 text-sm font-medium hover:bg-foreground/90 transition-colors"
           >
@@ -354,6 +382,7 @@ export function SubtitleFpsConverter() {
 
                 <div className="flex flex-wrap gap-3">
                   <button
+                    data-analytics-control="download_output"
                     onClick={handleDownload}
                     className="inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
                   >
@@ -362,7 +391,12 @@ export function SubtitleFpsConverter() {
                     </svg>
                     Save rescaled .{format} file
                   </button>
-                  <CopyOutputButton content={result.full} className="rounded-xl px-6 py-3" />
+                  <CopyOutputButton
+                    content={result.full}
+                    toolId={TOOL_ID}
+                    outputFormat={format || undefined}
+                    className="rounded-xl px-6 py-3"
+                  />
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
                   Your file is processed locally and won&apos;t be available after you leave this page.

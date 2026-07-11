@@ -18,7 +18,7 @@ const timing = [
 
 export function Footer() {
   return (
-    <footer className="border-t">
+    <footer data-analytics-area="footer" className="border-t">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">

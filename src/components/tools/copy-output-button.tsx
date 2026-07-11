@@ -3,9 +3,12 @@
 import { Check, Copy } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 
 type CopyOutputButtonProps = {
   content: string;
+  toolId: string;
+  outputFormat?: string;
   className?: string;
 };
 
@@ -35,7 +38,7 @@ async function copyText(content: string) {
   }
 }
 
-export function CopyOutputButton({ content, className }: CopyOutputButtonProps) {
+export function CopyOutputButton({ content, toolId, outputFormat, className }: CopyOutputButtonProps) {
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
   const resetTimer = useRef<number | null>(null);
 
@@ -51,8 +54,20 @@ export function CopyOutputButton({ content, className }: CopyOutputButtonProps) 
     try {
       await copyText(content);
       setStatus("copied");
+      trackEvent({
+        tool: toolId,
+        action: "copy_output",
+        output_format: outputFormat,
+        file_size: content.length,
+      });
     } catch {
       setStatus("failed");
+      trackEvent({
+        tool: toolId,
+        action: "copy_error",
+        output_format: outputFormat,
+        error_type: "clipboard_write_failed",
+      });
     }
 
     if (resetTimer.current !== null) {
@@ -65,6 +80,7 @@ export function CopyOutputButton({ content, className }: CopyOutputButtonProps) 
 
   return (
     <button
+      data-analytics-control="copy_output"
       type="button"
       onClick={handleCopy}
       className={cn(

@@ -1,7 +1,7 @@
 /**
  * GA4 custom event tracking for SubtitleOps.
- * Events are only sent if gtag is loaded (production with GA4 script).
- * In development, events are logged to console instead.
+ * Production events queue until gtag.js is ready.
+ * Development events are logged to the console instead.
  */
 
 type GtagEvent = {
@@ -13,7 +13,9 @@ type GtagEvent = {
     | "file_upload"
     | "paste_start"
     | "convert_click"
-    | "settings_changed";
+    | "settings_changed"
+    | "copy_output"
+    | "copy_error";
   input_format?: string;
   output_format?: string;
   file_size?: number;
@@ -28,26 +30,40 @@ type GtagEvent = {
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
+    dataLayer?: unknown[][];
   }
+}
+
+type UiInteraction = {
+  interaction_type: "click" | "change";
+  ui_area: string;
+  ui_control: string;
+  element_type: string;
+  tool?: string;
+  link_path?: string;
+  link_domain?: string;
+};
+
+function sendEvent(eventName: string, parameters: Record<string, unknown>): void {
+  if (typeof window === "undefined") return;
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[Analytics] ${eventName} ${JSON.stringify(parameters)}`);
+    return;
+  }
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || ((...args: unknown[]) => window.dataLayer?.push(args));
+  window.gtag("event", eventName, parameters);
 }
 
 export function trackEvent(event: GtagEvent): void {
   const eventName = `subtitleops_${event.action}`;
+  const parameters: Record<string, unknown> = { ...event };
+  delete parameters.action;
+  sendEvent(eventName, parameters);
+}
 
-  if (typeof window !== "undefined" && window.gtag) {
-    window.gtag("event", eventName, {
-      tool: event.tool,
-      input_format: event.input_format,
-      output_format: event.output_format,
-      file_size: event.file_size,
-      entry_count: event.entry_count,
-      duration_ms: event.duration_ms,
-      error_type: event.error_type,
-      trace_id: event.trace_id,
-      setting_name: event.setting_name,
-      setting_value: event.setting_value,
-    });
-  } else if (process.env.NODE_ENV === "development") {
-    console.log(`[Analytics] ${eventName}`, event);
-  }
+export function trackUiInteraction(event: UiInteraction): void {
+  sendEvent("subtitleops_ui_interaction", event);
 }

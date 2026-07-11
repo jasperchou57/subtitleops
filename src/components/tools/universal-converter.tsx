@@ -24,6 +24,12 @@ export function UniversalConverter() {
     const detected = detectFormat(content, f.name);
     setFile({ name: f.name, content });
     setInputFormat(detected);
+    trackEvent({
+      tool: "universal",
+      action: "file_upload",
+      input_format: detected || "unknown",
+      file_size: f.size,
+    });
 
     // Auto-select first available output format
     const available = getAvailableOutputFormats(detected);
@@ -35,6 +41,13 @@ export function UniversalConverter() {
   const handleConvert = useCallback(() => {
     if (!file || !inputFormat) return;
     setError(null);
+    trackEvent({
+      tool: "universal",
+      action: "convert_click",
+      input_format: inputFormat,
+      output_format: outputFormat,
+      file_size: file.content.length,
+    });
     const traceId = generateTraceId();
     const startTime = performance.now();
 
@@ -81,6 +94,12 @@ export function UniversalConverter() {
     a.download = file.name.replace(/\.[^.]+$/, `.${outputFormat}`);
     a.click();
     URL.revokeObjectURL(url);
+    trackEvent({
+      tool: "universal",
+      action: "file_download",
+      output_format: outputFormat,
+      file_size: result.full.length,
+    });
   }, [result, file, outputFormat]);
 
   const handleReset = useCallback(() => {
@@ -93,7 +112,7 @@ export function UniversalConverter() {
   const availableOutputs = inputFormat ? getAvailableOutputFormats(inputFormat) : [];
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div data-analytics-area="universal_converter" data-analytics-tool="universal" className="w-full max-w-2xl mx-auto">
       {!file ? (
         /* ===== Dropzone ===== */
         <div
@@ -112,6 +131,7 @@ export function UniversalConverter() {
           }`}
         >
           <input
+            data-analytics-control="choose_file"
             type="file"
             accept=".srt,.ass,.ssa,.vtt,.txt,.sbv"
             onChange={(e) => {
@@ -155,7 +175,7 @@ export function UniversalConverter() {
                 Detected as {inputFormat ? formatLabels[inputFormat] : "unknown"}
               </p>
             </div>
-            <button onClick={handleReset} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
+            <button data-analytics-control="change_file" onClick={handleReset} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
               Change file
             </button>
           </div>
@@ -166,8 +186,20 @@ export function UniversalConverter() {
             <div className="flex gap-2 flex-wrap">
               {availableOutputs.map((fmt) => (
                 <button
+                  data-analytics-control={`select_output_${fmt.value}`}
                   key={fmt.value}
-                  onClick={() => { setOutputFormat(fmt.value); setResult(null); }}
+                  onClick={() => {
+                    setOutputFormat(fmt.value);
+                    setResult(null);
+                    trackEvent({
+                      tool: "universal",
+                      action: "settings_changed",
+                      input_format: inputFormat || undefined,
+                      output_format: fmt.value,
+                      setting_name: "output_format",
+                      setting_value: fmt.value,
+                    });
+                  }}
                   className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                     outputFormat === fmt.value
                       ? "bg-foreground text-background"
@@ -182,6 +214,7 @@ export function UniversalConverter() {
 
           {/* Convert button */}
           <button
+            data-analytics-control="convert_file"
             onClick={handleConvert}
             className="w-full rounded-xl bg-foreground text-background py-3 text-sm font-medium hover:bg-foreground/90 transition-colors"
           >
@@ -222,6 +255,7 @@ export function UniversalConverter() {
 
                 <div className="flex flex-wrap gap-3">
                   <button
+                    data-analytics-control="download_output"
                     onClick={handleDownload}
                     className="inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
                   >
@@ -230,7 +264,12 @@ export function UniversalConverter() {
                     </svg>
                     Save .{outputFormat} file
                   </button>
-                  <CopyOutputButton content={result.full} className="rounded-xl px-6 py-3" />
+                  <CopyOutputButton
+                    content={result.full}
+                    toolId="universal"
+                    outputFormat={outputFormat}
+                    className="rounded-xl px-6 py-3"
+                  />
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
                   Your file is processed locally and won&apos;t be available after you leave this page.

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { InteractionTracker } from "@/components/analytics/interaction-tracker";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -64,6 +65,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
+        <InteractionTracker />
         <div className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">{children}</main>

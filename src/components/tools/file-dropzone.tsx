@@ -31,6 +31,7 @@ export function FileDropzone({ accept, acceptLabel, onFileSelect }: FileDropzone
 
   return (
     <div
+      data-analytics-area="file_dropzone"
       onDragOver={(e) => {
         e.preventDefault();
         setIsDragOver(true);
@@ -44,6 +45,7 @@ export function FileDropzone({ accept, acceptLabel, onFileSelect }: FileDropzone
       }`}
     >
       <input
+        data-analytics-control="choose_file"
         type="file"
         accept={accept}
         onChange={handleChange}

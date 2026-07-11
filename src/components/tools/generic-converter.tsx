@@ -229,18 +229,19 @@ export function GenericConverter({
   };
 
   return (
-    <div>
+    <div data-analytics-area="tool_converter" data-analytics-tool={toolId}>
       {settingsPanel && <div className="mb-4">{settingsPanel}</div>}
 
       <FileDropzone accept={accept} acceptLabel={acceptLabel} onFileSelect={handleFileSelect} />
 
       {directInput && (
-        <div className="mt-4 rounded-xl border bg-card p-4">
+        <div data-analytics-area="text_input" className="mt-4 rounded-xl border bg-card p-4">
           <label htmlFor={`${toolId}-direct-input`} className="flex items-center gap-2 text-sm font-medium text-foreground">
             <ClipboardPaste className="h-4 w-4 text-blue-500" />
             {directInput.label}
           </label>
           <textarea
+            data-analytics-control="transcript_input"
             id={`${toolId}-direct-input`}
             value={directText}
             onChange={handleDirectTextChange}
@@ -249,6 +250,7 @@ export function GenericConverter({
           />
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <button
+              data-analytics-control="convert_text"
               type="button"
               onClick={handleDirectConvert}
               disabled={!directText.trim()}
