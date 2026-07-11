@@ -54,12 +54,22 @@ export default function RootLayout({
           src="https://www.googletagmanager.com/gtag/js?id=G-3RKDT74KDZ"
           strategy="lazyOnload"
         />
+        <Script
+          src="https://plausible.io/js/pa-dZabeih5aLJYn323J_RJo.js"
+          strategy="afterInteractive"
+        />
         <Script id="gtag-init" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-3RKDT74KDZ');
+          `}
+        </Script>
+        <Script id="plausible-init" strategy="afterInteractive">
+          {`
+            window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+            plausible.init()
           `}
         </Script>
       </head>
