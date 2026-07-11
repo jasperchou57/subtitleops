@@ -8,8 +8,8 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https://www.google-analytics.com",
   "font-src 'self'",
   "style-src 'self' 'unsafe-inline'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://plausible.io",
-  "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://plausible.io",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
+  "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com",
   "form-action 'self'",
   "manifest-src 'self'",
 ].join("; ");
