@@ -18,7 +18,8 @@ export default function ContactPage() {
       <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
         <p>
           We would love to hear from you. Whether you have a question, found a
-          bug, or want to suggest a new feature, feel free to reach out.
+          bug, want to suggest a new feature, or need to ask about privacy,
+          feel free to reach out.
         </p>
 
         <div className="rounded-xl border bg-card p-6">
@@ -54,6 +55,16 @@ export default function ContactPage() {
             If a conversion is not working correctly, please include the file
             format, browser, and a description of the issue so we can reproduce
             and fix it quickly.
+          </p>
+        </div>
+
+        <div className="rounded-xl border bg-card p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-3">
+            Privacy Questions
+          </h2>
+          <p>
+            For questions about file handling, analytics, advertising, or our
+            privacy policy, email us at help@subtitleops.com.
           </p>
         </div>
       </div>

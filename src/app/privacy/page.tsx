@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <p className="text-sm text-muted-foreground mb-10">
-        Last updated: March 22, 2026
+        Last updated: July 12, 2026
       </p>
 
       <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
@@ -32,7 +32,10 @@ export default function PrivacyPage() {
         <ul className="list-disc pl-5 space-y-1">
           <li>We do not collect, store, or transmit your subtitle files.</li>
           <li>We do not require user accounts or login credentials.</li>
-          <li>We do not use cookies for tracking or advertising purposes.</li>
+          <li>
+            We do not process subtitle file contents through analytics or
+            advertising services.
+          </li>
         </ul>
 
         <h2 className="text-xl font-semibold text-foreground pt-4">
@@ -47,12 +50,35 @@ export default function PrivacyPage() {
         </p>
 
         <h2 className="text-xl font-semibold text-foreground pt-4">
+          Advertising
+        </h2>
+        <p>
+          We use Google AdSense to display advertising. Google and its partners
+          may use cookies, web beacons, IP addresses, device information, and
+          similar technologies to serve ads, limit how often ads are shown,
+          measure ad performance, and help keep ads relevant. Learn more about
+          how Google uses information from sites and apps that use its services
+          at{" "}
+          <a
+            href="https://policies.google.com/technologies/partner-sites"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline underline-offset-4 hover:text-foreground/70"
+          >
+            Google&apos;s partner sites policy
+          </a>
+          .
+        </p>
+
+        <h2 className="text-xl font-semibold text-foreground pt-4">
           Third-Party Services
         </h2>
         <p>
-          SubtitleOps is hosted on Vercel. Vercel may collect standard server
-          logs including IP addresses and request metadata as part of its
-          hosting infrastructure. For more details, see{" "}
+          SubtitleOps uses Google Analytics, Google AdSense, and Vercel.
+          Third-party services may collect standard technical information such
+          as IP addresses, browser and device data, cookies, and request
+          metadata as part of analytics, advertising, security, and hosting
+          operations. For Vercel hosting details, see{" "}
           <a
             href="https://vercel.com/legal/privacy-policy"
             target="_blank"
