@@ -1,4 +1,5 @@
 import handler from '@tanstack/react-start/server-entry';
+import { purgeOldProductionApiUsage } from '@/lib/api-usage';
 import { localeMiddleware } from '@/locale/middleware';
 import { purgeExpiredProjects } from '@/lib/project-retention';
 
@@ -57,6 +58,6 @@ export default {
     return withSecurityHeaders(response);
   },
   async scheduled(_controller: ScheduledController) {
-    await purgeExpiredProjects();
+    await Promise.all([purgeExpiredProjects(), purgeOldProductionApiUsage()]);
   },
 };

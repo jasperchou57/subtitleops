@@ -1,4 +1,5 @@
 import { auth } from '@/auth/auth';
+import { consumeProductionApiQuota } from '@/lib/api-usage';
 import { getUserEntitlement } from '@/lib/entitlements';
 import { detectFormat } from '@/lib/converters/detect-format';
 import { checkSubtitleQuality } from '@/lib/converters/quality';
@@ -16,10 +17,15 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, content-type, x-api-key',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Expose-Headers':
+    'X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After',
 };
 
-function json(data: unknown, status = 200) {
-  return Response.json(data, { status, headers: corsHeaders });
+function json(data: unknown, status = 200, headers?: Record<string, string>) {
+  return Response.json(data, {
+    status,
+    headers: { ...corsHeaders, ...headers },
+  });
 }
 
 function getApiKey(request: Request) {
@@ -50,6 +56,26 @@ export const Route = createFileRoute('/api/v1/convert')({
           return json({ error: 'Studio plan required' }, 403);
         }
 
+        const quota = await consumeProductionApiQuota(verified.key.userId);
+        const quotaHeaders = {
+          'X-RateLimit-Limit': String(quota.limit),
+          'X-RateLimit-Remaining': String(quota.remaining),
+          'X-RateLimit-Reset': String(quota.resetAt),
+        };
+        if (!quota.allowed) {
+          return json(
+            {
+              error: 'Daily API request limit exceeded',
+              code: 'RATE_LIMIT_EXCEEDED',
+            },
+            429,
+            {
+              ...quotaHeaders,
+              'Retry-After': String(quota.retryAfter),
+            }
+          );
+        }
+
         let input: z.infer<typeof requestSchema>;
         try {
           input = requestSchema.parse(await request.json());
@@ -57,10 +83,11 @@ export const Route = createFileRoute('/api/v1/convert')({
           if (caught instanceof z.ZodError) {
             return json(
               { error: 'Invalid request', issues: caught.issues },
-              400
+              400,
+              quotaHeaders
             );
           }
-          return json({ error: 'Invalid JSON body' }, 400);
+          return json({ error: 'Invalid JSON body' }, 400, quotaHeaders);
         }
 
         try {
@@ -75,19 +102,24 @@ export const Route = createFileRoute('/api/v1/convert')({
             inputFormat,
             'srt'
           );
-          return json({
-            inputFormat,
-            outputFormat: input.outputFormat,
-            content,
-            quality: checkSubtitleQuality(qualitySource),
-          });
+          return json(
+            {
+              inputFormat,
+              outputFormat: input.outputFormat,
+              content,
+              quality: checkSubtitleQuality(qualitySource),
+            },
+            200,
+            quotaHeaders
+          );
         } catch (caught) {
           return json(
             {
               error:
                 caught instanceof Error ? caught.message : 'Conversion failed',
             },
-            422
+            422,
+            quotaHeaders
           );
         }
       },

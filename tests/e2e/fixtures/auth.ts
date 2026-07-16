@@ -52,6 +52,7 @@ export async function updateE2EUser(
     role?: 'admin' | 'user' | null;
     subscriptionStatus?: 'active' | 'trialing' | 'canceled' | 'past_due';
     cancelAtPeriodEnd?: boolean;
+    apiUsageCount?: number;
   }
 ) {
   const response = await request.patch('/api/e2e/users', {

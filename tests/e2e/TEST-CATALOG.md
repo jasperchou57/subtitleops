@@ -25,5 +25,9 @@ Studio workflows, workspace seats, production API access, and storage journeys
 run locally against an isolated D1 database. Stripe-specific lifecycle tests
 run when `E2E_PAYMENT_PROVIDER=stripe` is set.
 
+Production API acceptance includes a shared 1,000-request daily account quota:
+multiple API keys must consume the same allowance, expose remaining/reset
+headers, and return HTTP 429 after the account quota is exhausted.
+
 Payment acceptance must include checkout, webhook retry behavior, subscription
 activation, customer portal access, cancellation, and entitlement downgrade.

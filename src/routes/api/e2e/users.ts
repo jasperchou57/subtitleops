@@ -2,7 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import { eq, inArray, like } from 'drizzle-orm';
 import { getDb } from '@/db';
 import { account, session, user } from '@/db/auth.schema';
-import { payment, userFiles } from '@/db/app.schema';
+import { payment, productionApiUsage, userFiles } from '@/db/app.schema';
+import { getProductionApiUsageDate } from '@/lib/api-usage';
 import { getUserEntitlement } from '@/lib/entitlements';
 import { auth } from '@/auth/auth';
 
@@ -105,6 +106,7 @@ export const Route = createFileRoute('/api/e2e/users')({
           role?: unknown;
           subscriptionStatus?: unknown;
           cancelAtPeriodEnd?: unknown;
+          apiUsageCount?: unknown;
         };
         const email = typeof body.email === 'string' ? body.email : '';
 
@@ -187,6 +189,31 @@ export const Route = createFileRoute('/api/e2e/users')({
           }
 
           const entitlement = await getUserEntitlement(updatedUser.id);
+          if (
+            typeof body.apiUsageCount === 'number' &&
+            Number.isInteger(body.apiUsageCount) &&
+            body.apiUsageCount >= 0
+          ) {
+            const now = new Date();
+            await db
+              .insert(productionApiUsage)
+              .values({
+                userId: updatedUser.id,
+                usageDate: getProductionApiUsageDate(now),
+                requestCount: body.apiUsageCount,
+                updatedAt: now,
+              })
+              .onConflictDoUpdate({
+                target: [
+                  productionApiUsage.userId,
+                  productionApiUsage.usageDate,
+                ],
+                set: {
+                  requestCount: body.apiUsageCount,
+                  updatedAt: now,
+                },
+              });
+          }
           return Response.json({ user: updatedUser, entitlement });
         }
 

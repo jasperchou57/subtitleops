@@ -7,6 +7,7 @@ import { relations } from 'drizzle-orm';
 import {
   index,
   integer,
+  primaryKey,
   sqliteTable,
   text,
   uniqueIndex,
@@ -93,6 +94,25 @@ export const userFilesRelations = relations(userFiles, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+/**
+ * Daily production API usage shared by every API key owned by a user.
+ */
+export const productionApiUsage = sqliteTable(
+  'production_api_usage',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    usageDate: text('usage_date').notNull(),
+    requestCount: integer('request_count').notNull().default(0),
+    updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.userId, table.usageDate] }),
+    index('production_api_usage_date_idx').on(table.usageDate),
+  ]
+);
 
 export type WorkspaceRole = 'owner' | 'editor' | 'reviewer';
 export type WorkspaceMemberStatus = 'invited' | 'active';

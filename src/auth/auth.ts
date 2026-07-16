@@ -130,9 +130,9 @@ export const auth = betterAuth({
     // support API key management for user authentication
     apiKey({
       rateLimit: {
-        enabled: true,
-        timeWindow: 24 * 60 * 60 * 1000,
-        maxRequests: 1000,
+        // /api/v1/convert enforces the Studio quota per account in D1 so
+        // creating multiple keys cannot multiply the daily allowance.
+        enabled: false,
       },
     }),
     // https://github.com/gekorm/better-auth-harmony
