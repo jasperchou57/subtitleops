@@ -235,14 +235,14 @@ export function BillingCard() {
 
         {/* Lifetime: show manage billing */}
         {isLifetimeMember && currentUser && (
-          <CustomerPortalButton returnUrl={undefined}>
+          <CustomerPortalButton>
             {m.settings_billing_card_manage_billing()}
           </CustomerPortalButton>
         )}
 
         {/* Subscription: show manage subscription (only when not free and not lifetime) */}
         {!isFreePlan && !isLifetimeMember && currentUser && (
-          <CustomerPortalButton returnUrl={undefined}>
+          <CustomerPortalButton>
             {m.settings_billing_card_manage_subscription()}
           </CustomerPortalButton>
         )}

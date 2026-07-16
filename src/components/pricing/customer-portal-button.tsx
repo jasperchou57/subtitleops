@@ -5,8 +5,6 @@ import { IconLoader2 } from '@tabler/icons-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 interface CustomerPortalButtonProps {
-  userId: string;
-  returnUrl?: string;
   variant?:
     | 'default'
     | 'outline'
@@ -20,20 +18,17 @@ interface CustomerPortalButtonProps {
   children?: React.ReactNode;
 }
 export function CustomerPortalButton({
-  returnUrl,
   variant = 'default',
   size = 'default',
   className,
   children,
-}: Omit<CustomerPortalButtonProps, 'userId'> & {
-  userId?: string;
-}) {
+}: CustomerPortalButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const handleClick = async () => {
     try {
       setIsLoading(true);
       const result = await createCustomerPortalSession({
-        data: { returnUrl },
+        data: {},
       });
       if (result?.url) {
         window.location.href = result.url;

@@ -19,13 +19,13 @@ import { createServerFn } from '@tanstack/react-start';
 import { and, desc, eq, inArray, or } from 'drizzle-orm';
 import { z } from 'zod';
 
-const checkoutSchema = z.object({
-  planId: z.string().min(1),
-  priceId: z.string().min(1),
-  successUrl: z.url().optional(),
-  cancelUrl: z.url().optional(),
-  metadata: z.record(z.string(), z.string()).optional(),
-});
+const checkoutSchema = z
+  .object({
+    planId: z.string().min(1),
+    priceId: z.string().min(1),
+    metadata: z.record(z.string(), z.string()).optional(),
+  })
+  .strict();
 
 export const createCheckoutSession = createServerFn({ method: 'POST' })
   .inputValidator(checkoutSchema)
@@ -64,22 +64,20 @@ export const createCheckoutSession = createServerFn({ method: 'POST' })
       );
     }
 
-    const { planId, priceId, successUrl, cancelUrl, metadata } = data;
+    const { planId, priceId, metadata } = data;
     const locale = getLocale();
     const isCreem = websiteConfig.payment?.provider === 'creem';
     const billingUrl = getCanonicalUrl(Routes.SettingsBilling);
-    const cancel = cancelUrl ?? billingUrl;
 
     // For Stripe: {CHECKOUT_SESSION_ID} is replaced by Stripe on redirect,
     // then the Payment page polls by sessionId until the webhook writes the DB record.
     // For Creem: Creem does NOT replace URL placeholders and has its own
     // payment confirmation page, so redirect straight to billing.
     const success = isCreem
-      ? (successUrl ?? billingUrl)
-      : (successUrl ??
-        getCanonicalUrl(
+      ? billingUrl
+      : getCanonicalUrl(
           `${Routes.Payment}?session_id={CHECKOUT_SESSION_ID}&callback=${Routes.SettingsBilling}`
-        ));
+        );
     const checkoutMetadata = {
       ...metadata,
       userId,
@@ -91,22 +89,19 @@ export const createCheckoutSession = createServerFn({ method: 'POST' })
       priceId,
       customerEmail: userRow.email,
       successUrl: success,
-      cancelUrl: cancel,
+      cancelUrl: billingUrl,
       metadata: checkoutMetadata,
       locale,
     });
     return { url: result.url, id: result.id };
   });
 
-const portalSchema = z.object({
-  returnUrl: z.string().url().optional(),
-  locale: z.string().optional(),
-});
+const portalSchema = z.object({}).strict();
 
 export const createCustomerPortalSession = createServerFn({ method: 'POST' })
   .inputValidator(portalSchema)
   .middleware([authApiMiddleware])
-  .handler(async ({ data, context }) => {
+  .handler(async ({ context }) => {
     const { userId } = context;
     const db = getDb();
     const [row] = await db
@@ -118,11 +113,10 @@ export const createCustomerPortalSession = createServerFn({ method: 'POST' })
       throw new Error('No customer found for user');
     }
     const locale = getLocale();
-    const returnUrl = data.returnUrl ?? getCanonicalUrl(Routes.SettingsBilling);
     const result = await createCustomerPortal({
       customerId: row.customerId,
-      returnUrl,
-      locale: data.locale ?? locale,
+      returnUrl: getCanonicalUrl(Routes.SettingsBilling),
+      locale,
     });
     return { url: result.url };
   });
