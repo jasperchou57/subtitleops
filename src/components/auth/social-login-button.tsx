@@ -4,6 +4,7 @@ import { DividerWithText } from '@/components/auth/divider-with-text';
 import { Button } from '@/components/ui/button';
 import { websiteConfig } from '@/config/website';
 import { authClient } from '@/auth/client';
+import { resolveAuthCallbackPath } from '@/lib/auth-callback';
 import { DEFAULT_LOGIN_REDIRECT, Routes } from '@/lib/routes';
 import { getPathWithLocale } from '@/lib/urls';
 import { IconBrandGoogleFilled, IconLoader2 } from '@tabler/icons-react';
@@ -20,9 +21,10 @@ export function SocialLoginButton({
       ? new URLSearchParams(window.location.search).get('callbackUrl')
       : null;
   const defaultCallbackUrl = getPathWithLocale(DEFAULT_LOGIN_REDIRECT);
-  const callbackUrl =
-    propCallbackUrl ??
-    (paramCallbackUrl ? paramCallbackUrl : defaultCallbackUrl);
+  const callbackUrl = resolveAuthCallbackPath(
+    [propCallbackUrl, paramCallbackUrl],
+    defaultCallbackUrl
+  );
   const [isLoading, setIsLoading] = useState<'google' | null>(null);
   if (!websiteConfig.auth?.enableGoogleLogin) {
     return null;

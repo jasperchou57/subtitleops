@@ -29,5 +29,8 @@ Production API acceptance includes a shared 1,000-request daily account quota:
 multiple API keys must consume the same allowance, expose remaining/reset
 headers, and return HTTP 429 after the account quota is exhausted.
 
+Authentication acceptance rejects external or protocol-relative callback URLs
+and redirects successful sign-in only to a normalized SubtitleOps path.
+
 Payment acceptance must include checkout, webhook retry behavior, subscription
 activation, customer portal access, cancellation, and entitlement downgrade.

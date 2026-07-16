@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { getSafeAuthCallbackPath } from '@/lib/auth-callback';
 import { Routes } from '@/lib/routes';
 import { useRouter } from '@tanstack/react-router';
 import React, { useEffect, useState } from 'react';
@@ -28,6 +29,7 @@ export function LoginWrapper({
   callbackUrl,
 }: LoginWrapperProps) {
   const router = useRouter();
+  const safeCallbackUrl = getSafeAuthCallbackPath(callbackUrl);
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -36,13 +38,13 @@ export function LoginWrapper({
   const handleRedirect = () => {
     router.navigate({
       to: Routes.Login,
-      search: callbackUrl ? { callbackUrl } : {},
+      search: safeCallbackUrl ? { callbackUrl: safeCallbackUrl } : {},
     });
   };
   const handleModalSuccess = () => {
     setOpen(false);
-    if (callbackUrl) {
-      router.navigate({ to: callbackUrl });
+    if (safeCallbackUrl) {
+      router.navigate({ to: safeCallbackUrl });
     }
   };
   if (!mounted) {
@@ -65,7 +67,7 @@ export function LoginWrapper({
             <DialogTitle>{m.auth_login_sign_in()}</DialogTitle>
           </DialogHeader>
           <LoginForm
-            callbackUrl={callbackUrl}
+            callbackUrl={safeCallbackUrl ?? undefined}
             onSuccess={handleModalSuccess}
             className="border-0 shadow-none"
           />

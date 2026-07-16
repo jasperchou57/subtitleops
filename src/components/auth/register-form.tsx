@@ -15,6 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { websiteConfig } from '@/config/website';
 import { authClient } from '@/auth/client';
+import { resolveAuthCallbackPath } from '@/lib/auth-callback';
 import { DEFAULT_LOGIN_REDIRECT, Routes } from '@/lib/routes';
 import { getPathWithLocale } from '@/lib/urls';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -34,9 +35,10 @@ export function RegisterForm({
       ? new URLSearchParams(window.location.search).get('callbackUrl')
       : null;
   const defaultCallbackUrl = getPathWithLocale(DEFAULT_LOGIN_REDIRECT);
-  const callbackUrl =
-    propCallbackUrl ??
-    (paramCallbackUrl ? paramCallbackUrl : defaultCallbackUrl);
+  const callbackUrl = resolveAuthCallbackPath(
+    [propCallbackUrl, paramCallbackUrl],
+    defaultCallbackUrl
+  );
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
   const [isPending, setIsPending] = useState(false);

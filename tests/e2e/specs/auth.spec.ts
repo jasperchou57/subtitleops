@@ -34,6 +34,23 @@ test.describe('authentication and protected routes', () => {
     ).toBeVisible();
   });
 
+  test('keeps login callbacks on SubtitleOps', async ({ page, request }) => {
+    const user = await registerE2EUser(request);
+
+    await page.goto(
+      '/auth/login?callbackUrl=https%3A%2F%2Fexample.com%2Fphishing'
+    );
+    await page.waitForLoadState('networkidle');
+    await page.locator('input[name="email"]').fill(user.email);
+    await page.locator('input[name="password"]').fill(user.password);
+    await page.getByRole('button', { name: /^sign in$|^登录$/i }).click();
+
+    await expect(page).toHaveURL(/\/dashboard\/?$/);
+    expect(new URL(page.url()).origin).toBe(
+      process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3302'
+    );
+  });
+
   test('allows a user to register from the register page', async ({ page }) => {
     const user = createE2EUser();
 
