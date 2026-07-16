@@ -138,3 +138,14 @@ jobs:
               end
             )' > "$secrets_file"
           pnpm exec wrangler deploy --secrets-file "$secrets_file"
+
+      - name: Verify deployed Worker
+        run: |
+          workers_subdomain="$(
+            curl --fail --silent --show-error \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" |
+              jq -r '.result.subdomain // empty'
+          )"
+          : "${workers_subdomain:?Unable to determine the Cloudflare workers.dev subdomain}"
+          pnpm verify:deployment -- "https://subtitleops.$workers_subdomain.workers.dev"

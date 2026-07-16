@@ -36,6 +36,7 @@ pnpm test       # subtitle conversion and timing unit tests
 pnpm check      # Biome checks
 pnpm build      # production Worker build
 pnpm e2e        # local Playwright acceptance tests
+pnpm verify:deployment -- https://subtitleops.example.workers.dev
 ```
 
 ## Cloudflare setup

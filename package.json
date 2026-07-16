@@ -10,6 +10,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "indexnow:submit": "node scripts/submit-indexnow.mjs",
+    "verify:deployment": "node scripts/verify-deployment.mjs",
     "e2e": "playwright test",
     "e2e:install": "playwright install",
     "e2e:ui": "playwright test --ui",

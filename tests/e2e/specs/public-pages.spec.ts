@@ -53,10 +53,27 @@ test('AdSense stays disabled until production consent messaging is ready', async
   ).toHaveCount(0);
 });
 
+test('production security headers stay enforced', async ({ request }) => {
+  const response = await request.get('/');
+  await expect(response).toBeOK();
+
+  const csp = response.headers()['content-security-policy'];
+  expect(csp).toContain("script-src 'self' 'unsafe-inline' https:");
+  expect(csp).not.toContain("'unsafe-eval'");
+  expect(response.headers()['strict-transport-security']).toBe(
+    'max-age=63072000'
+  );
+  expect(response.headers()['x-content-type-options']).toBe('nosniff');
+});
+
 test('public machine-readable endpoints respond', async ({ request }) => {
   const ping = await request.get('/api/ping');
   await expect(ping).toBeOK();
   expect(await ping.json()).toEqual({ message: 'pong' });
+
+  const readiness = await request.get('/api/ready');
+  await expect(readiness).toBeOK();
+  expect(await readiness.json()).toMatchObject({ status: 'ready' });
 
   for (const path of ['/robots.txt', '/sitemap.xml', '/manifest.json']) {
     const response = await request.get(path);

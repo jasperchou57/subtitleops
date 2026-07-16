@@ -52,6 +52,7 @@ import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthErrorRouteImport } from './routes/auth/error'
+import { Route as ApiReadyRouteImport } from './routes/api/ready'
 import { Route as ApiPingRouteImport } from './routes/api/ping'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as pagesPricingRouteImport } from './routes/(pages)/pricing'
@@ -288,6 +289,11 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
   path: '/error',
   getParentRoute: () => AuthRoute,
 } as any)
+const ApiReadyRoute = ApiReadyRouteImport.update({
+  id: '/api/ready',
+  path: '/api/ready',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPingRoute = ApiPingRouteImport.update({
   id: '/api/ping',
   path: '/api/ping',
@@ -381,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof pagesPricingRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/ping': typeof ApiPingRoute
+  '/api/ready': typeof ApiReadyRoute
   '/auth/error': typeof AuthErrorRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -438,6 +445,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof pagesPricingRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/ping': typeof ApiPingRoute
+  '/api/ready': typeof ApiReadyRoute
   '/auth/error': typeof AuthErrorRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -499,6 +507,7 @@ export interface FileRoutesById {
   '/(pages)/pricing': typeof pagesPricingRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/ping': typeof ApiPingRoute
+  '/api/ready': typeof ApiReadyRoute
   '/auth/error': typeof AuthErrorRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -561,6 +570,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/admin/users'
     | '/api/ping'
+    | '/api/ready'
     | '/auth/error'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -618,6 +628,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/admin/users'
     | '/api/ping'
+    | '/api/ready'
     | '/auth/error'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -678,6 +689,7 @@ export interface FileRouteTypes {
     | '/(pages)/pricing'
     | '/admin/users'
     | '/api/ping'
+    | '/api/ready'
     | '/auth/error'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -738,6 +750,7 @@ export interface RootRouteChildren {
   pagesContactRoute: typeof pagesContactRoute
   pagesPricingRoute: typeof pagesPricingRoute
   ApiPingRoute: typeof ApiPingRoute
+  ApiReadyRoute: typeof ApiReadyRoute
   BlogAssVsSrtWhenToConvertRoute: typeof BlogAssVsSrtWhenToConvertRoute
   BlogHowToFixSubtitleDelayOnlineRoute: typeof BlogHowToFixSubtitleDelayOnlineRoute
   BlogSrtVsVttWhichSubtitleFormatRoute: typeof BlogSrtVsVttWhichSubtitleFormatRoute
@@ -1068,6 +1081,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthErrorRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/api/ready': {
+      id: '/api/ready'
+      path: '/api/ready'
+      fullPath: '/api/ready'
+      preLoaderRoute: typeof ApiReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ping': {
       id: '/api/ping'
       path: '/api/ping'
@@ -1264,6 +1284,7 @@ const rootRouteChildren: RootRouteChildren = {
   pagesContactRoute: pagesContactRoute,
   pagesPricingRoute: pagesPricingRoute,
   ApiPingRoute: ApiPingRoute,
+  ApiReadyRoute: ApiReadyRoute,
   BlogAssVsSrtWhenToConvertRoute: BlogAssVsSrtWhenToConvertRoute,
   BlogHowToFixSubtitleDelayOnlineRoute: BlogHowToFixSubtitleDelayOnlineRoute,
   BlogSrtVsVttWhichSubtitleFormatRoute: BlogSrtVsVttWhichSubtitleFormatRoute,

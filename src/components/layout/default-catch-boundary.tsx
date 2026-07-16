@@ -9,7 +9,10 @@ import { cn } from '@/lib/utils';
  * Layout and styling aligned with NotFound for consistency.
  */
 export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
-  const message = error?.message ?? m.catch_boundary_description();
+  const message =
+    import.meta.env.DEV && error?.message
+      ? error.message
+      : m.catch_boundary_description();
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-8 px-4">
       <Logo className="size-12" />

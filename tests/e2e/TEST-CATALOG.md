@@ -4,14 +4,15 @@
 
 **File:** `specs/public-pages.spec.ts` | **Priority:** P0
 
-1. Open all 24 indexable SubtitleOps URLs.
+1. Open all 25 indexable SubtitleOps URLs.
 2. Require a successful response, visible body, and no page or console errors.
-3. Confirm `/api/ping`, `/robots.txt`, `/sitemap.xml`, and `/manifest.json`
-   respond successfully.
+3. Confirm the production security headers remain enforced.
+4. Confirm `/api/ping`, `/api/ready`, `/robots.txt`, `/sitemap.xml`, and
+   `/manifest.json` respond successfully.
 
-The 24 URLs are the homepage, tools index, Pricing, 10 tool pages, blog index,
-six blog posts, About, Contact, Privacy, and Terms. The migration intentionally
-preserves English-only canonical URLs.
+The 25 URLs are the homepage, tools index, Pricing, 10 tool pages, blog index,
+six blog posts, About, Contact, Privacy, Cookie Policy, and Terms. The migration
+intentionally preserves English-only canonical URLs.
 
 ## Converter logic acceptance
 

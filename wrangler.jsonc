@@ -8,6 +8,8 @@
     "global_fetch_strictly_public"
   ],
   "main": "./src/server.ts",
+  "workers_dev": true,
+  "preview_urls": true,
   "keep_vars": true,
   "observability": {
     "logs": {
