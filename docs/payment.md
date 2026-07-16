@@ -52,6 +52,11 @@ verifies that `STRIPE_SECRET_KEY` belongs to the SubtitleOps Stripe account
 before building or deploying. This prevents a key from another website's
 Stripe account from being used accidentally.
 
+The webhook handler does not depend on Stripe event ordering. Initial Checkout
+fulfillment uses the Checkout Session payment status, while `invoice.paid`
+reconciles invoices and renewals. Duplicate deliveries remain safe through the
+unique session, subscription, and invoice identifiers in D1.
+
 ### Billing portal
 
 Stripe provides a built-in **Customer Portal** for managing subscriptions (upgrade, cancel, update payment method). Accessed via the "Manage subscription" button on `/settings/billing`.

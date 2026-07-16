@@ -9,11 +9,13 @@ export const PAYMENT_POLL_INTERVAL = 2000;
 export const PAYMENT_MAX_POLL_TIME = 60000;
 
 /**
- * Max retry attempts for finding payment record (webhook race)
+ * Briefly retry when invoice.paid races checkout.session.completed.
+ * Checkout completion records the initial paid state itself, so later Stripe
+ * retries can reconcile the invoice without holding a webhook open for a minute.
  */
-export const PAYMENT_RECORD_RETRY_ATTEMPTS = 30;
+export const PAYMENT_RECORD_RETRY_ATTEMPTS = 3;
 
 /**
  * Retry delay between attempts (ms)
  */
-export const PAYMENT_RECORD_RETRY_DELAY = 2000;
+export const PAYMENT_RECORD_RETRY_DELAY = 500;

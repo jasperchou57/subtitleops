@@ -24,6 +24,7 @@ import type {
   PortalResult,
 } from '../types';
 import { PlanIntervals, PaymentScenes, PaymentTypes } from '../types';
+import { isCheckoutSessionPaid } from './stripe-checkout';
 
 function isUniqueConstraintError(error: unknown) {
   return (
@@ -901,7 +902,9 @@ export class StripeProvider implements PaymentProvider {
       ? new Date(subscription.trial_end * 1000)
       : null;
 
-    // Create subscription payment record with proper status and paid=false
+    // Checkout completion is sufficient to unlock the initial purchase. Stripe
+    // does not guarantee webhook ordering, so invoice.paid may arrive first or
+    // be retried later.
     await this.insertPaymentRecord(
       {
         planId: session.metadata?.planId ?? findPlanByPriceId(priceId)?.id,
@@ -913,7 +916,7 @@ export class StripeProvider implements PaymentProvider {
         subscriptionId,
         sessionId: session.id,
         invoiceId, // may be null initially
-        paid: false, // will be set to true when invoice.paid event occurs
+        paid: isCheckoutSessionPaid(session.payment_status),
         interval: this.mapStripeIntervalToPlanInterval(subscription),
         status: this.mapSubscriptionStatusToPaymentStatus(subscription.status),
         periodStart,
@@ -951,7 +954,8 @@ export class StripeProvider implements PaymentProvider {
     // One-time payments in MkFast are lifetime only (no credits)
     const scene = PaymentScenes.LIFETIME;
 
-    // Create one-time payment record with proper status and paid=false
+    // Use Checkout's payment status for the initial fulfillment. invoice.paid
+    // remains the source for later reconciliation and notifications.
     await this.insertPaymentRecord(
       {
         planId: session.metadata?.planId ?? findPlanByPriceId(priceId)?.id,
@@ -962,7 +966,7 @@ export class StripeProvider implements PaymentProvider {
         customerId,
         sessionId: session.id,
         invoiceId, // may be null initially
-        paid: false, // will be set to true when invoice.paid event occurs
+        paid: isCheckoutSessionPaid(session.payment_status),
         status: 'completed', // one-time payments are completed once checkout is done
       },
       'one-time'
