@@ -206,8 +206,15 @@ export class R2Provider implements StorageProvider {
   }
 
   async uploadFile(params: UploadFileParams): Promise<UploadFileResult> {
-    const { file, filename, contentType, folder, userId, requestOrigin } =
-      params;
+    const {
+      file,
+      filename,
+      contentType,
+      folder,
+      userId,
+      objectName,
+      requestOrigin,
+    } = params;
     const bucket = this.getBucket();
     const sanitizedFolder = sanitizeFolder(folder);
 
@@ -234,7 +241,9 @@ export class R2Provider implements StorageProvider {
 
     const fileId = generateId();
     const sanitized = sanitizeFilename(filename);
-    const storedFilename = `${fileId}-${sanitized}`;
+    const storedFilename = objectName
+      ? sanitizeFilename(objectName)
+      : `${fileId}-${sanitized}`;
 
     let r2Key: string;
     if (userId !== undefined) {
@@ -254,7 +263,9 @@ export class R2Provider implements StorageProvider {
       httpMetadata: { contentType },
     });
 
-    const url = this.getPublicUrl(r2Key, requestOrigin);
+    const baseUrl = this.getPublicUrl(r2Key, requestOrigin);
+    const url =
+      objectName && requestOrigin ? `${baseUrl}&v=${fileId}` : baseUrl;
 
     const result: UploadFileResult = { url, key: r2Key };
 

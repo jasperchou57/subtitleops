@@ -101,6 +101,8 @@ export interface UploadFileParams {
   folder?: string;
   /** When provided, key is scoped under user (e.g. user-files/{userId}/ or folder/{userId}/). */
   userId?: string;
+  /** Optional stable object name used instead of a generated filename. */
+  objectName?: string;
   /** Used to build same-origin proxy URL for the returned file. */
   requestOrigin?: string;
 }

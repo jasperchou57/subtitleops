@@ -64,9 +64,53 @@ test.describe('settings profile', () => {
       .locator('img[src*="/api/storage/file"]')
       .first()
       .getAttribute('src');
-    expect(avatarUrl).toMatch(/key=avatars%2F.+%2F.+-avatar\.png/);
+    expect(avatarUrl).toMatch(/key=avatars%2F.+%2Favatar&v=/);
     const response = await page.request.get(avatarUrl ?? '');
     expect(response.status()).toBe(200);
     expect(response.headers()['content-type']).toBe('image/png');
+  });
+
+  test('deletes the avatar object when the account is deleted', async ({
+    page,
+    request,
+  }) => {
+    const user = await registerE2EUser(request);
+    const png = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2nVQAAAAASUVORK5CYII=',
+      'base64'
+    );
+
+    await loginByForm(page, user);
+    await page.goto('/settings/profile');
+    await page
+      .locator('input[type="file"][accept*="image/png"]')
+      .setInputFiles({
+        name: 'delete-me.png',
+        mimeType: 'image/png',
+        buffer: png,
+      });
+    await expect(
+      page.getByText(/avatar updated successfully|头像更新成功/i)
+    ).toBeVisible();
+    const avatarUrl = await page
+      .locator('img[src*="/api/storage/file"]')
+      .first()
+      .getAttribute('src');
+    expect((await page.request.get(avatarUrl ?? '')).status()).toBe(200);
+
+    await page.goto('/settings/security');
+    await page
+      .getByRole('button', { name: /delete account|删除账号/i })
+      .click();
+    await page
+      .getByRole('alertdialog')
+      .getByRole('button', { name: /^delete$|^删除$/i })
+      .click();
+
+    await expect(page).toHaveURL(/\/$/);
+    await expect(
+      page.getByText(/account deleted successfully|账号删除成功/i)
+    ).toBeVisible();
+    expect((await page.request.get(avatarUrl ?? '')).status()).toBe(404);
   });
 });

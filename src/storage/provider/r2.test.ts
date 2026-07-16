@@ -58,10 +58,14 @@ describe('R2Provider.uploadFile', () => {
       contentType: 'image/png',
       folder: 'avatars',
       userId: 'user-123',
+      objectName: 'avatar',
       requestOrigin: 'https://subtitleops.com',
     });
 
-    expect(result.key).toMatch(/^avatars\/user-123\/.+-avatar\.png$/);
+    expect(result.key).toBe('avatars/user-123/avatar');
+    expect(result.url).toMatch(
+      /^https:\/\/subtitleops\.com\/api\/storage\/file\?key=avatars%2Fuser-123%2Favatar&v=/
+    );
     expect(result.url).toContain('/api/storage/file?key=');
     expect(putMock).toHaveBeenCalledOnce();
   });

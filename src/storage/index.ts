@@ -37,7 +37,12 @@ export const uploadFile = async (
   file: Buffer | Blob | File,
   filename: string,
   contentType: string,
-  options?: { folder?: string; userId?: string; requestOrigin?: string }
+  options?: {
+    folder?: string;
+    userId?: string;
+    objectName?: string;
+    requestOrigin?: string;
+  }
 ): Promise<UploadFileResult> => {
   const provider = getStorageProvider();
   return provider.uploadFile({
@@ -46,6 +51,7 @@ export const uploadFile = async (
     contentType,
     folder: options?.folder,
     userId: options?.userId,
+    objectName: options?.objectName,
     requestOrigin: options?.requestOrigin,
   });
 };

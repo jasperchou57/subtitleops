@@ -11,6 +11,7 @@ import { getBaseUrl } from '@/lib/urls';
 import { serverEnv } from '@/env/server';
 import { websiteConfig } from '@/config/website';
 import { deleteFiles } from '@/storage';
+import { DEFAULT_AVATARS_FOLDER } from '@/storage/constants';
 import { deletePaymentCustomer } from '@/payment/account-deletion';
 import { emailHarmony } from 'better-auth-harmony';
 import { admin, apiKey } from 'better-auth/plugins';
@@ -181,7 +182,7 @@ async function onCreateUser(user: User) {
 async function deleteUserData(userId: string) {
   const db = getDb();
   const [account] = await db
-    .select({ customerId: user.customerId })
+    .select({ customerId: user.customerId, image: user.image })
     .from(user)
     .where(eq(user.id, userId))
     .limit(1);
@@ -191,5 +192,21 @@ async function deleteUserData(userId: string) {
     .where(eq(userFiles.userId, userId));
 
   await deletePaymentCustomer(account?.customerId);
-  await deleteFiles(files.map((file) => file.r2Key));
+  const avatarKey = getUserAvatarKey(account?.image, userId);
+  await deleteFiles(
+    files
+      .map((file) => file.r2Key)
+      .concat(avatarKey === null ? [] : [avatarKey])
+  );
+}
+
+function getUserAvatarKey(image: string | null | undefined, userId: string) {
+  if (!image) return null;
+  try {
+    const key = new URL(image, getBaseUrl()).searchParams.get('key');
+    const expectedKey = `${DEFAULT_AVATARS_FOLDER}/${userId}/avatar`;
+    return key === expectedKey ? key : null;
+  } catch {
+    return null;
+  }
 }

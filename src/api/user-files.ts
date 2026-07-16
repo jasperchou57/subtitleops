@@ -112,6 +112,7 @@ export const uploadUserFile = createServerFn({ method: 'POST' })
       const result = await uploadFile(buffer, data.file.name, data.file.type, {
         folder: publicFolder ? DEFAULT_AVATARS_FOLDER : data.folder,
         userId: userId ?? undefined,
+        objectName: publicFolder ? 'avatar' : undefined,
         requestOrigin,
       });
 
