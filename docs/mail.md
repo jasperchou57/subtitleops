@@ -40,6 +40,10 @@ src/mail/
 | Env var | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID; required when using Cloudflare Email provider. |
 | Env var | `CLOUDFLARE_API_TOKEN` | Cloudflare API token; required when using Cloudflare provider. |
 
+For the production deployment workflow, set the GitHub Actions repository
+variable `VITE_MAIL_ENABLED=true` only after the sending domain is verified and
+the `RESEND_API_KEY` repository secret has been added.
+
 ---
 
 ## Providers

@@ -22,25 +22,82 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       # --- Client-side (VITE_*) env vars baked into the build ---
-      VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
-      VITE_MAIL_ENABLED: ${{ secrets.VITE_MAIL_ENABLED }}
-      VITE_PAYMENT_PROVIDER: ${{ secrets.VITE_PAYMENT_PROVIDER }}
-      VITE_STRIPE_PRICE_PRO_MONTHLY: ${{ secrets.VITE_STRIPE_PRICE_PRO_MONTHLY }}
-      VITE_STRIPE_PRICE_PRO_YEARLY: ${{ secrets.VITE_STRIPE_PRICE_PRO_YEARLY }}
-      VITE_STRIPE_PRICE_STUDIO_MONTHLY: ${{ secrets.VITE_STRIPE_PRICE_STUDIO_MONTHLY }}
-      VITE_STRIPE_PRICE_STUDIO_YEARLY: ${{ secrets.VITE_STRIPE_PRICE_STUDIO_YEARLY }}
-      VITE_GOOGLE_ANALYTICS_ID: ${{ secrets.VITE_GOOGLE_ANALYTICS_ID }}
-      VITE_ADSENSE_ENABLED: ${{ secrets.VITE_ADSENSE_ENABLED }}
-      VITE_ADSENSE_CLIENT_ID: ${{ secrets.VITE_ADSENSE_CLIENT_ID }}
+      VITE_BASE_URL: https://subtitleops.com
+      VITE_MAIL_ENABLED: ${{ vars.VITE_MAIL_ENABLED || 'false' }}
+      VITE_PAYMENT_PROVIDER: stripe
+      VITE_STRIPE_PRICE_PRO_MONTHLY: price_1Ttph8LqS2UAWoIc0jkIjKDQ
+      VITE_STRIPE_PRICE_PRO_YEARLY: price_1TtpiwLqS2UAWoIc8rLz3yjB
+      VITE_STRIPE_PRICE_STUDIO_MONTHLY: price_1TtpkJLqS2UAWoIc81hvQWK5
+      VITE_STRIPE_PRICE_STUDIO_YEARLY: price_1TtplrLqS2UAWoIc88IdfmRF
+      VITE_GOOGLE_ANALYTICS_ID: G-3RKDT74KDZ
+      VITE_ADSENSE_ENABLED: ${{ vars.VITE_ADSENSE_ENABLED || 'false' }}
+      VITE_ADSENSE_CLIENT_ID: ca-pub-9498208038262605
       # --- Worker runtime secrets ---
       BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+      EXPECTED_STRIPE_ACCOUNT_ID: acct_1Ttp7cLqS2UAWoIc
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+
+      - name: Validate production configuration
+        run: |
+          : "${CLOUDFLARE_ACCOUNT_ID:?Missing CLOUDFLARE_ACCOUNT_ID GitHub secret}"
+          : "${CLOUDFLARE_API_TOKEN:?Missing CLOUDFLARE_API_TOKEN GitHub secret}"
+          : "${BETTER_AUTH_SECRET:?Missing BETTER_AUTH_SECRET GitHub secret}"
+          : "${STRIPE_SECRET_KEY:?Missing STRIPE_SECRET_KEY GitHub secret}"
+          : "${STRIPE_WEBHOOK_SECRET:?Missing STRIPE_WEBHOOK_SECRET GitHub secret}"
+
+          case "$STRIPE_SECRET_KEY" in
+            sk_live_*) ;;
+            *)
+              echo "STRIPE_SECRET_KEY must be a Stripe live-mode secret key."
+              exit 1
+              ;;
+          esac
+          case "$STRIPE_WEBHOOK_SECRET" in
+            whsec_*) ;;
+            *)
+              echo "STRIPE_WEBHOOK_SECRET must be a Stripe webhook signing secret."
+              exit 1
+              ;;
+          esac
+
+          stripe_account_id="$(
+            curl --fail --silent --show-error \
+              --user "$STRIPE_SECRET_KEY:" \
+              https://api.stripe.com/v1/account |
+              jq -r '.id // empty'
+          )"
+          if [ "$stripe_account_id" != "$EXPECTED_STRIPE_ACCOUNT_ID" ]; then
+            echo "Stripe key belongs to '$stripe_account_id', expected SubtitleOps account '$EXPECTED_STRIPE_ACCOUNT_ID'."
+            exit 1
+          fi
+
+          verify_price() {
+            price_id="$1"
+            expected_amount="$2"
+            expected_interval="$3"
+            if ! curl --fail --silent --show-error \
+              --user "$STRIPE_SECRET_KEY:" \
+              "https://api.stripe.com/v1/prices/$price_id" |
+              jq -e \
+                --argjson amount "$expected_amount" \
+                --arg interval "$expected_interval" \
+                '.active == true and .unit_amount == $amount and .currency == "usd" and .recurring.interval == $interval' \
+                >/dev/null; then
+              echo "Stripe price '$price_id' is missing, inactive, or does not match the expected amount and interval."
+              exit 1
+            fi
+          }
+
+          verify_price "$VITE_STRIPE_PRICE_PRO_MONTHLY" 999 month
+          verify_price "$VITE_STRIPE_PRICE_PRO_YEARLY" 7900 year
+          verify_price "$VITE_STRIPE_PRICE_STUDIO_MONTHLY" 2499 month
+          verify_price "$VITE_STRIPE_PRICE_STUDIO_YEARLY" 19900 year
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v5
@@ -59,9 +116,6 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         run: |
-          : "${BETTER_AUTH_SECRET:?Missing BETTER_AUTH_SECRET GitHub secret}"
-          : "${STRIPE_SECRET_KEY:?Missing STRIPE_SECRET_KEY GitHub secret}"
-          : "${STRIPE_WEBHOOK_SECRET:?Missing STRIPE_WEBHOOK_SECRET GitHub secret}"
           if [ "${VITE_MAIL_ENABLED:-false}" = "true" ]; then
             : "${RESEND_API_KEY:?Missing RESEND_API_KEY GitHub secret while mail is enabled}"
           fi

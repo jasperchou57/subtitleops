@@ -18,7 +18,8 @@ Before enabling it in production:
 4. Enable consent mode for advertising and analytics purposes if GA4 should use
    the choices collected by Google's CMP.
 5. Test the published message on the production domain.
-6. Only then set `VITE_ADSENSE_ENABLED=true` in the GitHub build secrets.
+6. Only then set the GitHub Actions repository variable
+   `VITE_ADSENSE_ENABLED=true`.
 
 The public disclosure is available at `/cookie`. Do not replace the certified
 CMP with a custom cookie banner for EEA, UK, or Swiss personalized-ad traffic.

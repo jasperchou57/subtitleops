@@ -47,6 +47,11 @@ Subscription and one-time payment support via a **provider pattern** — switch 
    - Webhook: `https://your-domain.com/api/webhooks/stripe`
      Events: `checkout.session.completed`, `customer.subscription.created|updated|deleted`, `invoice.paid`.
 
+The production GitHub workflow is pinned to the SubtitleOps live Price IDs and
+verifies that `STRIPE_SECRET_KEY` belongs to the SubtitleOps Stripe account
+before building or deploying. This prevents a key from another website's
+Stripe account from being used accidentally.
+
 ### Billing portal
 
 Stripe provides a built-in **Customer Portal** for managing subscriptions (upgrade, cancel, update payment method). Accessed via the "Manage subscription" button on `/settings/billing`.
