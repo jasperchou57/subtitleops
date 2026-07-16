@@ -26,6 +26,20 @@ test.describe('paid subtitle workflows', () => {
     await cleanupE2EUsers(request);
   });
 
+  test('Free users are directed to single-file tools instead of paid workflows', async ({
+    page,
+    request,
+  }) => {
+    const user = await registerE2EUser(request);
+    await loginByForm(page, user);
+    await page.goto('/dashboard/workflows');
+
+    await expect(page.getByTestId('workflow-studio')).toContainText(/free/i);
+    await expect(page.getByTestId('batch-upgrade-required')).toBeVisible();
+    await expect(page.getByTestId('process-batch')).toHaveCount(0);
+    await expect(page.getByLabel('Subtitle files')).toHaveCount(0);
+  });
+
   test('Pro processes a batch, checks quality, and saves history', async ({
     page,
     request,
@@ -115,5 +129,37 @@ test.describe('paid subtitle workflows', () => {
     await page.getByRole('button', { name: 'Invite' }).click();
     await expect(page.getByText('3 of 3 seats used')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Invite' })).toBeDisabled();
+  });
+
+  test('an invitation cannot be accepted after the owner loses Studio', async ({
+    browser,
+    page,
+    request,
+  }) => {
+    const owner = await registerE2EUser(request);
+    const invitedUser = await registerE2EUser(request);
+    await updateE2EUser(request, { email: owner.email, planId: 'studio' });
+    await loginByForm(page, owner);
+    await page.goto('/dashboard/workflows');
+
+    await page.getByLabel('Team member email').fill(invitedUser.email);
+    await page.getByRole('button', { name: 'Invite' }).click();
+    const inviteLink = await page.getByLabel('Invitation link').inputValue();
+    await updateE2EUser(request, { email: owner.email, planId: 'free' });
+
+    const inviteeContext = await browser.newContext({
+      baseURL: process.env.PLAYWRIGHT_BASE_URL,
+    });
+    const inviteePage = await inviteeContext.newPage();
+    await loginByForm(inviteePage, invitedUser);
+    await inviteePage.goto(inviteLink);
+    await inviteePage
+      .getByRole('button', { name: 'Accept invitation' })
+      .click();
+
+    await expect(
+      inviteePage.getByText(/active Studio plan before this invitation/i)
+    ).toBeVisible();
+    await inviteeContext.close();
   });
 });

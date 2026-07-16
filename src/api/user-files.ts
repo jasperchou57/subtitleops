@@ -4,6 +4,7 @@ import { getBaseUrl } from '@/lib/urls';
 import { getUserEntitlement } from '@/lib/entitlements';
 import { authApiMiddleware } from '@/middlewares/auth-middleware';
 import { deleteFile, uploadFile } from '@/storage';
+import { DEFAULT_AVATARS_FOLDER } from '@/storage/constants';
 import { StorageError, UploadError } from '@/storage/types';
 import { isPublicFolder } from '@/storage/utils';
 import { createServerFn } from '@tanstack/react-start';
@@ -106,16 +107,15 @@ export const uploadUserFile = createServerFn({ method: 'POST' })
         }
       }
 
-      // Public folders (avatars, product logos/og-images) are shared resources:
-      // no userId → stored directly under folder → no userFiles DB record.
-      // Private files get userId scoping and are tracked in userFiles.
+      // Avatar uploads are public but remain scoped to the signed-in user.
+      // Private files are also user-scoped and tracked in userFiles.
       const result = await uploadFile(buffer, data.file.name, data.file.type, {
-        folder: data.folder,
-        userId: publicFolder ? undefined : (userId ?? undefined),
+        folder: publicFolder ? DEFAULT_AVATARS_FOLDER : data.folder,
+        userId: userId ?? undefined,
         requestOrigin,
       });
 
-      // Only user-scoped uploads produce metadata; record them in DB
+      // Avatar objects are public profile assets; private uploads are recorded.
       if (!publicFolder && userId && result.metadata) {
         const db = getDb();
         const now = result.metadata.uploadedAt;

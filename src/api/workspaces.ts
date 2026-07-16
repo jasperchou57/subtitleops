@@ -1,6 +1,7 @@
 import { getDb } from '@/db';
 import { workspaceMembers, workspaces } from '@/db/app.schema';
 import { user } from '@/db/auth.schema';
+import { getUserEntitlement } from '@/lib/entitlements';
 import { getDefaultWorkspaceAccess, getWorkspaceAccess } from '@/lib/workspace';
 import { Routes } from '@/lib/routes';
 import { getCanonicalUrl } from '@/lib/urls';
@@ -11,6 +12,7 @@ import { and, asc, count, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const workspaceIdSchema = z.object({ workspaceId: z.string().min(1) });
+const WORKSPACE_INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export const getWorkspaceOverview = createServerFn({ method: 'GET' })
   .middleware([authApiMiddleware])
@@ -174,6 +176,9 @@ export const updateWorkspaceMemberRole = createServerFn({ method: 'POST' })
     const access = await getWorkspaceAccess(context.userId, data.workspaceId);
     if (access.member.role !== 'owner')
       throw new Error('Owner access required');
+    if (!access.entitlement.sharedWorkspace) {
+      throw new Error('Studio plan required for team workspaces');
+    }
 
     const [member] = await getDb()
       .update(workspaceMembers)
@@ -213,6 +218,40 @@ export const acceptWorkspaceInvite = createServerFn({ method: 'POST' })
     if (member.email !== userRow.email.toLowerCase()) {
       throw new Error('This invite belongs to another email address');
     }
+    if (Date.now() - member.createdAt.getTime() > WORKSPACE_INVITE_TTL_MS) {
+      await db
+        .delete(workspaceMembers)
+        .where(
+          and(
+            eq(workspaceMembers.id, member.id),
+            eq(workspaceMembers.status, 'invited')
+          )
+        );
+      throw new Error('This invitation has expired');
+    }
+
+    const [workspace] = await db
+      .select({ ownerId: workspaces.ownerId })
+      .from(workspaces)
+      .where(eq(workspaces.id, member.workspaceId))
+      .limit(1);
+    if (!workspace) throw new Error('Workspace not found');
+
+    const entitlement = await getUserEntitlement(workspace.ownerId);
+    if (!entitlement.sharedWorkspace) {
+      throw new Error(
+        'The workspace owner needs an active Studio plan before this invitation can be accepted'
+      );
+    }
+    const [seatCount] = await db
+      .select({ count: count() })
+      .from(workspaceMembers)
+      .where(eq(workspaceMembers.workspaceId, member.workspaceId));
+    if ((seatCount?.count ?? 0) > entitlement.seatLimit) {
+      throw new Error(
+        `This workspace has reached its ${entitlement.seatLimit}-seat limit`
+      );
+    }
 
     const [accepted] = await db
       .update(workspaceMembers)
@@ -222,7 +261,14 @@ export const acceptWorkspaceInvite = createServerFn({ method: 'POST' })
         inviteToken: null,
         updatedAt: new Date(),
       })
-      .where(eq(workspaceMembers.id, member.id))
+      .where(
+        and(
+          eq(workspaceMembers.id, member.id),
+          eq(workspaceMembers.status, 'invited'),
+          eq(workspaceMembers.inviteToken, data.token)
+        )
+      )
       .returning();
+    if (!accepted) throw new Error('Invite not found');
     return { member: accepted };
   });

@@ -9,7 +9,7 @@ import {
 import { getWorkspaceAccess } from '@/lib/workspace';
 import { authApiMiddleware } from '@/middlewares/auth-middleware';
 import { createServerFn } from '@tanstack/react-start';
-import { and, asc, desc, eq, gt } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, or } from 'drizzle-orm';
 import { z } from 'zod';
 
 const outputFormatSchema = z.enum(['srt', 'ass', 'vtt', 'txt']);
@@ -26,7 +26,15 @@ export const listConversionPresets = createServerFn({ method: 'GET' })
     const presets = await getDb()
       .select()
       .from(conversionPresets)
-      .where(eq(conversionPresets.workspaceId, data.workspaceId))
+      .where(
+        and(
+          eq(conversionPresets.workspaceId, data.workspaceId),
+          or(
+            eq(conversionPresets.createdBy, context.userId),
+            eq(conversionPresets.shared, true)
+          )
+        )
+      )
       .orderBy(asc(conversionPresets.name));
     return { presets };
   });

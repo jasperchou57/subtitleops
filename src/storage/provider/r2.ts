@@ -1,5 +1,6 @@
 import { env } from 'cloudflare:workers';
 import {
+  AVATAR_ALLOWED_TYPES,
   DEFAULT_ALLOWED_TYPES,
   DEFAULT_MAX_FILE_SIZE,
   DEFAULT_USER_FILES_FOLDER,
@@ -16,7 +17,7 @@ import {
   StorageError,
   UploadError,
 } from '../types';
-import { sanitizeFolder } from '../utils';
+import { isPublicFolder, sanitizeFolder } from '../utils';
 import { websiteConfig } from '../../config/website';
 
 const success = <T>(data: T): ValidationResult<T> => ({ success: true, data });
@@ -165,6 +166,7 @@ export class R2Provider implements StorageProvider {
   private readonly bucket: R2BucketInterface;
   private readonly userFilesFolder: string;
   private readonly validator: FileValidator;
+  private readonly avatarValidator: FileValidator;
 
   constructor() {
     this.bucket = env.BUCKET;
@@ -180,6 +182,10 @@ export class R2Provider implements StorageProvider {
       maxFileSize: websiteConfig.storage?.maxFileSize ?? DEFAULT_MAX_FILE_SIZE,
       allowedTypes:
         websiteConfig.storage?.allowedTypes ?? DEFAULT_ALLOWED_TYPES,
+    });
+    this.avatarValidator = createFileValidator({
+      maxFileSize: websiteConfig.storage?.maxFileSize ?? DEFAULT_MAX_FILE_SIZE,
+      allowedTypes: AVATAR_ALLOWED_TYPES,
     });
   }
 
@@ -203,6 +209,7 @@ export class R2Provider implements StorageProvider {
     const { file, filename, contentType, folder, userId, requestOrigin } =
       params;
     const bucket = this.getBucket();
+    const sanitizedFolder = sanitizeFolder(folder);
 
     const fileForValidation =
       file instanceof File
@@ -212,7 +219,10 @@ export class R2Provider implements StorageProvider {
             filename,
             { type: contentType }
           );
-    const validation = this.validator.validateFile(fileForValidation, filename);
+    const validator = isPublicFolder(sanitizedFolder)
+      ? this.avatarValidator
+      : this.validator;
+    const validation = validator.validateFile(fileForValidation, filename);
     if (!validation.success) {
       throw new UploadError(validation.error);
     }
@@ -225,7 +235,6 @@ export class R2Provider implements StorageProvider {
     const fileId = generateId();
     const sanitized = sanitizeFilename(filename);
     const storedFilename = `${fileId}-${sanitized}`;
-    const sanitizedFolder = sanitizeFolder(folder);
 
     let r2Key: string;
     if (userId !== undefined) {

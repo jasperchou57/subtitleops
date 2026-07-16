@@ -6,11 +6,11 @@ import {
 } from '../fixtures/auth';
 
 test.describe('settings profile', () => {
-  test.beforeAll(async ({ request }) => {
+  test.beforeEach(async ({ request }) => {
     await cleanupE2EUsers(request);
   });
 
-  test.afterAll(async ({ request }) => {
+  test.afterEach(async ({ request }) => {
     await cleanupE2EUsers(request);
   });
 
@@ -33,5 +33,40 @@ test.describe('settings profile', () => {
 
     await page.reload();
     await expect(page.locator('input[name="name"]')).toHaveValue(newName);
+  });
+
+  test('uploads a public avatar scoped to the signed-in user', async ({
+    page,
+    request,
+  }) => {
+    const user = await registerE2EUser(request);
+    const png = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2nVQAAAAASUVORK5CYII=',
+      'base64'
+    );
+
+    await loginByForm(page, user);
+    await page.goto('/settings/profile');
+    await page
+      .locator('input[type="file"][accept*="image/png"]')
+      .setInputFiles({
+        name: 'avatar.png',
+        mimeType: 'image/png',
+        buffer: png,
+      });
+
+    await expect(
+      page.getByText(/avatar updated successfully|头像更新成功/i)
+    ).toBeVisible();
+    await page.reload();
+
+    const avatarUrl = await page
+      .locator('img[src*="/api/storage/file"]')
+      .first()
+      .getAttribute('src');
+    expect(avatarUrl).toMatch(/key=avatars%2F.+%2F.+-avatar\.png/);
+    const response = await page.request.get(avatarUrl ?? '');
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']).toBe('image/png');
   });
 });

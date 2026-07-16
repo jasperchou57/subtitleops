@@ -14,7 +14,7 @@ import {
 } from '@/api/workspaces';
 import { uploadUserFile } from '@/api/user-files';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -286,6 +286,39 @@ export function WorkflowStudio() {
     );
   }
 
+  if (entitlement.planId === 'free') {
+    return (
+      <div className="space-y-6" data-testid="workflow-studio">
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border p-4">
+          <Badge className="uppercase">{entitlement.planId}</Badge>
+          <span className="text-sm text-muted-foreground">
+            All 10 single-file tools stay free in your browser.
+          </span>
+        </div>
+        <Card data-testid="batch-upgrade-required">
+          <CardHeader>
+            <CardTitle>Batch workflows start with Pro</CardTitle>
+            <CardDescription>
+              Upgrade for multi-file conversion, ZIP export and naming, reusable
+              presets, quality checks, and private project history.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-3">
+            <Link className={buttonVariants()} to={Routes.Pricing}>
+              Compare Pro and Studio
+            </Link>
+            <Link
+              className={buttonVariants({ variant: 'outline' })}
+              to={Routes.Root}
+            >
+              Use free single-file tools
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6" data-testid="workflow-studio">
       <div className="flex flex-wrap items-center gap-3 rounded-xl border p-4">
@@ -296,14 +329,6 @@ export function WorkflowStudio() {
           -day history · {entitlement.seatLimit} seat
           {entitlement.seatLimit > 1 ? 's' : ''}
         </span>
-        {entitlement.planId === 'free' && (
-          <Link
-            className="ml-auto text-sm font-medium underline"
-            to={Routes.Pricing}
-          >
-            Upgrade for batch workflows
-          </Link>
-        )}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.35fr_1fr]">

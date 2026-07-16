@@ -17,3 +17,8 @@ export const DEFAULT_USER_FILES_FOLDER = 'userfiles';
  * Default parent folder for avatars (e.g. avatars => avatars/{userId}/)
  */
 export const DEFAULT_AVATARS_FOLDER = 'avatars';
+
+/**
+ * Image formats accepted for user avatars.
+ */
+export const AVATAR_ALLOWED_TYPES = ['.jpg', '.jpeg', '.png', '.webp'];

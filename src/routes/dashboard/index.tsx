@@ -66,7 +66,11 @@ function DashboardPage() {
             <MetricCard
               icon={<IconFiles />}
               label="Batch limit"
-              value={`${overview.entitlement.batchFileLimit} files`}
+              value={
+                overview.entitlement.planId === 'free'
+                  ? 'Not included'
+                  : `${overview.entitlement.batchFileLimit} files`
+              }
             />
             <MetricCard
               icon={<IconArchive />}
