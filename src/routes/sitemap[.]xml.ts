@@ -23,7 +23,8 @@ const entries = [
   ['/blog/ass-vs-srt-when-to-convert', '2026-04-27', 'monthly', '0.8'],
   ['/blog/srt-vs-vtt-which-subtitle-format', '2026-06-29', 'monthly', '0.8'],
   ['/about', '2026-04-27', 'yearly', '0.4'],
-  ['/privacy', '2026-07-14', 'yearly', '0.3'],
+  ['/privacy', '2026-07-16', 'yearly', '0.3'],
+  ['/cookie', '2026-07-16', 'yearly', '0.2'],
   ['/terms', '2026-03-22', 'yearly', '0.3'],
   ['/contact', '2026-03-22', 'yearly', '0.4'],
 ] as const;

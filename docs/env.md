@@ -38,6 +38,8 @@ Values are read by Vite from `.env*` during `pnpm dev` / `pnpm build` and inline
 | `VITE_CREEM_PRODUCT_STUDIO_YEARLY` | Creem Product ID (Studio yearly) | No | |
 | **Analytics** | | | |
 | `VITE_GOOGLE_ANALYTICS_ID` | Google Analytics | No | |
+| `VITE_ADSENSE_ENABLED` | Load the AdSense tag | No | Keep `false` until a certified CMP message is published |
+| `VITE_ADSENSE_CLIENT_ID` | AdSense publisher ID | No | Required when AdSense is enabled |
 | `VITE_CLARITY_PROJECT_ID` | Microsoft Clarity | No | |
 | `VITE_PLAUSIBLE_SCRIPT` | Plausible script URL | No | |
 | `VITE_UMAMI_WEBSITE_ID` | Umami Analytics | No | |

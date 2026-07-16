@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <p className="text-sm text-muted-foreground mb-10">
-        Last updated: July 12, 2026
+        Last updated: July 16, 2026
       </p>
 
       <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
@@ -84,12 +84,21 @@ export default function PrivacyPage() {
           Advertising
         </h2>
         <p>
-          We use Google AdSense to display advertising. Google and its partners
-          may use cookies, web beacons, IP addresses, device information, and
-          similar technologies to serve ads, limit how often ads are shown,
-          measure ad performance, and help keep ads relevant. Learn more about
-          how Google uses information from sites and apps that use its services
-          at{' '}
+          When advertising is enabled, we use Google AdSense to display
+          advertising. Google and its partners may use cookies, web beacons, IP
+          addresses, device information, and similar technologies to serve ads,
+          limit how often ads are shown, measure ad performance, and help keep
+          ads relevant. Where required, advertising and analytics choices are
+          collected through a Google-certified consent management platform. Read
+          our{' '}
+          <a
+            href="/cookie"
+            className="font-medium underline underline-offset-4 hover:text-foreground/70"
+          >
+            Cookie Policy
+          </a>{' '}
+          or learn more about how Google uses information from sites and apps
+          that use its services at{' '}
           <a
             href="https://policies.google.com/technologies/partner-sites"
             target="_blank"

@@ -16,6 +16,7 @@ import { ClientScript } from '@/components/shared/client-script';
 import { Toaster } from '@/components/shared/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { clientEnv } from '@/env/client';
 import { Routes } from '@/lib/routes';
 import appCss from '../styles.css?url';
 
@@ -74,6 +75,8 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const adsenseClientId = clientEnv.VITE_ADSENSE_CLIENT_ID?.trim();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -88,11 +91,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           </TooltipProvider>
         </ThemeProvider>
         <Analytics />
-        <ClientScript
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9498208038262605"
-          async
-          crossOrigin="anonymous"
-        />
+        {clientEnv.VITE_ADSENSE_ENABLED && adsenseClientId && (
+          <ClientScript
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(adsenseClientId)}`}
+            async
+            crossOrigin="anonymous"
+          />
+        )}
         <Scripts />
       </body>
     </html>

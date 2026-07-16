@@ -27,11 +27,12 @@ const publicPages = [
   '/blog/srt-vs-vtt-which-subtitle-format',
   '/about',
   '/privacy',
+  '/cookie',
   '/terms',
   '/contact',
 ] as const;
 
-test('all 24 public pages render without browser errors', async ({ page }) => {
+test('all 25 public pages render without browser errors', async ({ page }) => {
   const monitor = installPageHealthMonitor(page);
 
   for (const path of publicPages) {
@@ -39,6 +40,17 @@ test('all 24 public pages render without browser errors', async ({ page }) => {
       await expectHealthyPage(page, monitor, path);
     });
   }
+});
+
+test('AdSense stays disabled until production consent messaging is ready', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(
+    page.locator(
+      'script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]'
+    )
+  ).toHaveCount(0);
 });
 
 test('public machine-readable endpoints respond', async ({ request }) => {
@@ -49,5 +61,10 @@ test('public machine-readable endpoints respond', async ({ request }) => {
   for (const path of ['/robots.txt', '/sitemap.xml', '/manifest.json']) {
     const response = await request.get(path);
     await expect(response, path).toBeOK();
+    if (path === '/sitemap.xml') {
+      expect(await response.text()).toMatch(
+        /<loc>https?:\/\/[^<]+\/cookie<\/loc>/
+      );
+    }
   }
 });

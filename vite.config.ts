@@ -31,6 +31,7 @@ const publicPages = [
   '/blog/srt-vs-vtt-which-subtitle-format',
   '/about',
   '/privacy',
+  '/cookie',
   '/terms',
   '/contact',
 ];

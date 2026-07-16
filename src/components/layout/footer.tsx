@@ -185,6 +185,15 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  href="/cookie"
+                  title="SubtitleOps Cookie Policy"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Cookie Policy
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/terms"
                   title="SubtitleOps Terms of Service"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"

@@ -59,6 +59,7 @@ import { Route as pagesContactRouteImport } from './routes/(pages)/contact'
 import { Route as pagesAboutRouteImport } from './routes/(pages)/about'
 import { Route as legalsTermsRouteImport } from './routes/(legals)/terms'
 import { Route as legalsPrivacyRouteImport } from './routes/(legals)/privacy'
+import { Route as legalsCookieRouteImport } from './routes/(legals)/cookie'
 import { Route as ApiWebhooksStripeRouteImport } from './routes/api/webhooks/stripe'
 import { Route as ApiWebhooksCreemRouteImport } from './routes/api/webhooks/creem'
 import { Route as ApiV1ConvertRouteImport } from './routes/api/v1/convert'
@@ -322,6 +323,11 @@ const legalsPrivacyRoute = legalsPrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const legalsCookieRoute = legalsCookieRouteImport.update({
+  id: '/(legals)/cookie',
+  path: '/cookie',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiWebhooksStripeRoute = ApiWebhooksStripeRouteImport.update({
   id: '/api/webhooks/stripe',
   path: '/api/webhooks/stripe',
@@ -367,6 +373,7 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/settings': typeof SettingsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/cookie': typeof legalsCookieRoute
   '/privacy': typeof legalsPrivacyRoute
   '/terms': typeof legalsTermsRoute
   '/about': typeof pagesAboutRoute
@@ -423,6 +430,7 @@ export interface FileRoutesByTo {
   '/manifest.json': typeof ManifestDotjsonRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/cookie': typeof legalsCookieRoute
   '/privacy': typeof legalsPrivacyRoute
   '/terms': typeof legalsTermsRoute
   '/about': typeof pagesAboutRoute
@@ -483,6 +491,7 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/settings': typeof SettingsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/(legals)/cookie': typeof legalsCookieRoute
   '/(legals)/privacy': typeof legalsPrivacyRoute
   '/(legals)/terms': typeof legalsTermsRoute
   '/(pages)/about': typeof pagesAboutRoute
@@ -544,6 +553,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/settings'
     | '/sitemap.xml'
+    | '/cookie'
     | '/privacy'
     | '/terms'
     | '/about'
@@ -600,6 +610,7 @@ export interface FileRouteTypes {
     | '/manifest.json'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/cookie'
     | '/privacy'
     | '/terms'
     | '/about'
@@ -659,6 +670,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/settings'
     | '/sitemap.xml'
+    | '/(legals)/cookie'
     | '/(legals)/privacy'
     | '/(legals)/terms'
     | '/(pages)/about'
@@ -719,6 +731,7 @@ export interface RootRouteChildren {
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SettingsRoute: typeof SettingsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  legalsCookieRoute: typeof legalsCookieRoute
   legalsPrivacyRoute: typeof legalsPrivacyRoute
   legalsTermsRoute: typeof legalsTermsRoute
   pagesAboutRoute: typeof pagesAboutRoute
@@ -1104,6 +1117,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof legalsPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(legals)/cookie': {
+      id: '/(legals)/cookie'
+      path: '/cookie'
+      fullPath: '/cookie'
+      preLoaderRoute: typeof legalsCookieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/webhooks/stripe': {
       id: '/api/webhooks/stripe'
       path: '/api/webhooks/stripe'
@@ -1237,6 +1257,7 @@ const rootRouteChildren: RootRouteChildren = {
   RobotsDottxtRoute: RobotsDottxtRoute,
   SettingsRoute: SettingsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  legalsCookieRoute: legalsCookieRoute,
   legalsPrivacyRoute: legalsPrivacyRoute,
   legalsTermsRoute: legalsTermsRoute,
   pagesAboutRoute: pagesAboutRoute,
