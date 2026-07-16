@@ -17,6 +17,8 @@ describe('workspace invitation email', () => {
     expect(result.subject).toBe('Join a SubtitleOps workspace');
     expect(result.html).toContain('Caption Studio');
     expect(result.html).toContain('reviewer');
+    expect(result.text).toContain('SubtitleOps Team');
+    expect(result.html).not.toContain('TanStarter');
     expect(result.html).toContain(invitationUrl.replace('&', '&amp;'));
     expect(result.text).toContain(
       'You have been invited to join Caption Studio as a reviewer.'
