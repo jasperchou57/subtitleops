@@ -5,12 +5,14 @@ import ContactMessage from './templates/contact-message';
 import ForgotPassword from './templates/forgot-password';
 import SubscribeNewsletter from './templates/subscribe-newsletter';
 import VerifyEmail from './templates/verify-email';
+import WorkspaceInvitation from './templates/workspace-invitation';
 
 const EmailTemplates = {
   forgotPassword: ForgotPassword,
   verifyEmail: VerifyEmail,
   subscribeNewsletter: SubscribeNewsletter,
   contactMessage: ContactMessage,
+  workspaceInvitation: WorkspaceInvitation,
 } as const;
 
 const en = { locale: 'en' as const };
@@ -19,6 +21,7 @@ const EmailSubjects: Record<EmailTemplate, string> = {
   verifyEmail: m.mail_verify_email_subject(undefined, en),
   subscribeNewsletter: m.mail_subscribe_newsletter_subject(undefined, en),
   contactMessage: m.mail_contact_message_subject(undefined, en),
+  workspaceInvitation: m.mail_workspace_invitation_subject(undefined, en),
 };
 
 export async function renderEmailHtml(email: ReactElement): Promise<string> {

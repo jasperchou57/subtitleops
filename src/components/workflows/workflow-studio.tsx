@@ -127,13 +127,13 @@ export function WorkflowStudio() {
       }),
     onSuccess: (result) => {
       setInviteEmail('');
-      setInviteLink(
-        result.inviteToken
-          ? `${window.location.origin}${Routes.WorkspaceInvite}?token=${result.inviteToken}`
-          : ''
-      );
+      setInviteLink(result.inviteUrl ?? '');
       queryClient.invalidateQueries({ queryKey: workspaceQueryKey });
-      toast.success('Invitation created');
+      toast.success(
+        result.emailSent
+          ? 'Invitation email sent'
+          : 'Invitation created — share the link below'
+      );
     },
     onError: (error) => toast.error(error.message),
   });

@@ -14,7 +14,8 @@ export type EmailTemplate =
   | 'forgotPassword'
   | 'verifyEmail'
   | 'subscribeNewsletter'
-  | 'contactMessage';
+  | 'contactMessage'
+  | 'workspaceInvitation';
 
 export interface SendEmailResult {
   success: boolean;

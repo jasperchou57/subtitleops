@@ -2,6 +2,9 @@ import { getDb } from '@/db';
 import { workspaceMembers, workspaces } from '@/db/app.schema';
 import { user } from '@/db/auth.schema';
 import { getDefaultWorkspaceAccess, getWorkspaceAccess } from '@/lib/workspace';
+import { Routes } from '@/lib/routes';
+import { getCanonicalUrl } from '@/lib/urls';
+import { sendEmail } from '@/mail';
 import { authApiMiddleware } from '@/middlewares/auth-middleware';
 import { createServerFn } from '@tanstack/react-start';
 import { and, asc, count, eq } from 'drizzle-orm';
@@ -107,7 +110,25 @@ export const inviteWorkspaceMember = createServerFn({ method: 'POST' })
       })
       .returning();
 
-    return { member, inviteToken };
+    const inviteUrl = getCanonicalUrl(
+      `${Routes.WorkspaceInvite}?token=${inviteToken}`
+    );
+    const emailResult = await sendEmail({
+      to: data.email,
+      template: 'workspaceInvitation',
+      context: {
+        url: inviteUrl,
+        workspaceName: access.workspace.name,
+        role: data.role,
+      },
+    });
+
+    return {
+      member,
+      inviteToken,
+      inviteUrl,
+      emailSent: emailResult.success,
+    };
   });
 
 const memberMutationSchema = workspaceIdSchema.extend({
