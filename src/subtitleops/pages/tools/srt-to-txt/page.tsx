@@ -1,0 +1,470 @@
+import type { LegacyMetadata as Metadata } from '@/lib/legacy-metadata';
+import Link from '@/compat/next-link';
+import { SrtToTxtConverter } from './converter';
+import { VibeBackgroundGlow } from '@/components/ui/vibe-background-glow';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
+
+export const metadata: Metadata = {
+  title: 'SRT to TXT Converter - Remove Timestamps',
+  description:
+    'Convert SRT subtitles to clean TXT. Remove timestamps, cue numbers, and basic markup for transcripts, translation, review, or text analysis.',
+  keywords: [
+    'srt to txt',
+    'srt to text',
+    'subtitle to text',
+    'subtitle transcript',
+  ],
+  alternates: { canonical: '/tools/srt-to-txt' },
+  openGraph: { url: '/tools/srt-to-txt' },
+};
+
+const jsonLdData = toolPageJsonLd({
+  name: 'SRT to TXT Converter',
+  description:
+    'Convert SRT subtitles to clean TXT. Remove timestamps, cue numbers, and basic markup for transcripts, translation, review, or text analysis.',
+  url: '/tools/srt-to-txt',
+  faqs: [
+    {
+      question: 'What gets removed when I convert SRT to TXT?',
+      answer:
+        'The converter strips subtitle cue numbers, timestamp lines, separator syntax, and basic formatting tags so only readable text remains.',
+    },
+    {
+      question:
+        'Does the tool remove SDH annotations like [music] automatically?',
+      answer:
+        'Not by default. If those annotations matter, you can keep them. If you want them removed, use a cleaning step before extracting text.',
+    },
+    {
+      question: 'Can I use the output as a subtitle transcript?',
+      answer:
+        'Yes. That is one of the main reasons people use this page. The output is designed to be readable outside a subtitle player.',
+    },
+    {
+      question: 'Does this work for non-English subtitles?',
+      answer:
+        'Yes. The SRT to TXT flow preserves UTF-8 text, so it works with multilingual subtitle content.',
+    },
+    {
+      question: 'Is the subtitle file uploaded anywhere?',
+      answer:
+        'No. The extraction runs locally in the browser, and your file stays on your device.',
+    },
+    {
+      question: 'Can I use the output for language learning?',
+      answer:
+        'Yes. Language learners often extract dialogue from foreign-language subtitle files to build vocabulary lists, study sentence patterns, and create study materials without timestamp distractions.',
+    },
+    {
+      question: 'Can I use the output for translation or review?',
+      answer:
+        'Yes. That is one of the strongest reasons to convert subtitle files into plain text. Once the timing layer is removed, the dialogue becomes easier to read, annotate, translate, and process in tools that are not designed for subtitle syntax.',
+    },
+  ],
+});
+
+const relatedTools = [
+  {
+    name: 'TXT to SRT',
+    href: '/tools/txt-to-srt',
+    title: 'Convert TXT to SRT subtitle format',
+  },
+  {
+    name: 'ASS to SRT',
+    href: '/tools/ass-to-srt',
+    title: 'Convert ASS to SRT subtitle format',
+  },
+  {
+    name: 'VTT to SRT',
+    href: '/tools/vtt-to-srt',
+    title: 'Convert VTT to SRT subtitle format',
+  },
+  {
+    name: 'SRT to VTT',
+    href: '/tools/srt-to-vtt',
+    title: 'Convert SRT to VTT subtitle format',
+  },
+];
+
+export default function SrtToTxtPage() {
+  return (
+    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+      {jsonLdData.map((data, i) => (
+        <JsonLd key={i} data={data} />
+      ))}
+
+      {/* ===== Zone 1: Tool (Hero) ===== */}
+      <section className="relative py-10 md:py-14">
+        <VibeBackgroundGlow />
+        <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
+          SRT to TXT Converter
+        </h1>
+        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
+          Use this free SRT to TXT converter to pull readable text out of
+          subtitle files. The tool removes timestamps, cue numbers, and basic
+          subtitle markup so you get a clean plain text output that works as a
+          subtitle transcript, translation input, review document, or
+          text-analysis source.
+        </p>
+        <div className="mt-8">
+          <SrtToTxtConverter />
+        </div>
+        <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
+          <svg
+            className="h-5 w-5 shrink-0 text-blue-500 mt-0.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+            />
+          </svg>
+          <div className="text-sm">
+            <p className="font-medium text-foreground">
+              Don&apos;t lose the subtitle structure
+            </p>
+            <p className="text-muted-foreground mt-0.5">
+              Need to rebuild timed subtitles from this text?{' '}
+              <Link
+                href="/tools/txt-to-srt"
+                title="Convert TXT to SRT subtitle format"
+                className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800"
+              >
+                Use TXT to SRT
+              </Link>
+              . Need browser-ready captions?{' '}
+              <Link
+                href="/tools/srt-to-vtt"
+                title="Convert SRT to VTT subtitle format"
+                className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800"
+              >
+                Convert SRT to VTT
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Zone 2: Landing Page Content ===== */}
+      <section className="pb-12 border-t pt-10">
+        <h2 className="text-2xl font-bold mb-4">
+          What Is an SRT to TXT Converter?
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+          An SRT to TXT converter extracts the readable subtitle text from a
+          SubRip file by removing cue numbers, timestamp lines, subtitle arrows,
+          and basic markup. The result is not a playable subtitle file anymore;
+          it is a clean transcript that works better for reading, translation,
+          review, and text analysis.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold mb-3">SRT input</h3>
+            <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-mono">{`1
+00:00:01,000 --> 00:00:03,000
+Welcome to the tutorial.
+
+2
+00:00:04,500 --> 00:00:06,000
+Open the file menu.`}</pre>
+          </div>
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold mb-3">TXT output</h3>
+            <pre className="whitespace-pre-wrap text-xs text-muted-foreground font-mono">{`Welcome to the tutorial.
+
+Open the file menu.`}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-6">
+          How to Convert SRT to TXT in 3 Steps
+        </h2>
+        <ol className="grid gap-4 md:grid-cols-3 mb-8">
+          <li className="rounded-lg border bg-card p-5">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background text-sm font-bold mb-3">
+              1
+            </span>
+            <h3 className="font-semibold mb-1">Upload Your SRT File</h3>
+            <p className="text-sm text-muted-foreground">
+              Add the subtitle file you want to clean. The converter reads
+              standard SRT structure directly in the browser.
+            </p>
+          </li>
+          <li className="rounded-lg border bg-card p-5">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background text-sm font-bold mb-3">
+              2
+            </span>
+            <h3 className="font-semibold mb-1">
+              Strip Subtitle Structure and Keep the Text
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              The tool removes cue numbers, timestamp lines, separator syntax,
+              and basic formatting tags so the dialogue becomes readable plain
+              text.
+            </p>
+          </li>
+          <li className="rounded-lg border bg-card p-5">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background text-sm font-bold mb-3">
+              3
+            </span>
+            <h3 className="font-semibold mb-1">Download the TXT Output</h3>
+            <p className="text-sm text-muted-foreground">
+              Save the cleaned text as a .txt file that you can open, search,
+              translate, review, or process further.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">
+          What Gets Removed During SRT to TXT Extraction
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+          SRT files are built for playback, not reading. That is why this page
+          focuses on text extraction rather than subtitle compatibility.
+        </p>
+        <ul className="space-y-3 text-sm text-muted-foreground">
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0 w-44">
+              Index numbers are removed:
+            </span>
+            Subtitle cue numbers are useful for subtitle players and editors,
+            but they add noise to transcript-style reading. Removing them lets
+            you focus on the actual dialogue when reviewing a subtitle
+            transcript.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0 w-44">
+              Timestamp lines disappear:
+            </span>
+            The 00:00:00,000 --&gt; 00:00:03,000 layer is essential for video
+            playback and unnecessary for plain text output. Without timestamps
+            the file size drops and the text becomes easy to scan or paste into
+            other tools.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0 w-44">
+              Basic markup is stripped:
+            </span>
+            If the subtitle file includes simple formatting tags such as bold or
+            italic, the output removes them to keep the result clean. This
+            ensures the subtitle to text conversion produces a universally
+            compatible plain text file.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0 w-44">
+              Multi-line blocks are joined:
+            </span>
+            Screen-optimized line breaks do not always make sense in transcript
+            form. The converter joins them into cleaner text output. The result
+            reads more like a continuous document than a series of fragmented
+            caption blocks.
+          </li>
+        </ul>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">When SRT to TXT Is Useful</h2>
+        <ul className="space-y-3 text-sm text-muted-foreground">
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">
+              Building a subtitle transcript:
+            </span>
+            If you want the spoken content as text instead of timed captions,
+            this is the fastest route. Many content creators convert their
+            subtitle files to generate a readable transcript they can publish
+            alongside a video or podcast episode.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">
+              Translation workflows:
+            </span>
+            Some translation workflows are easier in plain text first,
+            especially when you want to remove timing noise before moving into
+            the next tool. Translators can work through the dialogue line by
+            line without being distracted by timestamp formatting.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">
+              Review and compliance reading:
+            </span>
+            Editors and reviewers often want to scan dialogue without watching
+            the full video. Plain text is easier to search and annotate.
+            Compliance teams also use the subtitle to text output to check
+            scripts against brand guidelines or regulatory standards.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">
+              NLP and text analysis:
+            </span>
+            Subtitle text can be useful for word frequency, topic analysis,
+            sentiment experiments, vocabulary extraction, and other language
+            workflows once the timing syntax is removed. Researchers regularly
+            feed cleaned subtitle transcripts into analysis pipelines to study
+            dialogue patterns across large media collections.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">
+              Language learning:
+            </span>
+            Extracting dialogue from foreign-language subtitles to build
+            vocabulary lists and study materials. Learners can read through the
+            full conversation at their own pace and highlight unfamiliar words
+            without the visual clutter of timestamps.
+          </li>
+          <li className="flex gap-3">
+            <span className="font-medium text-foreground shrink-0">
+              Building transcript documents for people who do not want subtitle
+              formatting:
+            </span>
+            Not everyone reading subtitle content wants to see timestamps every
+            few seconds. Teachers, editors, legal reviewers, translators, and
+            researchers often want the dialogue in a simpler reading form. That
+            is where subtitle to text extraction becomes much more useful than
+            keeping the original subtitle container.
+          </li>
+        </ul>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">SRT to TXT vs SRT Cleaning</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          These are not the same job. SRT to TXT extracts text only. It removes
+          the subtitle container entirely and gives you a plain text file.{' '}
+          Cleaning an SRT file is a different job because it keeps the SRT
+          format intact while removing things like SDH annotations or formatting
+          artifacts. If you still need timestamps, keep the subtitle structure
+          and clean the file in a subtitle editor. If you need readable text,
+          use SRT to TXT. Think of it this way: SRT cleaning tidies a subtitle
+          file so it plays back better, while this subtitle to text converter
+          produces a subtitle transcript that stands on its own as a readable
+          document. Choosing the right workflow depends on the next step. If the
+          next step requires timed captions for playback, keep the subtitle
+          structure. If the next step is reading, translating, or analyzing the
+          spoken content as plain text, use SRT to TXT.
+        </p>
+      </section>
+
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">Format Reference</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          For background on the SubRip format this tool extracts from, see the{' '}
+          <a
+            href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000569.shtml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline underline-offset-4 hover:text-foreground/70"
+          >
+            Library of Congress format description for SRT / SubRip
+          </a>
+          .
+        </p>
+      </section>
+
+      {/* ===== Zone 3: FAQ + Related Tools ===== */}
+      <section className="pb-12">
+        <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
+        <Accordion className="w-full">
+          <AccordionItem value="what-removed">
+            <AccordionTrigger>
+              What gets removed when I convert SRT to TXT?
+            </AccordionTrigger>
+            <AccordionContent>
+              The converter strips subtitle cue numbers, timestamp lines,
+              separator syntax, and basic formatting tags so only readable text
+              remains.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="sdh">
+            <AccordionTrigger>
+              Does the tool remove SDH annotations like [music] automatically?
+            </AccordionTrigger>
+            <AccordionContent>
+              Not by default. If those annotations matter, you can keep them. If
+              you want them removed, use a cleaning step before extracting text.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="transcript">
+            <AccordionTrigger>
+              Can I use the output as a subtitle transcript?
+            </AccordionTrigger>
+            <AccordionContent>
+              Yes. That is one of the main reasons people use this page. The
+              output is designed to be readable outside a subtitle player.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="languages">
+            <AccordionTrigger>
+              Does this work for non-English subtitles?
+            </AccordionTrigger>
+            <AccordionContent>
+              Yes. The SRT to TXT flow preserves UTF-8 text, so it works with
+              multilingual subtitle content.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="privacy">
+            <AccordionTrigger>
+              Is the subtitle file uploaded anywhere?
+            </AccordionTrigger>
+            <AccordionContent>
+              No. The extraction runs locally in the browser, and your file
+              stays on your device.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="language-learning">
+            <AccordionTrigger>
+              Can I use the output for language learning?
+            </AccordionTrigger>
+            <AccordionContent>
+              Yes. Language learners often extract dialogue from
+              foreign-language subtitle files to build vocabulary lists, study
+              sentence patterns, and create study materials without timestamp
+              distractions.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="translation-review">
+            <AccordionTrigger>
+              Can I use the output for translation or review?
+            </AccordionTrigger>
+            <AccordionContent>
+              Yes. That is one of the strongest reasons to convert subtitle
+              files into plain text. Once the timing layer is removed, the
+              dialogue becomes easier to read, annotate, translate, and process
+              in tools that are not designed for subtitle syntax.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
+
+      <section className="pb-16">
+        <h2 className="text-lg font-semibold mb-4">Related Subtitle Tools</h2>
+        <div className="flex flex-wrap gap-2">
+          {relatedTools.map((t) => (
+            <Link
+              key={t.href}
+              href={t.href}
+              title={t.title}
+              className="inline-flex items-center rounded-lg border bg-card px-4 py-2 text-sm hover:bg-accent transition-colors"
+            >
+              {t.name}
+            </Link>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

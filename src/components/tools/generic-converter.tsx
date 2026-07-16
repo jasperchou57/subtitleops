@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { type ChangeEvent, type ReactNode, useRef, useState } from "react";
-import { ClipboardPaste, WandSparkles } from "lucide-react";
-import { FileDropzone } from "./file-dropzone";
-import { ConversionResult } from "./conversion-result";
-import { generateTraceId, logTrace } from "@/lib/trace";
-import { trackEvent } from "@/lib/analytics";
+import { type ChangeEvent, type ReactNode, useRef, useState } from 'react';
+import { ClipboardPaste, WandSparkles } from 'lucide-react';
+import { FileDropzone } from './file-dropzone';
+import { ConversionResult } from './conversion-result';
+import { generateTraceId, logTrace } from '@/lib/trace';
+import { trackEvent } from '@/lib/analytics';
 
 interface GenericConverterProps {
   /** Tool identifier for tracing, e.g. "vtt-to-srt" */
@@ -35,7 +35,7 @@ export function GenericConverter({
   settingsPanel,
   directInput,
 }: GenericConverterProps) {
-  const [directText, setDirectText] = useState("");
+  const [directText, setDirectText] = useState('');
   const [hasTrackedPasteStart, setHasTrackedPasteStart] = useState(false);
   const [result, setResult] = useState<{
     originalPreview: string;
@@ -44,7 +44,10 @@ export function GenericConverter({
     fullOutput: string;
     traceId: string;
   } | null>(null);
-  const [error, setError] = useState<{ message: string; traceId: string } | null>(null);
+  const [error, setError] = useState<{
+    message: string;
+    traceId: string;
+  } | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   const runConversion = ({
@@ -58,7 +61,7 @@ export function GenericConverter({
     fileName: string;
     fileSize: number;
     inputFormat: string;
-    uploadAction?: "file_upload";
+    uploadAction?: 'file_upload';
   }) => {
     setError(null);
     setResult(null);
@@ -82,21 +85,22 @@ export function GenericConverter({
       const duration = Math.round(performance.now() - startTime);
 
       if (!output || output.trim().length === 0) {
-        const errMsg = "No valid subtitle cues were found in this file. Please check the file format.";
+        const errMsg =
+          'No valid subtitle cues were found in this file. Please check the file format.';
         logTrace({
           traceId,
           tool: toolId,
-          action: "error",
+          action: 'error',
           timestamp: Date.now(),
           fileName,
           fileSize,
           duration,
-          error: "empty_output",
+          error: 'empty_output',
         });
         trackEvent({
           tool: toolId,
-          action: "convert_error",
-          error_type: "empty_output",
+          action: 'convert_error',
+          error_type: 'empty_output',
           file_size: fileSize,
           trace_id: traceId,
         });
@@ -109,7 +113,7 @@ export function GenericConverter({
       logTrace({
         traceId,
         tool: toolId,
-        action: "convert",
+        action: 'convert',
         timestamp: Date.now(),
         fileName,
         fileSize,
@@ -121,7 +125,7 @@ export function GenericConverter({
 
       trackEvent({
         tool: toolId,
-        action: "convert_success",
+        action: 'convert_success',
         input_format: inputFormat,
         output_format: outputExtension,
         file_size: fileSize,
@@ -130,28 +134,41 @@ export function GenericConverter({
         trace_id: traceId,
       });
 
-      const originalLines = text.split(/\r?\n/).slice(0, previewLines).join("\n");
-      const outputPreviewLines = output.split(/\r?\n/).slice(0, previewLines).join("\n");
+      const originalLines = text
+        .split(/\r?\n/)
+        .slice(0, previewLines)
+        .join('\n');
+      const outputPreviewLines = output
+        .split(/\r?\n/)
+        .slice(0, previewLines)
+        .join('\n');
 
       setResult({
-        originalPreview: originalLines + (text.split(/\r?\n/).length > previewLines ? "\n..." : ""),
-        convertedPreview: outputPreviewLines + (output.split(/\r?\n/).length > previewLines ? "\n..." : ""),
+        originalPreview:
+          originalLines +
+          (text.split(/\r?\n/).length > previewLines ? '\n...' : ''),
+        convertedPreview:
+          outputPreviewLines +
+          (output.split(/\r?\n/).length > previewLines ? '\n...' : ''),
         fileName,
         fullOutput: output,
         traceId,
       });
 
       setTimeout(() => {
-        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        resultRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
       }, 100);
     } catch (err) {
       const duration = Math.round(performance.now() - startTime);
-      const errorType = err instanceof Error ? err.message : "unknown_error";
+      const errorType = err instanceof Error ? err.message : 'unknown_error';
 
       logTrace({
         traceId,
         tool: toolId,
-        action: "error",
+        action: 'error',
         timestamp: Date.now(),
         fileName,
         fileSize,
@@ -161,7 +178,7 @@ export function GenericConverter({
 
       trackEvent({
         tool: toolId,
-        action: "convert_error",
+        action: 'convert_error',
         error_type: errorType,
         file_size: fileSize,
         duration_ms: duration,
@@ -169,7 +186,8 @@ export function GenericConverter({
       });
 
       setError({
-        message: "No valid subtitle cues were found in this file. Please check the file format.",
+        message:
+          'No valid subtitle cues were found in this file. Please check the file format.',
         traceId,
       });
     }
@@ -182,12 +200,13 @@ export function GenericConverter({
         text,
         fileName: file.name,
         fileSize: file.size,
-        inputFormat: file.name.split(".").pop() || "unknown",
-        uploadAction: "file_upload",
+        inputFormat: file.name.split('.').pop() || 'unknown',
+        uploadAction: 'file_upload',
       });
     } catch {
       setError({
-        message: "Could not read this file. Please check the file and try again.",
+        message:
+          'Could not read this file. Please check the file and try again.',
         traceId: generateTraceId(),
       });
     }
@@ -198,8 +217,8 @@ export function GenericConverter({
 
     trackEvent({
       tool: toolId,
-      action: "convert_click",
-      input_format: "txt",
+      action: 'convert_click',
+      input_format: 'txt',
       output_format: outputExtension,
       file_size: directText.length,
     });
@@ -208,7 +227,7 @@ export function GenericConverter({
       text: directText,
       fileName: directInput.fileName,
       fileSize: directText.length,
-      inputFormat: "txt",
+      inputFormat: 'txt',
     });
   };
 
@@ -220,8 +239,8 @@ export function GenericConverter({
       setHasTrackedPasteStart(true);
       trackEvent({
         tool: toolId,
-        action: "paste_start",
-        input_format: "txt",
+        action: 'paste_start',
+        input_format: 'txt',
         output_format: outputExtension,
         file_size: value.length,
       });
@@ -232,11 +251,21 @@ export function GenericConverter({
     <div data-analytics-area="tool_converter" data-analytics-tool={toolId}>
       {settingsPanel && <div className="mb-4">{settingsPanel}</div>}
 
-      <FileDropzone accept={accept} acceptLabel={acceptLabel} onFileSelect={handleFileSelect} />
+      <FileDropzone
+        accept={accept}
+        acceptLabel={acceptLabel}
+        onFileSelect={handleFileSelect}
+      />
 
       {directInput && (
-        <div data-analytics-area="text_input" className="mt-4 rounded-xl border bg-card p-4">
-          <label htmlFor={`${toolId}-direct-input`} className="flex items-center gap-2 text-sm font-medium text-foreground">
+        <div
+          data-analytics-area="text_input"
+          className="mt-4 rounded-xl border bg-card p-4"
+        >
+          <label
+            htmlFor={`${toolId}-direct-input`}
+            className="flex items-center gap-2 text-sm font-medium text-foreground"
+          >
             <ClipboardPaste className="h-4 w-4 text-blue-500" />
             {directInput.label}
           </label>
@@ -259,7 +288,9 @@ export function GenericConverter({
               <WandSparkles className="h-4 w-4" />
               {directInput.actionLabel}
             </button>
-            <p className="text-xs text-muted-foreground">{directInput.helperText}</p>
+            <p className="text-xs text-muted-foreground">
+              {directInput.helperText}
+            </p>
           </div>
         </div>
       )}
@@ -280,7 +311,10 @@ export function GenericConverter({
             convertedPreview={result.convertedPreview}
             fileName={result.fileName}
             downloadContent={result.fullOutput}
-            downloadFileName={result.fileName.replace(/\.[^.]+$/, `.${outputExtension}`)}
+            downloadFileName={result.fileName.replace(
+              /\.[^.]+$/,
+              `.${outputExtension}`
+            )}
             traceId={result.traceId}
             toolId={toolId}
             outputFormat={outputExtension}

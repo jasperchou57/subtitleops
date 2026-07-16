@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Check, Copy } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import { trackEvent } from "@/lib/analytics";
+import { Check, Copy } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { trackEvent } from '@/lib/analytics';
 
 type CopyOutputButtonProps = {
   content: string;
@@ -23,23 +23,28 @@ async function copyText(content: string) {
     }
   }
 
-  const textarea = document.createElement("textarea");
+  const textarea = document.createElement('textarea');
   textarea.value = content;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.left = "-9999px";
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
   document.body.appendChild(textarea);
   textarea.select();
-  const copied = document.execCommand("copy");
+  const copied = document.execCommand('copy');
   document.body.removeChild(textarea);
 
   if (!copied) {
-    throw new Error("copy_failed");
+    throw new Error('copy_failed');
   }
 }
 
-export function CopyOutputButton({ content, toolId, outputFormat, className }: CopyOutputButtonProps) {
-  const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
+export function CopyOutputButton({
+  content,
+  toolId,
+  outputFormat,
+  className,
+}: CopyOutputButtonProps) {
+  const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
   const resetTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -53,30 +58,30 @@ export function CopyOutputButton({ content, toolId, outputFormat, className }: C
   const handleCopy = async () => {
     try {
       await copyText(content);
-      setStatus("copied");
+      setStatus('copied');
       trackEvent({
         tool: toolId,
-        action: "copy_output",
+        action: 'copy_output',
         output_format: outputFormat,
         file_size: content.length,
       });
     } catch {
-      setStatus("failed");
+      setStatus('failed');
       trackEvent({
         tool: toolId,
-        action: "copy_error",
+        action: 'copy_error',
         output_format: outputFormat,
-        error_type: "clipboard_write_failed",
+        error_type: 'clipboard_write_failed',
       });
     }
 
     if (resetTimer.current !== null) {
       window.clearTimeout(resetTimer.current);
     }
-    resetTimer.current = window.setTimeout(() => setStatus("idle"), 1800);
+    resetTimer.current = window.setTimeout(() => setStatus('idle'), 1800);
   };
 
-  const isCopied = status === "copied";
+  const isCopied = status === 'copied';
 
   return (
     <button
@@ -84,7 +89,7 @@ export function CopyOutputButton({ content, toolId, outputFormat, className }: C
       type="button"
       onClick={handleCopy}
       className={cn(
-        "inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent",
+        'inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent',
         className
       )}
       aria-live="polite"
@@ -94,7 +99,11 @@ export function CopyOutputButton({ content, toolId, outputFormat, className }: C
       ) : (
         <Copy className="h-4 w-4" aria-hidden="true" />
       )}
-      {status === "failed" ? "Copy failed" : isCopied ? "Copied" : "Copy output"}
+      {status === 'failed'
+        ? 'Copy failed'
+        : isCopied
+          ? 'Copied'
+          : 'Copy output'}
     </button>
   );
 }

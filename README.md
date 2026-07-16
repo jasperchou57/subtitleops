@@ -1,104 +1,71 @@
 # SubtitleOps
 
-Free, browser-based subtitle tools at [subtitleops.com](https://subtitleops.com).
-Convert between SRT, ASS, VTT, SBV, and TXT, extract transcript text, draft
-subtitles from a script, and fix out-of-sync timing. Every tool runs entirely
-in your browser — no uploads, no accounts, no file size limits.
+SubtitleOps is a browser-based subtitle toolkit at
+[subtitleops.com](https://subtitleops.com). It converts SRT, ASS, VTT, SBV,
+and TXT files, extracts transcript text, drafts subtitles, and fixes subtitle
+timing without uploading file contents.
 
-## Tools
-
-**Format conversion** — `/tools/ass-to-srt`, `/tools/vtt-to-srt`,
-`/tools/srt-to-vtt`, `/tools/srt-to-ass`, `/tools/sbv-to-srt`
-
-**Transcript extraction** — `/tools/srt-to-txt`, `/tools/vtt-to-txt`
-
-**Subtitle drafting** — `/tools/txt-to-srt`
-
-**Timing correction** — `/tools/subtitle-shift` (constant offset),
-`/tools/subtitle-fps-converter` (frame-rate rescaling)
-
-The homepage at `/` also exposes a universal converter that auto-detects the
-input format and routes through SRT.
+This branch migrates the product from Next.js/Vercel to TanStack Start on
+Cloudflare Workers. It uses the licensed `mkfast-template` SaaS foundation for
+Better Auth, D1, Stripe/Creem, R2, account settings, and the admin dashboard.
+Auth, plan entitlements, Pro/Studio workflows, and the Stripe subscription
+lifecycle are enabled locally. The production D1 and KV resources exist;
+production activation still requires R2, the Cloudflare Worker deployment,
+SubtitleOps Stripe secrets/webhooks, and a real end-to-end checkout
+verification.
 
 ## Stack
 
-- Next.js 16 (App Router) + React 19 + TypeScript 5
-- Tailwind CSS v4 + shadcn/ui + Base UI
-- Static generation for every tool and blog page
-- GA4 with custom conversion-tracking events
-- Lightweight client-side trace-id system for debugging
+- TanStack Start + React 19 + TypeScript
+- Cloudflare Workers, D1, R2, and KV
+- Tailwind CSS v4 + shadcn/ui
+- Better Auth and Stripe/Creem subscription scaffolding
+- GA4 plus a private GA4/Search Console reporting endpoint
 
 ## Local development
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-The dev server runs at `http://localhost:3000`.
+The app runs at `http://localhost:3000`.
 
 ```bash
-npm run build   # production build
-npm run lint    # eslint
+pnpm test       # subtitle conversion and timing unit tests
+pnpm check      # Biome checks
+pnpm build      # production Worker build
+pnpm e2e        # local Playwright acceptance tests
 ```
 
-## Private GA4 and GSC API
+## Cloudflare setup
 
-SubtitleOps exposes an owner-only endpoint for Google SEO reporting:
+`wrangler.jsonc` contains the production D1 and KV bindings. Enable R2, create
+the production Worker, add Worker secrets, and complete a real Stripe test-mode
+purchase, portal cancellation, and post-period downgrade before attaching
+`subtitleops.com`.
 
-```bash
-curl -H "Authorization: Bearer $SEO_ANALYTICS_TOKEN" \
-  "https://subtitleops.com/api/seo/analytics?days=28&rowLimit=50"
-```
-
-It reads GA4 through the Google Analytics Data API and Search Console through
-the Search Console API. The endpoint is private: it returns `401` without
-`SEO_ANALYTICS_TOKEN` and `503` until the Google auth settings are configured.
-
-Environment variables:
-
-```bash
-GOOGLE_OAUTH_CLIENT_ID="...apps.googleusercontent.com"
-GOOGLE_OAUTH_CLIENT_SECRET="..." # optional for desktop OAuth clients
-GOOGLE_OAUTH_REFRESH_TOKEN="..."
-GOOGLE_SERVICE_ACCOUNT_JSON="..." # optional fallback instead of OAuth
-GOOGLE_SERVICE_ACCOUNT_EMAIL="grid-maker-seo-analytics@project-5a3f9a08-96a3-4787-926.iam.gserviceaccount.com"
-GOOGLE_WIF_PROJECT_NUMBER="1062922534665"
-GOOGLE_WIF_POOL_ID="vercel"
-GOOGLE_WIF_PROVIDER_ID="vercel"
-GOOGLE_SEO_GA4_PROPERTY_ID="529230481"
-GOOGLE_SEO_GSC_SITE_URL="sc-domain:subtitleops.com"
-SEO_ANALYTICS_TOKEN="use-a-long-random-string"
-```
-
-The OAuth refresh token must be authorized with these scopes:
-
-```text
-https://www.googleapis.com/auth/analytics.readonly
-https://www.googleapis.com/auth/webmasters.readonly
-```
-
-If OAuth consent is blocked, use `GOOGLE_SERVICE_ACCOUNT_JSON` instead and add
-the service account email as a user in the GA4 property. For Search Console
-service-account access, verify a URL-prefix property with the Site Verification
-API and set `GOOGLE_SEO_GSC_SITE_URL` to that URL-prefix property.
-
-On Vercel, the preferred keyless path is Workload Identity Federation. The API
-route accepts Vercel's OIDC token from `x-vercel-oidc-token`, exchanges it with
-Google STS, impersonates `GOOGLE_SERVICE_ACCOUNT_EMAIL`, and then calls GA4/GSC.
+Important secrets include `BETTER_AUTH_SECRET`, payment provider keys and
+webhook secrets, `SEO_ANALYTICS_TOKEN`, and either Google OAuth refresh-token
+credentials or `GOOGLE_SERVICE_ACCOUNT_JSON`. See `.env.example` and `docs/`
+for the full module configuration.
 
 ## Project layout
 
-- `src/app/` — App Router pages (homepage, tools, blog, legal pages)
-- `src/app/tools/<slug>/` — each tool's page + client converter component
-- `src/lib/converters/` — pure conversion logic, format-specific
-- `src/lib/timing/` — shared timestamp parsing for shift and FPS tools
-- `src/components/tools/` — shared dropzone, result panel, generic converter
-- `src/components/seo/` — JSON-LD helpers (WebSite, FAQPage, BreadcrumbList,
-  SoftwareApplication, BlogPosting)
+- `src/routes/` — TanStack pages, APIs, sitemap, robots, and manifest
+- `src/subtitleops/pages/` — migrated public page content
+- `src/lib/converters/` — pure subtitle conversion logic
+- `src/lib/timing/` — subtitle timing utilities
+- `src/components/tools/` — shared browser-side converter UI
+- `src/auth/`, `src/payment/`, `src/db/` — active SaaS foundation
+- `src/components/workflows/` — Pro batch and Studio team workflows
 
 ## Privacy
 
-Every conversion runs client-side. Subtitle files never leave the browser.
-GA4 is loaded with `lazyOnload` and only tracks anonymous tool-usage events
-(format pairs, file size, success/error) — never file content.
+Subtitle conversion remains client-side. Subtitle contents do not leave the
+browser. Analytics events contain only operational metadata such as format,
+file size, and success/error state.
+
+The SaaS foundation is derived from the licensed
+[`saas-sources/mkfast-template`](https://github.com/saas-sources/mkfast-template).
+See `LICENSE` for its terms.

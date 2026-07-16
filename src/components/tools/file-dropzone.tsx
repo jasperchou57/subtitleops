@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 interface FileDropzoneProps {
   accept: string;
@@ -8,7 +8,11 @@ interface FileDropzoneProps {
   onFileSelect: (file: File) => void;
 }
 
-export function FileDropzone({ accept, acceptLabel, onFileSelect }: FileDropzoneProps) {
+export function FileDropzone({
+  accept,
+  acceptLabel,
+  onFileSelect,
+}: FileDropzoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleDrop = useCallback(
@@ -40,8 +44,8 @@ export function FileDropzone({ accept, acceptLabel, onFileSelect }: FileDropzone
       onDrop={handleDrop}
       className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-10 md:p-14 transition-all cursor-pointer ${
         isDragOver
-          ? "border-blue-400 bg-blue-50/50 scale-[1.01]"
-          : "border-border hover:border-blue-300 hover:bg-muted/20"
+          ? 'border-blue-400 bg-blue-50/50 scale-[1.01]'
+          : 'border-border hover:border-blue-300 hover:bg-muted/20'
       }`}
     >
       <input
@@ -67,7 +71,9 @@ export function FileDropzone({ accept, acceptLabel, onFileSelect }: FileDropzone
         </svg>
       </div>
       <p className="text-base font-medium">
-        {isDragOver ? "Drop your file here" : "Upload or drop your subtitle file"}
+        {isDragOver
+          ? 'Drop your file here'
+          : 'Upload or drop your subtitle file'}
       </p>
       <span className="mt-4 inline-flex items-center rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background">
         Choose File

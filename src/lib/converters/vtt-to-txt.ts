@@ -6,54 +6,54 @@
  */
 
 export function convertVttToTxt(content: string): string {
-  const lines = content.replace(/\r\n/g, "\n").split("\n");
+  const lines = content.replace(/\r\n/g, '\n').split('\n');
   const textLines: string[] = [];
   let pastHeader = false;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    if (line.trim().startsWith("NOTE")) {
-      while (i + 1 < lines.length && lines[i + 1].trim() !== "") i++;
+    if (line.trim().startsWith('NOTE')) {
+      while (i + 1 < lines.length && lines[i + 1].trim() !== '') i++;
       continue;
     }
 
     // Skip the WEBVTT header and any metadata lines following it
     if (!pastHeader) {
-      if (line.startsWith("WEBVTT")) continue;
-      if (line.startsWith("Kind:") || line.startsWith("Language:")) continue;
-      if (line.trim() === "") continue;
+      if (line.startsWith('WEBVTT')) continue;
+      if (line.startsWith('Kind:') || line.startsWith('Language:')) continue;
+      if (line.trim() === '') continue;
       pastHeader = true;
     }
 
     // Skip timestamp lines (contain -->)
-    if (line.includes("-->")) continue;
+    if (line.includes('-->')) continue;
 
     // Skip cue identifiers (standalone numbers or identifiers before timestamps)
     if (
       i + 1 < lines.length &&
       lines[i + 1] &&
-      lines[i + 1].includes("-->") &&
-      line.trim() !== ""
+      lines[i + 1].includes('-->') &&
+      line.trim() !== ''
     ) {
       continue;
     }
 
     // Skip blank lines
-    if (line.trim() === "") continue;
+    if (line.trim() === '') continue;
 
     // Strip VTT tags like <v Speaker>, <c.classname>, <b>, <i>, etc.
     const cleaned = line
-      .replace(/<v\s+[^>]*>/g, "")
-      .replace(/<\/v>/g, "")
-      .replace(/<c[^>]*>/g, "")
-      .replace(/<\/c>/g, "")
-      .replace(/<\/?[biuBIU]>/g, "")
-      .replace(/<\d{2}:\d{2}:\d{2}\.\d{3}>/g, "") // timestamp tags
-      .replace(/<\/?[^>]+>/g, "")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&amp;/g, "&")
+      .replace(/<v\s+[^>]*>/g, '')
+      .replace(/<\/v>/g, '')
+      .replace(/<c[^>]*>/g, '')
+      .replace(/<\/c>/g, '')
+      .replace(/<\/?[biuBIU]>/g, '')
+      .replace(/<\d{2}:\d{2}:\d{2}\.\d{3}>/g, '') // timestamp tags
+      .replace(/<\/?[^>]+>/g, '')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
       .trim();
 
     if (cleaned) {
@@ -61,5 +61,5 @@ export function convertVttToTxt(content: string): string {
     }
   }
 
-  return textLines.join("\n");
+  return textLines.join('\n');
 }

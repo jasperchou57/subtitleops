@@ -8,25 +8,25 @@
  */
 export function convertSrtToTxt(srtContent: string): string {
   const blocks = srtContent
-    .replace(/\r\n/g, "\n")
+    .replace(/\r\n/g, '\n')
     .trim()
     .split(/\n\s*\n/)
     .filter(Boolean);
 
   const textLines: string[] = [];
   for (const block of blocks) {
-    const lines = block.split("\n");
-    const tsIdx = lines.findIndex((l) => l.includes("-->"));
+    const lines = block.split('\n');
+    const tsIdx = lines.findIndex((l) => l.includes('-->'));
     if (tsIdx < 0) continue;
 
     const text = lines
       .slice(tsIdx + 1)
-      .map((l) => l.replace(/<\/?[^>]+>/g, "").trim())
+      .map((l) => l.replace(/<\/?[^>]+>/g, '').trim())
       .filter((l) => l.length > 0)
-      .join("\n");
+      .join('\n');
 
     if (text) textLines.push(text);
   }
 
-  return textLines.join("\n");
+  return textLines.join('\n');
 }

@@ -1,0 +1,59 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "subtitleops",
+  "compatibility_date": "2026-02-12",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env",
+    "global_fetch_strictly_public"
+  ],
+  "main": "./src/server.ts",
+  "keep_vars": true,
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": true,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
+  },
+  "triggers": {
+    "crons": ["15 3 * * *"]
+  },
+  "vars": {
+    "VITE_BASE_URL": "https://subtitleops.com",
+    "VITE_GOOGLE_ANALYTICS_ID": "G-3RKDT74KDZ",
+    "GOOGLE_SEO_GA4_PROPERTY_ID": "529230481",
+    "GOOGLE_SEO_GSC_SITE_URL": "sc-domain:subtitleops.com"
+  },
+  "secrets": {
+    "required": [
+      "BETTER_AUTH_SECRET",
+      "STRIPE_SECRET_KEY",
+      "STRIPE_WEBHOOK_SECRET"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "subtitleops",
+      "database_id": "efa23cc9-2fa3-418c-b44f-855642a45e4a",
+      "migrations_dir": "./src/db/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "subtitleops",
+      "binding": "BUCKET"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "f667801c5f10458795f86dd3ed0c022d"
+    }
+  ]
+}

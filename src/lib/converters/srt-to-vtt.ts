@@ -10,31 +10,40 @@
  */
 export function convertSrtToVtt(srtContent: string): string {
   const blocks = srtContent
-    .replace(/\r\n/g, "\n")
+    .replace(/\r\n/g, '\n')
     .trim()
     .split(/\n\s*\n/)
     .filter(Boolean);
 
   const cues: string[] = [];
   for (const block of blocks) {
-    const lines = block.split("\n");
-    const tsIdx = lines.findIndex((l) => l.includes("-->"));
+    const lines = block.split('\n');
+    const tsIdx = lines.findIndex((l) => l.includes('-->'));
     if (tsIdx < 0) continue;
 
-    const tsLine = lines[tsIdx].replace(/,/g, ".");
-    const text = lines.slice(tsIdx + 1).join("\n").replace(/\s+$/, "");
+    const tsLine = lines[tsIdx].replace(/,/g, '.');
+    const text = lines
+      .slice(tsIdx + 1)
+      .join('\n')
+      .replace(/\s+$/, '');
     if (!text) continue;
 
     cues.push(`${tsLine}\n${text}`);
   }
 
-  return ["WEBVTT", ...cues].join("\n\n") + "\n";
+  return ['WEBVTT', ...cues].join('\n\n') + '\n';
 }
 
-export function parseSrtForPreview(srtContent: string): { count: number; firstLines: string } {
-  const blocks = srtContent.trim().split(/\n\s*\n/).filter(Boolean);
+export function parseSrtForPreview(srtContent: string): {
+  count: number;
+  firstLines: string;
+} {
+  const blocks = srtContent
+    .trim()
+    .split(/\n\s*\n/)
+    .filter(Boolean);
   return {
     count: blocks.length,
-    firstLines: blocks.slice(0, 3).join("\n\n"),
+    firstLines: blocks.slice(0, 3).join('\n\n'),
   };
 }

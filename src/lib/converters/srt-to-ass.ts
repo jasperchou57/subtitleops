@@ -12,26 +12,26 @@ interface SrtEntry {
 
 function parseSrt(content: string): SrtEntry[] {
   const blocks = content
-    .replace(/\r\n/g, "\n")
+    .replace(/\r\n/g, '\n')
     .trim()
     .split(/\n\s*\n/)
     .filter(Boolean);
 
   return blocks
     .map((block) => {
-      const lines = block.split("\n");
+      const lines = block.split('\n');
       // Find the timestamp line
-      const tsIdx = lines.findIndex((l) => l.includes("-->"));
+      const tsIdx = lines.findIndex((l) => l.includes('-->'));
       if (tsIdx < 0) return null;
 
-      const tsParts = lines[tsIdx].split("-->");
+      const tsParts = lines[tsIdx].split('-->');
       if (tsParts.length !== 2) return null;
 
       const start = tsParts[0].trim();
       const end = tsParts[1].trim();
       const text = lines
         .slice(tsIdx + 1)
-        .join("\n")
+        .join('\n')
         .trim();
 
       if (!text) return null;
@@ -55,15 +55,15 @@ function srtTimestampToAss(ts: string): string {
   const totalCs = Math.round(totalMs / 10);
 
   const h = Math.floor(totalCs / 360_000); // no leading zero in ASS
-  const mm = String(Math.floor((totalCs % 360_000) / 6_000)).padStart(2, "0");
-  const ss = String(Math.floor((totalCs % 6_000) / 100)).padStart(2, "0");
-  const cs = String(totalCs % 100).padStart(2, "0");
+  const mm = String(Math.floor((totalCs % 360_000) / 6_000)).padStart(2, '0');
+  const ss = String(Math.floor((totalCs % 6_000) / 100)).padStart(2, '0');
+  const cs = String(totalCs % 100).padStart(2, '0');
 
   return `${h}:${mm}:${ss}.${cs}`;
 }
 
 function stripBasicTags(text: string): string {
-  return text.replace(/<\/?[biuBIU]>/g, "").replace(/\n/g, "\\N");
+  return text.replace(/<\/?[biuBIU]>/g, '').replace(/\n/g, '\\N');
 }
 
 export function convertSrtToAss(content: string): string {
@@ -92,7 +92,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text`
       const text = stripBasicTags(entry.text);
       return `Dialogue: 0,${start},${end},Default,,0,0,0,,${text}`;
     })
-    .join("\n");
+    .join('\n');
 
   return `${header}\n${dialogues}\n`;
 }

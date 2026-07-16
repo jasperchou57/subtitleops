@@ -1,11 +1,11 @@
-import type { SubtitleFormat } from "./detect-format";
-import { convertAssToSrt, formatSrt } from "./ass-to-srt";
-import { convertVttToSrt } from "./vtt-to-srt";
-import { convertTxtToSrt } from "./txt-to-srt";
-import { convertSrtToVtt } from "./srt-to-vtt";
-import { convertSrtToTxt } from "./srt-to-txt";
-import { convertSbvToSrt } from "./sbv-to-srt";
-import { convertSrtToAss } from "./srt-to-ass";
+import type { SubtitleFormat } from './detect-format';
+import { convertAssToSrt, formatSrt } from './ass-to-srt';
+import { convertVttToSrt } from './vtt-to-srt';
+import { convertTxtToSrt } from './txt-to-srt';
+import { convertSrtToVtt } from './srt-to-vtt';
+import { convertSrtToTxt } from './srt-to-txt';
+import { convertSbvToSrt } from './sbv-to-srt';
+import { convertSrtToAss } from './srt-to-ass';
 
 /**
  * Universal converter: any supported input format → any supported output format.
@@ -20,19 +20,19 @@ export function universalConvert(
   let srtContent: string;
 
   switch (inputFormat) {
-    case "srt":
+    case 'srt':
       srtContent = content;
       break;
-    case "ass":
+    case 'ass':
       srtContent = formatSrt(convertAssToSrt(content));
       break;
-    case "vtt":
+    case 'vtt':
       srtContent = formatSrt(convertVttToSrt(content));
       break;
-    case "txt":
+    case 'txt':
       srtContent = formatSrt(convertTxtToSrt(content));
       break;
-    case "sbv":
+    case 'sbv':
       srtContent = convertSbvToSrt(content);
       break;
     default:
@@ -40,21 +40,21 @@ export function universalConvert(
   }
 
   if (!srtContent.trim()) {
-    throw new Error("No subtitle content found in the file.");
+    throw new Error('No subtitle content found in the file.');
   }
-  if (!srtContent.split(/\r?\n/).some((line) => line.includes("-->"))) {
-    throw new Error("No subtitle cues found in the file.");
+  if (!srtContent.split(/\r?\n/).some((line) => line.includes('-->'))) {
+    throw new Error('No subtitle cues found in the file.');
   }
 
   // Step 2: Convert SRT to desired output
   switch (outputFormat) {
-    case "srt":
+    case 'srt':
       return srtContent;
-    case "ass":
+    case 'ass':
       return convertSrtToAss(srtContent);
-    case "vtt":
+    case 'vtt':
       return convertSrtToVtt(srtContent);
-    case "txt":
+    case 'txt':
       return convertSrtToTxt(srtContent);
     default:
       throw new Error(`Unsupported output format: ${outputFormat}`);

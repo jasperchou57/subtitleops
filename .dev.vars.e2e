@@ -1,0 +1,4 @@
+# Non-secret fixtures used only by the local Playwright environment.
+BETTER_AUTH_SECRET='subtitleops-e2e-secret-32-characters-minimum'
+STRIPE_SECRET_KEY='sk_test_subtitleops_e2e'
+STRIPE_WEBHOOK_SECRET='whsec_subtitleops_e2e'

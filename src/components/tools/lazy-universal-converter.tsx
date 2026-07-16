@@ -1,9 +1,12 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
+import dynamic from '@/compat/next-dynamic';
 
 const UniversalConverter = dynamic(
-  () => import("@/components/tools/universal-converter").then((mod) => mod.UniversalConverter),
+  () =>
+    import('@/components/tools/universal-converter').then(
+      (mod) => mod.UniversalConverter
+    ),
   {
     ssr: false,
     loading: () => (
