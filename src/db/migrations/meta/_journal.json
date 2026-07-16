@@ -36,6 +36,13 @@
       "when": 1784121126435,
       "tag": "0004_aspiring_living_tribunal",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1784214146089,
+      "tag": "0005_red_amazoness",
+      "breakpoints": true
     }
   ]
 }

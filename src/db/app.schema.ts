@@ -46,8 +46,8 @@ export const payment = sqliteTable(
   (table) => [
     index('payment_user_id_idx').on(table.userId),
     index('payment_customer_id_idx').on(table.customerId),
-    index('payment_subscription_id_idx').on(table.subscriptionId),
-    index('payment_session_id_idx').on(table.sessionId),
+    uniqueIndex('payment_subscription_id_unique').on(table.subscriptionId),
+    uniqueIndex('payment_session_id_unique').on(table.sessionId),
     index('payment_invoice_id_idx').on(table.invoiceId),
     index('payment_paid_idx').on(table.paid),
     index('payment_user_paid_idx').on(table.userId, table.paid),

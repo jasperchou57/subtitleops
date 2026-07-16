@@ -25,6 +25,13 @@ import type {
 } from '../types';
 import { PlanIntervals, PaymentScenes, PaymentTypes } from '../types';
 
+function isUniqueConstraintError(error: unknown) {
+  return (
+    error instanceof Error &&
+    error.message.toLowerCase().includes('unique constraint')
+  );
+}
+
 /**
  * Stripe payment provider implementation
  */
@@ -520,10 +527,7 @@ export class StripeProvider implements PaymentProvider {
       console.error('<< Handle invoice paid error:', error);
 
       // Check if it's a duplicate invoice error (database constraint violation)
-      if (
-        error instanceof Error &&
-        error.message.includes('unique constraint')
-      ) {
+      if (isUniqueConstraintError(error)) {
         console.log('<< Invoice already processed:', invoice.id);
         return; // Don't throw, this is expected for duplicate processing
       }
@@ -993,10 +997,7 @@ export class StripeProvider implements PaymentProvider {
       console.log(`<< Created ${recordType} payment record success`);
     } catch (error) {
       // Handle duplicate key constraint violation gracefully
-      if (
-        error instanceof Error &&
-        error.message.includes('unique constraint')
-      ) {
+      if (isUniqueConstraintError(error)) {
         console.log(
           `<< ${recordType} payment record already exists, skipping creation`
         );
