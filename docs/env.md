@@ -69,10 +69,10 @@ Read at **Worker request time**. Used for secrets, API keys, and server-only con
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Yes (prod) | Server-only secret |
 | `GITHUB_CLIENT_ID` | GitHub OAuth client ID | Yes (prod) | Callback: `/api/auth/callback/github` |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret | Yes (prod) | Server-only secret |
-| `APPLE_CLIENT_ID` | Apple Service ID | Yes (prod) | Callback: `/api/auth/callback/apple` |
-| `APPLE_TEAM_ID` | Apple Developer Team ID | Yes (prod) | Used to sign the Apple client-secret JWT |
-| `APPLE_KEY_ID` | Sign in with Apple key ID | Yes (prod) | Used to sign the Apple client-secret JWT |
-| `APPLE_PRIVATE_KEY` | Sign in with Apple `.p8` private key | Yes (prod) | Multiline PEM; server-only secret |
+| `APPLE_CLIENT_ID` | Apple Service ID | When enabled | Callback: `/api/auth/callback/apple` |
+| `APPLE_TEAM_ID` | Apple Developer Team ID | When enabled | Used to sign the Apple client-secret JWT |
+| `APPLE_KEY_ID` | Sign in with Apple key ID | When enabled | Used to sign the Apple client-secret JWT |
+| `APPLE_PRIVATE_KEY` | Sign in with Apple `.p8` private key | When enabled | Multiline PEM; server-only secret |
 
 GitHub Actions reserves the `GITHUB_` secret-name prefix. In the repository,
 store the GitHub OAuth values as `OAUTH_GITHUB_CLIENT_ID` and

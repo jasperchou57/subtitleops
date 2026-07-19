@@ -37,8 +37,8 @@ src/auth/
 - **emailVerification**:
   - `sendVerificationEmail`: calls `sendEmail({ template: 'verifyEmail', ... })`.
   - `autoSignInAfterVerification: true`.
-- **socialProviders**: Google, GitHub, and Apple are enabled only when their corresponding runtime credentials are present.
-- **Apple**: The Worker generates Apple’s ES256 client-secret JWT from `APPLE_CLIENT_ID`, `APPLE_TEAM_ID`, `APPLE_KEY_ID`, and `APPLE_PRIVATE_KEY`; `https://appleid.apple.com` is trusted for the OAuth flow.
+- **socialProviders**: Google and GitHub are enabled for production. Apple support is implemented but remains disabled until an Apple Developer Program team can provide its credentials.
+- **Apple**: When enabled, the Worker generates Apple’s ES256 client-secret JWT from `APPLE_CLIENT_ID`, `APPLE_TEAM_ID`, `APPLE_KEY_ID`, and `APPLE_PRIVATE_KEY`; `https://appleid.apple.com` is trusted for the OAuth flow.
 - **account**: Account linking trusts only the social providers that are fully configured at runtime.
 - **user**: `deleteUser.enabled: true`.
 - **plugins**:
@@ -87,7 +87,7 @@ Server functions that need a session (e.g. `listUsers` in `src/api/users.ts`) us
 - **websiteConfig.auth** (`src/config/website.ts`): `enable`, provider toggles, `enableCredentialLogin`, and `enableCredentialRegistration`.
 - **D1**: Configure `d1_databases` in `wrangler.jsonc` with binding name **`DB`**; `getDb()` uses `env.DB`.
 - **Mail**: Verification and password reset depend on the Mail module. (see [Mail](./mail.md)).
-- **OAuth**: Set Google, GitHub, and Apple credentials in the Worker environment. Production callback URLs are `https://subtitleops.com/api/auth/callback/{provider}`. Full list: [Env](./env.md).
+- **OAuth**: Google and GitHub credentials are required in the Worker environment. Apple credentials are required only when Apple login is enabled. Production callback URLs are `https://subtitleops.com/api/auth/callback/{provider}`. Full list: [Env](./env.md).
 
 ---
 

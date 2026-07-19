@@ -21,7 +21,7 @@ test.describe('authentication and protected routes', () => {
     await expect(page.locator('input[name="email"]')).toBeVisible();
     await expect(page.getByRole('button', { name: /Google/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /GitHub/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Apple/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Apple/i })).toHaveCount(0);
     await expect(page.getByRole('link', { name: /sign up|注册/i })).toHaveCount(
       0
     );
