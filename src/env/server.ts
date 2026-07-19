@@ -13,6 +13,12 @@ export const serverEnv = createEnv({
     BETTER_AUTH_SECRET: z.string().default('better-auth-secret'),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
+    GITHUB_CLIENT_ID: z.string().optional(),
+    GITHUB_CLIENT_SECRET: z.string().optional(),
+    APPLE_CLIENT_ID: z.string().optional(),
+    APPLE_TEAM_ID: z.string().optional(),
+    APPLE_KEY_ID: z.string().optional(),
+    APPLE_PRIVATE_KEY: z.string().optional(),
 
     // Mail and Newsletter (Resend)
     RESEND_API_KEY: z.string().optional(),

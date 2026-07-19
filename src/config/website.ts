@@ -49,8 +49,11 @@ export const websiteConfig: WebsiteConfig = {
   social: {},
   auth: {
     enable: true,
-    enableGoogleLogin: false,
+    enableGoogleLogin: true,
+    enableGitHubLogin: true,
+    enableAppleLogin: true,
     enableCredentialLogin: true,
+    enableCredentialRegistration: false,
     enableDeleteAccount: true,
   },
   blog: {

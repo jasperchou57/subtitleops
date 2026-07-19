@@ -216,6 +216,8 @@
   "auth_reset_password_title": "重置密码",
   "auth_social_or": "或以社媒账号登录",
   "auth_social_sign_in_with_google": "使用 Google 登录",
+  "auth_social_sign_in_with_github": "使用 GitHub 登录",
+  "auth_social_sign_in_with_apple": "使用 Apple 登录",
   "block_features2_card_alt": "卡片插图（{mode} 模式）",
   "block_hero_image_alt": "TanStarter 仪表盘截图（{mode} 模式）",
   "blog_all_posts": "全部文章",

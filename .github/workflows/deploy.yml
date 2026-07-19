@@ -34,6 +34,15 @@ jobs:
       VITE_ADSENSE_CLIENT_ID: ca-pub-9498208038262605
       # --- Worker runtime secrets ---
       BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      # Repository secret names cannot use GitHub's reserved GITHUB_ prefix.
+      GITHUB_CLIENT_ID: ${{ secrets.OAUTH_GITHUB_CLIENT_ID }}
+      GITHUB_CLIENT_SECRET: ${{ secrets.OAUTH_GITHUB_CLIENT_SECRET }}
+      APPLE_CLIENT_ID: ${{ secrets.APPLE_CLIENT_ID }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+      APPLE_PRIVATE_KEY: ${{ secrets.APPLE_PRIVATE_KEY }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
@@ -48,6 +57,14 @@ jobs:
           : "${CLOUDFLARE_ACCOUNT_ID:?Missing CLOUDFLARE_ACCOUNT_ID GitHub secret}"
           : "${CLOUDFLARE_API_TOKEN:?Missing CLOUDFLARE_API_TOKEN GitHub secret}"
           : "${BETTER_AUTH_SECRET:?Missing BETTER_AUTH_SECRET GitHub secret}"
+          : "${GOOGLE_CLIENT_ID:?Missing GOOGLE_CLIENT_ID GitHub secret}"
+          : "${GOOGLE_CLIENT_SECRET:?Missing GOOGLE_CLIENT_SECRET GitHub secret}"
+          : "${GITHUB_CLIENT_ID:?Missing OAUTH_GITHUB_CLIENT_ID GitHub secret}"
+          : "${GITHUB_CLIENT_SECRET:?Missing OAUTH_GITHUB_CLIENT_SECRET GitHub secret}"
+          : "${APPLE_CLIENT_ID:?Missing APPLE_CLIENT_ID GitHub secret}"
+          : "${APPLE_TEAM_ID:?Missing APPLE_TEAM_ID GitHub secret}"
+          : "${APPLE_KEY_ID:?Missing APPLE_KEY_ID GitHub secret}"
+          : "${APPLE_PRIVATE_KEY:?Missing APPLE_PRIVATE_KEY GitHub secret}"
           : "${STRIPE_SECRET_KEY:?Missing STRIPE_SECRET_KEY GitHub secret}"
           : "${STRIPE_WEBHOOK_SECRET:?Missing STRIPE_WEBHOOK_SECRET GitHub secret}"
 
@@ -124,11 +141,27 @@ jobs:
           trap 'rm -f "$secrets_file"' EXIT
           jq -n \
             --arg betterAuthSecret "$BETTER_AUTH_SECRET" \
+            --arg googleClientId "$GOOGLE_CLIENT_ID" \
+            --arg googleClientSecret "$GOOGLE_CLIENT_SECRET" \
+            --arg githubClientId "$GITHUB_CLIENT_ID" \
+            --arg githubClientSecret "$GITHUB_CLIENT_SECRET" \
+            --arg appleClientId "$APPLE_CLIENT_ID" \
+            --arg appleTeamId "$APPLE_TEAM_ID" \
+            --arg appleKeyId "$APPLE_KEY_ID" \
+            --arg applePrivateKey "$APPLE_PRIVATE_KEY" \
             --arg resendApiKey "$RESEND_API_KEY" \
             --arg stripeSecretKey "$STRIPE_SECRET_KEY" \
             --arg stripeWebhookSecret "$STRIPE_WEBHOOK_SECRET" \
             '{
               BETTER_AUTH_SECRET: $betterAuthSecret,
+              GOOGLE_CLIENT_ID: $googleClientId,
+              GOOGLE_CLIENT_SECRET: $googleClientSecret,
+              GITHUB_CLIENT_ID: $githubClientId,
+              GITHUB_CLIENT_SECRET: $githubClientSecret,
+              APPLE_CLIENT_ID: $appleClientId,
+              APPLE_TEAM_ID: $appleTeamId,
+              APPLE_KEY_ID: $appleKeyId,
+              APPLE_PRIVATE_KEY: $applePrivateKey,
               STRIPE_SECRET_KEY: $stripeSecretKey,
               STRIPE_WEBHOOK_SECRET: $stripeWebhookSecret
             } + (

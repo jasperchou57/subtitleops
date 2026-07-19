@@ -4,7 +4,6 @@ import {
   loginByForm,
   registerE2EUser,
 } from '../fixtures/auth';
-import { createE2EUser } from '../fixtures/test-data';
 
 test.describe('authentication and protected routes', () => {
   test.beforeAll(async ({ request }) => {
@@ -20,6 +19,12 @@ test.describe('authentication and protected routes', () => {
 
     await expect(page).toHaveURL(/\/auth\/login/);
     await expect(page.locator('input[name="email"]')).toBeVisible();
+    await expect(page.getByRole('button', { name: /Google/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /GitHub/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Apple/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /sign up|注册/i })).toHaveCount(
+      0
+    );
   });
 
   test('allows a verified user to sign in and view dashboard', async ({
@@ -51,20 +56,10 @@ test.describe('authentication and protected routes', () => {
     );
   });
 
-  test('allows a user to register from the register page', async ({ page }) => {
-    const user = createE2EUser();
-
+  test('does not expose email registration', async ({ page }) => {
     await page.goto('/auth/register');
-    await page.waitForLoadState('networkidle');
-    await page.locator('input[name="name"]').fill(user.name);
-    await page.locator('input[name="email"]').fill(user.email);
-    await page.locator('input[name="password"]').fill(user.password);
-    await page.getByRole('button', { name: /^sign up$|^注册$/i }).click();
-
-    await expect(page).toHaveURL(/\/dashboard\/?$/);
-    await expect(
-      page.getByRole('heading', { name: 'SubtitleOps workspace' })
-    ).toBeVisible();
+    await expect(page).toHaveURL(/\/auth\/login\/?$/);
+    await expect(page.locator('input[name="name"]')).toHaveCount(0);
   });
 
   test('redirects non-admin users away from admin pages', async ({

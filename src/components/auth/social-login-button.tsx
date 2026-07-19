@@ -7,7 +7,40 @@ import { authClient } from '@/auth/client';
 import { resolveAuthCallbackPath } from '@/lib/auth-callback';
 import { DEFAULT_LOGIN_REDIRECT, Routes } from '@/lib/routes';
 import { getPathWithLocale } from '@/lib/urls';
-import { IconBrandGoogleFilled, IconLoader2 } from '@tabler/icons-react';
+import {
+  IconBrandAppleFilled,
+  IconBrandGithubFilled,
+  IconBrandGoogleFilled,
+  IconLoader2,
+} from '@tabler/icons-react';
+
+type SocialProvider = 'google' | 'github' | 'apple';
+
+const socialProviders = [
+  {
+    id: 'google',
+    enabled: websiteConfig.auth?.enableGoogleLogin === true,
+    label: () => m.auth_social_sign_in_with_google(),
+    Icon: IconBrandGoogleFilled,
+  },
+  {
+    id: 'github',
+    enabled: websiteConfig.auth?.enableGitHubLogin === true,
+    label: () => m.auth_social_sign_in_with_github(),
+    Icon: IconBrandGithubFilled,
+  },
+  {
+    id: 'apple',
+    enabled: websiteConfig.auth?.enableAppleLogin === true,
+    label: () => m.auth_social_sign_in_with_apple(),
+    Icon: IconBrandAppleFilled,
+  },
+] satisfies Array<{
+  id: SocialProvider;
+  enabled: boolean;
+  label: () => string;
+  Icon: typeof IconBrandGoogleFilled;
+}>;
 interface SocialLoginButtonProps {
   callbackUrl?: string;
   showDivider?: boolean;
@@ -25,11 +58,14 @@ export function SocialLoginButton({
     [propCallbackUrl, paramCallbackUrl],
     defaultCallbackUrl
   );
-  const [isLoading, setIsLoading] = useState<'google' | null>(null);
-  if (!websiteConfig.auth?.enableGoogleLogin) {
+  const [isLoading, setIsLoading] = useState<SocialProvider | null>(null);
+  const enabledProviders = socialProviders.filter(
+    (provider) => provider.enabled
+  );
+  if (enabledProviders.length === 0) {
     return null;
   }
-  const onClick = async (provider: 'google') => {
+  const onClick = async (provider: SocialProvider) => {
     await authClient.signIn.social(
       {
         provider,
@@ -47,20 +83,24 @@ export function SocialLoginButton({
   return (
     <div className="w-full flex flex-col gap-4">
       {showDivider && <DividerWithText text={m.auth_social_or()} />}
-      <Button
-        size="lg"
-        className="w-full"
-        variant="outline"
-        onClick={() => onClick('google')}
-        disabled={isLoading === 'google'}
-      >
-        {isLoading === 'google' ? (
-          <IconLoader2 className="mr-2 size-4 animate-spin" />
-        ) : (
-          <IconBrandGoogleFilled className="size-4 mr-2" />
-        )}
-        <span>{m.auth_social_sign_in_with_google()}</span>
-      </Button>
+      {enabledProviders.map(({ id, label, Icon }) => (
+        <Button
+          key={id}
+          type="button"
+          size="lg"
+          className="w-full"
+          variant="outline"
+          onClick={() => onClick(id)}
+          disabled={isLoading !== null}
+        >
+          {isLoading === id ? (
+            <IconLoader2 className="mr-2 size-4 animate-spin" />
+          ) : (
+            <Icon className="mr-2 size-4" />
+          )}
+          <span>{label()}</span>
+        </Button>
+      ))}
     </div>
   );
 }

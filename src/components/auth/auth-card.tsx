@@ -13,8 +13,8 @@ import { cn } from '@/lib/utils';
 interface AuthCardProps {
   children: React.ReactNode;
   headerLabel: string;
-  bottomButtonLabel: string;
-  bottomButtonHref: string;
+  bottomButtonLabel?: string;
+  bottomButtonHref?: string;
   className?: string;
 }
 
@@ -37,9 +37,11 @@ export function AuthCard({
         <CardDescription>{headerLabel}</CardDescription>
       </CardHeader>
       <CardContent>{children}</CardContent>
-      <CardFooter>
-        <BottomLink label={bottomButtonLabel} href={bottomButtonHref} />
-      </CardFooter>
+      {bottomButtonLabel && bottomButtonHref ? (
+        <CardFooter>
+          <BottomLink label={bottomButtonLabel} href={bottomButtonHref} />
+        </CardFooter>
+      ) : null}
     </Card>
   );
 }

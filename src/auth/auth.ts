@@ -16,6 +16,34 @@ import { deletePaymentCustomer } from '@/payment/account-deletion';
 import { emailHarmony } from 'better-auth-harmony';
 import { admin, apiKey } from 'better-auth/plugins';
 import { eq } from 'drizzle-orm';
+import { importPKCS8, SignJWT } from 'jose';
+
+const isLocalE2EMode =
+  import.meta.env.DEV === true && import.meta.env.MODE === 'e2e';
+const emailRegistrationEnabled =
+  websiteConfig.auth?.enableCredentialRegistration ?? true;
+const googleOAuthEnabled = Boolean(
+  websiteConfig.auth?.enableGoogleLogin &&
+    serverEnv.GOOGLE_CLIENT_ID &&
+    serverEnv.GOOGLE_CLIENT_SECRET
+);
+const githubOAuthEnabled = Boolean(
+  websiteConfig.auth?.enableGitHubLogin &&
+    serverEnv.GITHUB_CLIENT_ID &&
+    serverEnv.GITHUB_CLIENT_SECRET
+);
+const appleOAuthEnabled = Boolean(
+  websiteConfig.auth?.enableAppleLogin &&
+    serverEnv.APPLE_CLIENT_ID &&
+    serverEnv.APPLE_TEAM_ID &&
+    serverEnv.APPLE_KEY_ID &&
+    serverEnv.APPLE_PRIVATE_KEY
+);
+const trustedSocialProviders = [
+  ...(googleOAuthEnabled ? ['google'] : []),
+  ...(githubOAuthEnabled ? ['github'] : []),
+  ...(appleOAuthEnabled ? ['apple'] : []),
+];
 
 /**
  * Better Auth Configuration
@@ -45,6 +73,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     // https://discord.com/channels/1300839113142046730/1300839113594769431/1454280549060444393
     enabled: websiteConfig.auth?.enableCredentialLogin ?? false,
+    disableSignUp: !emailRegistrationEnabled && !isLocalE2EMode,
     // https://www.better-auth.com/docs/concepts/email#2-require-email-verification
     requireEmailVerification: websiteConfig.mail?.enable === true,
     // https://www.better-auth.com/docs/authentication/email-password#forget-password
@@ -71,22 +100,39 @@ export const auth = betterAuth({
   },
   socialProviders: {
     // https://www.better-auth.com/docs/authentication/google
-    ...(websiteConfig.auth?.enableGoogleLogin &&
-    serverEnv.GOOGLE_CLIENT_ID &&
-    serverEnv.GOOGLE_CLIENT_SECRET
+    ...(googleOAuthEnabled
       ? {
           google: {
-            clientId: serverEnv.GOOGLE_CLIENT_ID,
-            clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
+            clientId: serverEnv.GOOGLE_CLIENT_ID!,
+            clientSecret: serverEnv.GOOGLE_CLIENT_SECRET!,
           },
         }
       : {}),
+    // https://www.better-auth.com/docs/authentication/github
+    ...(githubOAuthEnabled
+      ? {
+          github: {
+            clientId: serverEnv.GITHUB_CLIENT_ID!,
+            clientSecret: serverEnv.GITHUB_CLIENT_SECRET!,
+          },
+        }
+      : {}),
+    // https://www.better-auth.com/docs/authentication/apple
+    ...(appleOAuthEnabled
+      ? {
+          apple: async () => ({
+            clientId: serverEnv.APPLE_CLIENT_ID!,
+            clientSecret: await generateAppleClientSecret(),
+          }),
+        }
+      : {}),
   },
+  trustedOrigins: appleOAuthEnabled ? ['https://appleid.apple.com'] : undefined,
   account: {
     // https://www.better-auth.com/docs/concepts/users-accounts#account-linking
     accountLinking: {
-      enabled: websiteConfig.auth?.enableGoogleLogin,
-      trustedProviders: websiteConfig.auth?.enableGoogleLogin ? ['google'] : [],
+      enabled: trustedSocialProviders.length > 0,
+      trustedProviders: trustedSocialProviders,
     },
   },
   user: {
@@ -153,6 +199,23 @@ export const auth = betterAuth({
     },
   },
 });
+
+async function generateAppleClientSecret() {
+  const privateKey = await importPKCS8(
+    serverEnv.APPLE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+    'ES256'
+  );
+  const now = Math.floor(Date.now() / 1000);
+
+  return new SignJWT({})
+    .setProtectedHeader({ alg: 'ES256', kid: serverEnv.APPLE_KEY_ID! })
+    .setIssuer(serverEnv.APPLE_TEAM_ID!)
+    .setSubject(serverEnv.APPLE_CLIENT_ID!)
+    .setAudience('https://appleid.apple.com')
+    .setIssuedAt(now)
+    .setExpirationTime(now + 180 * 24 * 60 * 60)
+    .sign(privateKey);
+}
 
 /**
  * Runs after a new user is created. Auto-subscribes to newsletter when enabled.

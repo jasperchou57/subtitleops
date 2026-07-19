@@ -11,6 +11,9 @@ export const Route = createFileRoute('/auth/register')({
     if (!websiteConfig.auth?.enable) {
       throw redirect({ to: Routes.Root });
     }
+    if ((websiteConfig.auth?.enableCredentialRegistration ?? true) === false) {
+      throw redirect({ to: Routes.Login });
+    }
     // Client-side navigation: check session via auth client
     if (typeof window !== 'undefined') {
       const { data: session } = await authClient.getSession();
