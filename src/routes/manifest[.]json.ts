@@ -17,6 +17,12 @@ export const Route = createFileRoute('/manifest.json')({
             theme_color: '#18181b',
             icons: [
               {
+                src: '/logo-512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                purpose: 'any maskable',
+              },
+              {
                 src: '/icon.svg',
                 sizes: 'any',
                 type: 'image/svg+xml',

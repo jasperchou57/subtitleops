@@ -1,6 +1,9 @@
 import type { LegacyMetadata as Metadata } from '@/lib/legacy-metadata';
 import Link from '@/compat/next-link';
 import { JsonLd, blogPostJsonLd } from '@/components/seo/json-ld';
+import { ArticleHeroImage, ArticleMeta } from '@/components/seo/article-meta';
+
+const articleImage = '/og/subtitle-delay.png';
 
 export const metadata: Metadata = {
   title: 'How to Fix Subtitle Delay Online',
@@ -14,7 +17,12 @@ export const metadata: Metadata = {
     'fix srt delay',
   ],
   alternates: { canonical: '/blog/how-to-fix-subtitle-delay-online' },
-  openGraph: { url: '/blog/how-to-fix-subtitle-delay-online' },
+  openGraph: {
+    url: '/blog/how-to-fix-subtitle-delay-online',
+    type: 'article',
+    image: articleImage,
+    imageAlt: 'Guide to fixing subtitle delay and timing drift',
+  },
 };
 
 const articleJsonLd = blogPostJsonLd({
@@ -22,7 +30,9 @@ const articleJsonLd = blogPostJsonLd({
   description:
     'Learn how to fix subtitles that appear too early, too late, or drift out of sync. Includes when to use timing shift versus FPS conversion.',
   url: '/blog/how-to-fix-subtitle-delay-online',
+  image: articleImage,
   datePublished: '2026-05-13',
+  dateModified: '2026-07-19',
 });
 
 export default function HowToFixSubtitleDelayOnlinePage() {
@@ -37,9 +47,7 @@ export default function HowToFixSubtitleDelayOnlinePage() {
         >
           &larr; Back to blog
         </Link>
-        <time className="block text-xs text-muted-foreground mt-2">
-          May 13, 2026
-        </time>
+        <ArticleMeta datePublished="2026-05-13" />
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3 leading-tight">
           How to Fix Subtitle Delay Online
         </h1>
@@ -50,6 +58,11 @@ export default function HowToFixSubtitleDelayOnlinePage() {
           have.
         </p>
       </header>
+
+      <ArticleHeroImage
+        src={articleImage}
+        alt="Subtitle timing being shifted back into sync"
+      />
 
       <div className="mb-10 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
         <svg

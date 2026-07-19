@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
+import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'Free VTT to TXT Converter Online',
@@ -93,6 +94,7 @@ export default function VttToTxtPage() {
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
+      <ToolBreadcrumbs current="VTT to TXT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
       <section className="relative py-10 md:py-14">

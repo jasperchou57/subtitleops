@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
+import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'Free SBV to SRT Converter Online',
@@ -92,6 +93,7 @@ export default function SbvToSrtPage() {
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
+      <ToolBreadcrumbs current="SBV to SRT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
       <section className="relative py-10 md:py-14">

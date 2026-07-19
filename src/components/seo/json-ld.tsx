@@ -13,12 +13,13 @@ export function JsonLd({ data }: JsonLdProps) {
   );
 }
 
-export function homepageJsonLd(faqs: { question: string; answer: string }[]) {
+export function homepageJsonLd(_faqs: { question: string; answer: string }[]) {
   return [
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'SubtitleOps',
+      alternateName: 'Subtitle Ops',
       url: BASE_URL,
       description:
         'Convert SRT, ASS, VTT, TXT, and SBV subtitles in your browser. Free tools for format conversion, text extraction, timing shift, and FPS fixes.',
@@ -28,18 +29,7 @@ export function homepageJsonLd(faqs: { question: string; answer: string }[]) {
       '@type': 'Organization',
       name: 'SubtitleOps',
       url: BASE_URL,
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqs.map((faq) => ({
-        '@type': 'Question',
-        name: faq.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: faq.answer,
-        },
-      })),
+      logo: `${BASE_URL}/logo-512.png`,
     },
   ];
 }
@@ -48,7 +38,7 @@ export function toolPageJsonLd({
   name,
   description,
   url,
-  faqs,
+  faqs: _faqs,
 }: {
   name: string;
   description: string;
@@ -69,18 +59,6 @@ export function toolPageJsonLd({
         price: '0',
         priceCurrency: 'USD',
       },
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqs.map((faq) => ({
-        '@type': 'Question',
-        name: faq.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: faq.answer,
-        },
-      })),
     },
     {
       '@context': 'https://schema.org',
@@ -120,12 +98,16 @@ export function blogPostJsonLd({
   headline,
   description,
   url,
+  image,
   datePublished,
+  dateModified,
 }: {
   headline: string;
   description: string;
   url: string;
+  image: string;
   datePublished: string;
+  dateModified: string;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -133,8 +115,20 @@ export function blogPostJsonLd({
     headline,
     description,
     url: `${BASE_URL}${url}`,
+    image: `${BASE_URL}${image}`,
     datePublished,
+    dateModified,
     author: { '@type': 'Organization', name: 'SubtitleOps', url: BASE_URL },
-    publisher: { '@type': 'Organization', name: 'SubtitleOps', url: BASE_URL },
+    publisher: {
+      '@type': 'Organization',
+      name: 'SubtitleOps',
+      url: BASE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${BASE_URL}/logo-512.png`,
+        width: 512,
+        height: 512,
+      },
+    },
   };
 }

@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
+import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'TXT to SRT Converter - Paste Text or Upload Files',
@@ -97,6 +98,7 @@ export default function TxtToSrtPage() {
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
+      <ToolBreadcrumbs current="TXT to SRT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
       <section className="relative py-10 md:py-14">

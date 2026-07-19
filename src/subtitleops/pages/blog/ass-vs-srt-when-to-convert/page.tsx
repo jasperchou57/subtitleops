@@ -1,6 +1,9 @@
 import type { LegacyMetadata as Metadata } from '@/lib/legacy-metadata';
 import Link from '@/compat/next-link';
 import { JsonLd, blogPostJsonLd } from '@/components/seo/json-ld';
+import { ArticleHeroImage, ArticleMeta } from '@/components/seo/article-meta';
+
+const articleImage = '/og/ass-vs-srt.png';
 
 export const metadata: Metadata = {
   title: 'ASS vs SRT — When to Convert and When to Keep the Original',
@@ -14,7 +17,12 @@ export const metadata: Metadata = {
     'ass subtitle format',
   ],
   alternates: { canonical: '/blog/ass-vs-srt-when-to-convert' },
-  openGraph: { url: '/blog/ass-vs-srt-when-to-convert' },
+  openGraph: {
+    url: '/blog/ass-vs-srt-when-to-convert',
+    type: 'article',
+    image: articleImage,
+    imageAlt: 'ASS vs SRT subtitle format comparison',
+  },
 };
 
 const articleJsonLd = blogPostJsonLd({
@@ -23,7 +31,9 @@ const articleJsonLd = blogPostJsonLd({
   description:
     'Understand the real differences between ASS and SRT subtitle formats. Learn when converting ASS to SRT makes sense and when keeping the styled original is the better decision.',
   url: '/blog/ass-vs-srt-when-to-convert',
+  image: articleImage,
   datePublished: '2026-03-22',
+  dateModified: '2026-07-19',
 });
 
 export default function AssVsSrtPost() {
@@ -38,14 +48,17 @@ export default function AssVsSrtPost() {
         >
           ← Back to blog
         </Link>
-        <time className="block text-xs text-muted-foreground mt-2">
-          March 22, 2026
-        </time>
+        <ArticleMeta datePublished="2026-03-22" />
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">
           ASS vs SRT — When Should You Convert and When Should You Keep the
           Original?
         </h1>
       </header>
+
+      <ArticleHeroImage
+        src={articleImage}
+        alt="ASS and SRT subtitle format comparison"
+      />
 
       <div className="prose prose-neutral max-w-none text-[15px] leading-relaxed space-y-6">
         <p>

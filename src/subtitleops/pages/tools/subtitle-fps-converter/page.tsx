@@ -3,6 +3,7 @@ import Link from '@/compat/next-link';
 import { SubtitleFpsConverter } from './converter';
 import { VibeBackgroundGlow } from '@/components/ui/vibe-background-glow';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
+import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
 import {
   Accordion,
   AccordionContent,
@@ -100,6 +101,7 @@ export default function SubtitleFpsConverterPage() {
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
+      <ToolBreadcrumbs current="Subtitle FPS Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
       <section className="relative py-10 md:py-14">

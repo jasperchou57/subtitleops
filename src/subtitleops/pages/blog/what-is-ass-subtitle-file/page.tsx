@@ -1,6 +1,9 @@
 import type { LegacyMetadata as Metadata } from '@/lib/legacy-metadata';
 import Link from '@/compat/next-link';
 import { JsonLd, blogPostJsonLd } from '@/components/seo/json-ld';
+import { ArticleHeroImage, ArticleMeta } from '@/components/seo/article-meta';
+
+const articleImage = '/og/what-is-ass.png';
 
 export const metadata: Metadata = {
   title: 'What Is an ASS Subtitle File? Advanced SubStation Alpha Explained',
@@ -14,7 +17,12 @@ export const metadata: Metadata = {
     'aegisub ass',
   ],
   alternates: { canonical: '/blog/what-is-ass-subtitle-file' },
-  openGraph: { url: '/blog/what-is-ass-subtitle-file' },
+  openGraph: {
+    url: '/blog/what-is-ass-subtitle-file',
+    type: 'article',
+    image: articleImage,
+    imageAlt: 'Advanced SubStation Alpha subtitle format guide',
+  },
 };
 
 const articleJsonLd = blogPostJsonLd({
@@ -22,7 +30,9 @@ const articleJsonLd = blogPostJsonLd({
   description:
     'Learn what an ASS subtitle file is, why it supports styling and positioning, and when to keep ASS instead of converting to SRT.',
   url: '/blog/what-is-ass-subtitle-file',
+  image: articleImage,
   datePublished: '2026-05-13',
+  dateModified: '2026-07-19',
 });
 
 export default function WhatIsAssSubtitleFilePage() {
@@ -37,9 +47,7 @@ export default function WhatIsAssSubtitleFilePage() {
         >
           &larr; Back to blog
         </Link>
-        <time className="block text-xs text-muted-foreground mt-2">
-          May 13, 2026
-        </time>
+        <ArticleMeta datePublished="2026-05-13" />
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3 leading-tight">
           What Is an ASS Subtitle File?
         </h1>
@@ -51,6 +59,11 @@ export default function WhatIsAssSubtitleFilePage() {
           matters.
         </p>
       </header>
+
+      <ArticleHeroImage
+        src={articleImage}
+        alt="Advanced SubStation Alpha subtitle format overview"
+      />
 
       <div className="mb-10 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
         <svg

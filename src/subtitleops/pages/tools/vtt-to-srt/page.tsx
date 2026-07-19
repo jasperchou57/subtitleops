@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
+import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'Free VTT to SRT Converter Online',
@@ -97,6 +98,7 @@ export default function VttToSrtPage() {
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
+      <ToolBreadcrumbs current="VTT to SRT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
       <section className="relative py-10 md:py-14">

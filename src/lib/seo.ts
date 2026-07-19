@@ -101,6 +101,16 @@ export const metadata = ({
       : []),
     ...(url ? [{ property: 'og:url', content: url }] : []),
     ...(image ? [{ property: 'og:image', content: image }] : []),
+    ...(image
+      ? [
+          { property: 'og:image:width', content: '1200' },
+          { property: 'og:image:height', content: '630' },
+          {
+            property: 'og:image:alt',
+            content: 'SubtitleOps browser-based subtitle tools',
+          },
+        ]
+      : []),
     // Twitter metadata (twitter:site = site's @username, not domain)
     { name: 'twitter:title', content: title },
     ...(twitterSite ? [{ name: 'twitter:site', content: twitterSite }] : []),
@@ -112,8 +122,13 @@ export const metadata = ({
       ? [
           { name: 'twitter:card', content: 'summary_large_image' as const },
           { name: 'twitter:image', content: image },
+          {
+            name: 'twitter:image:alt',
+            content: 'SubtitleOps browser-based subtitle tools',
+          },
         ]
       : []),
+    { name: 'robots', content: 'index, follow, max-image-preview:large' },
   ];
   return metadata;
 };

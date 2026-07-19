@@ -3,6 +3,7 @@ import Link from '@/compat/next-link';
 import { SubtitleShiftConverter } from './converter';
 import { VibeBackgroundGlow } from '@/components/ui/vibe-background-glow';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
+import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
 import {
   Accordion,
   AccordionContent,
@@ -99,6 +100,7 @@ export default function SubtitleShiftPage() {
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
+      <ToolBreadcrumbs current="Subtitle Timing Shift" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
       <section className="relative py-10 md:py-14">

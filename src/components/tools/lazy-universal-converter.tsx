@@ -19,5 +19,9 @@ const UniversalConverter = dynamic(
 );
 
 export function LazyUniversalConverter() {
-  return <UniversalConverter />;
+  return (
+    <div className="min-h-[364px]">
+      <UniversalConverter />
+    </div>
+  );
 }

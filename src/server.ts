@@ -2,6 +2,9 @@ import handler from '@tanstack/react-start/server-entry';
 import { purgeOldProductionApiUsage } from '@/lib/api-usage';
 import { localeMiddleware } from '@/locale/middleware';
 import { purgeExpiredProjects } from '@/lib/project-retention';
+import { getCanonicalRedirectUrl } from '@/lib/canonical-redirect';
+
+type WorkerEnv = Env & { ASSETS: Fetcher };
 
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
@@ -39,13 +42,13 @@ function withSecurityHeaders(response: Response) {
 }
 
 export default {
-  async fetch(request: Request) {
-    const url = new URL(request.url);
+  async fetch(request: Request, env: WorkerEnv) {
+    const canonicalRedirectUrl = getCanonicalRedirectUrl(request.url);
+    if (canonicalRedirectUrl)
+      return Response.redirect(canonicalRedirectUrl, 308);
 
-    if (url.hostname === 'www.subtitleops.com') {
-      url.hostname = 'subtitleops.com';
-      return Response.redirect(url, 308);
-    }
+    const assetResponse = await env.ASSETS.fetch(request);
+    if (assetResponse.status !== 404) return assetResponse;
 
     const response = await localeMiddleware(request, () =>
       handler.fetch(request, {

@@ -1,6 +1,9 @@
 import type { LegacyMetadata as Metadata } from '@/lib/legacy-metadata';
 import Link from '@/compat/next-link';
 import { JsonLd, blogPostJsonLd } from '@/components/seo/json-ld';
+import { ArticleHeroImage, ArticleMeta } from '@/components/seo/article-meta';
+
+const articleImage = '/og/what-is-vtt.png';
 
 export const metadata: Metadata = {
   title: 'What Is a VTT File? WebVTT Captions Explained',
@@ -14,7 +17,12 @@ export const metadata: Metadata = {
     'webvtt captions',
   ],
   alternates: { canonical: '/blog/what-is-vtt-file' },
-  openGraph: { url: '/blog/what-is-vtt-file' },
+  openGraph: {
+    url: '/blog/what-is-vtt-file',
+    type: 'article',
+    image: articleImage,
+    imageAlt: 'WebVTT browser caption format guide',
+  },
 };
 
 const articleJsonLd = blogPostJsonLd({
@@ -22,7 +30,9 @@ const articleJsonLd = blogPostJsonLd({
   description:
     'Learn what a VTT file is, how WebVTT captions work, and when to use VTT instead of SRT. Includes syntax examples, browser use cases, and conversion tips.',
   url: '/blog/what-is-vtt-file',
+  image: articleImage,
   datePublished: '2026-05-13',
+  dateModified: '2026-07-19',
 });
 
 export default function WhatIsVttFilePage() {
@@ -37,9 +47,7 @@ export default function WhatIsVttFilePage() {
         >
           &larr; Back to blog
         </Link>
-        <time className="block text-xs text-muted-foreground mt-2">
-          May 13, 2026
-        </time>
+        <ArticleMeta datePublished="2026-05-13" />
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3 leading-tight">
           What Is a VTT File? WebVTT Captions Explained
         </h1>
@@ -50,6 +58,11 @@ export default function WhatIsVttFilePage() {
           optional styling hooks that make it better suited for web video.
         </p>
       </header>
+
+      <ArticleHeroImage
+        src={articleImage}
+        alt="WebVTT caption format for browser video"
+      />
 
       <div className="mb-10 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
         <svg

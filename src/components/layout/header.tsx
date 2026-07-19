@@ -140,7 +140,7 @@ export function Header() {
         {/* Mobile hamburger */}
         <button
           type="button"
-          className="flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-accent xl:hidden"
+          className="flex h-12 w-12 items-center justify-center rounded-md transition-colors hover:bg-accent xl:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >

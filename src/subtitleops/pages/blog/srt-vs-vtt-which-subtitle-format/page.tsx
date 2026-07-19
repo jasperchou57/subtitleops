@@ -1,6 +1,9 @@
 import type { LegacyMetadata as Metadata } from '@/lib/legacy-metadata';
 import Link from '@/compat/next-link';
 import { JsonLd, blogPostJsonLd } from '@/components/seo/json-ld';
+import { ArticleHeroImage, ArticleMeta } from '@/components/seo/article-meta';
+
+const articleImage = '/og/srt-vs-vtt.png';
 
 export const metadata: Metadata = {
   title: 'SRT vs VTT: Differences, Examples & Converters',
@@ -14,7 +17,12 @@ export const metadata: Metadata = {
     'srt vs webvtt',
   ],
   alternates: { canonical: '/blog/srt-vs-vtt-which-subtitle-format' },
-  openGraph: { url: '/blog/srt-vs-vtt-which-subtitle-format' },
+  openGraph: {
+    url: '/blog/srt-vs-vtt-which-subtitle-format',
+    type: 'article',
+    image: articleImage,
+    imageAlt: 'SRT vs VTT subtitle format comparison',
+  },
 };
 
 const articleJsonLd = blogPostJsonLd({
@@ -22,7 +30,9 @@ const articleJsonLd = blogPostJsonLd({
   description:
     'Compare SRT and WebVTT for players, HTML5 video, captions, and metadata. Convert SRT to VTT or VTT to SRT when needed.',
   url: '/blog/srt-vs-vtt-which-subtitle-format',
+  image: articleImage,
   datePublished: '2026-03-23',
+  dateModified: '2026-07-19',
 });
 
 export default function SrtVsVttPost() {
@@ -37,13 +47,16 @@ export default function SrtVsVttPost() {
         >
           ← Back to blog
         </Link>
-        <time className="block text-xs text-muted-foreground mt-2">
-          March 23, 2026
-        </time>
+        <ArticleMeta datePublished="2026-03-23" />
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">
           SRT vs VTT: Differences, Examples & Converters
         </h1>
       </header>
+
+      <ArticleHeroImage
+        src={articleImage}
+        alt="SRT and VTT subtitle format comparison"
+      />
 
       <div className="prose prose-neutral max-w-none text-[15px] leading-relaxed space-y-6">
         <p>

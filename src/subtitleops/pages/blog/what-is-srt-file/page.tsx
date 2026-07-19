@@ -1,6 +1,9 @@
 import type { LegacyMetadata as Metadata } from '@/lib/legacy-metadata';
 import Link from '@/compat/next-link';
 import { JsonLd, blogPostJsonLd } from '@/components/seo/json-ld';
+import { ArticleHeroImage, ArticleMeta } from '@/components/seo/article-meta';
+
+const articleImage = '/og/what-is-srt.png';
 
 export const metadata: Metadata = {
   title: 'What Is an SRT File? Structure, Example & Tools',
@@ -14,7 +17,12 @@ export const metadata: Metadata = {
     'srt file',
   ],
   alternates: { canonical: '/blog/what-is-srt-file' },
-  openGraph: { url: '/blog/what-is-srt-file' },
+  openGraph: {
+    url: '/blog/what-is-srt-file',
+    type: 'article',
+    image: articleImage,
+    imageAlt: 'SRT subtitle file structure and timestamp guide',
+  },
 };
 
 const articleJsonLd = blogPostJsonLd({
@@ -22,7 +30,9 @@ const articleJsonLd = blogPostJsonLd({
   description:
     'Learn what an SRT file is, see its timestamp format and example, then open, create, convert, or extract SRT subtitles with free tools.',
   url: '/blog/what-is-srt-file',
+  image: articleImage,
   datePublished: '2026-03-30',
+  dateModified: '2026-07-19',
 });
 
 export default function WhatIsSrtFilePage() {
@@ -37,9 +47,7 @@ export default function WhatIsSrtFilePage() {
         >
           &larr; Back to blog
         </Link>
-        <time className="block text-xs text-muted-foreground mt-2">
-          March 30, 2026
-        </time>
+        <ArticleMeta datePublished="2026-03-30" />
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3 leading-tight">
           What Is an SRT File? Structure, Example & Tools
         </h1>
@@ -52,6 +60,11 @@ export default function WhatIsSrtFilePage() {
           streaming platforms, and transcription tools.
         </p>
       </header>
+
+      <ArticleHeroImage
+        src={articleImage}
+        alt="SRT subtitle file structure and timestamp example"
+      />
 
       {/* CTA — above fold */}
       <div className="mb-10 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
@@ -604,7 +617,7 @@ It can span multiple rows.`}
 
       <footer className="border-t pt-8 text-sm text-muted-foreground">
         <p>
-          Published on March 30, 2026. This article is part of the{' '}
+          This article is part of the{' '}
           <Link
             href="/blog"
             title="SubtitleOps Blog"
