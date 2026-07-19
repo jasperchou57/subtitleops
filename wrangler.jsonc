@@ -8,6 +8,9 @@
     "global_fetch_strictly_public"
   ],
   "main": "./src/server.ts",
+  "assets": {
+    "html_handling": "drop-trailing-slash"
+  },
   "workers_dev": true,
   "preview_urls": true,
   "keep_vars": true,
