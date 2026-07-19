@@ -11,6 +11,16 @@
   "assets": {
     "html_handling": "drop-trailing-slash"
   },
+  "routes": [
+    {
+      "pattern": "subtitleops.com/*",
+      "zone_id": "38fd67f121f7c80cf3fd0739c930b94c"
+    },
+    {
+      "pattern": "www.subtitleops.com/*",
+      "zone_id": "38fd67f121f7c80cf3fd0739c930b94c"
+    }
+  ],
   "workers_dev": true,
   "preview_urls": true,
   "keep_vars": true,
