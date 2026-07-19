@@ -43,8 +43,8 @@ export function RegisterForm({
   const [success, setSuccess] = useState<string | undefined>(undefined);
   const [isPending, setIsPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const credentialLoginEnabled =
-    websiteConfig.auth?.enableCredentialLogin ?? true;
+  const credentialRegistrationEnabled =
+    websiteConfig.auth?.enableCredentialRegistration ?? true;
   const RegisterSchema = z.object({
     email: z.email({ message: m.auth_register_email_required() }),
     password: z
@@ -93,7 +93,7 @@ export function RegisterForm({
       bottomButtonLabel={m.auth_register_sign_in_hint()}
       bottomButtonHref={Routes.Login}
     >
-      {credentialLoginEnabled && (
+      {credentialRegistrationEnabled && (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
@@ -190,7 +190,8 @@ export function RegisterForm({
       <div className="mt-4">
         <SocialLoginButton
           callbackUrl={callbackUrl}
-          showDivider={credentialLoginEnabled}
+          showDivider={credentialRegistrationEnabled}
+          mode="sign-up"
         />
       </div>
     </AuthCard>

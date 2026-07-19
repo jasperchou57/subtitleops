@@ -20,34 +20,40 @@ const socialProviders = [
   {
     id: 'google',
     enabled: websiteConfig.auth?.enableGoogleLogin === true,
-    label: () => m.auth_social_sign_in_with_google(),
+    signInLabel: () => m.auth_social_sign_in_with_google(),
+    signUpLabel: () => m.auth_social_sign_up_with_google(),
     Icon: IconBrandGoogleFilled,
   },
   {
     id: 'github',
     enabled: websiteConfig.auth?.enableGitHubLogin === true,
-    label: () => m.auth_social_sign_in_with_github(),
+    signInLabel: () => m.auth_social_sign_in_with_github(),
+    signUpLabel: () => m.auth_social_sign_up_with_github(),
     Icon: IconBrandGithubFilled,
   },
   {
     id: 'apple',
     enabled: websiteConfig.auth?.enableAppleLogin === true,
-    label: () => m.auth_social_sign_in_with_apple(),
+    signInLabel: () => m.auth_social_sign_in_with_apple(),
+    signUpLabel: () => m.auth_social_sign_up_with_apple(),
     Icon: IconBrandAppleFilled,
   },
 ] satisfies Array<{
   id: SocialProvider;
   enabled: boolean;
-  label: () => string;
+  signInLabel: () => string;
+  signUpLabel: () => string;
   Icon: typeof IconBrandGoogleFilled;
 }>;
 interface SocialLoginButtonProps {
   callbackUrl?: string;
   showDivider?: boolean;
+  mode?: 'sign-in' | 'sign-up';
 }
 export function SocialLoginButton({
   callbackUrl: propCallbackUrl,
   showDivider = true,
+  mode = 'sign-in',
 }: SocialLoginButtonProps) {
   const paramCallbackUrl =
     typeof window !== 'undefined'
@@ -83,7 +89,7 @@ export function SocialLoginButton({
   return (
     <div className="w-full flex flex-col gap-4">
       {showDivider && <DividerWithText text={m.auth_social_or()} />}
-      {enabledProviders.map(({ id, label, Icon }) => (
+      {enabledProviders.map(({ id, signInLabel, signUpLabel, Icon }) => (
         <Button
           key={id}
           type="button"
@@ -98,7 +104,7 @@ export function SocialLoginButton({
           ) : (
             <Icon className="mr-2 size-4" />
           )}
-          <span>{label()}</span>
+          <span>{mode === 'sign-up' ? signUpLabel() : signInLabel()}</span>
         </Button>
       ))}
     </div>

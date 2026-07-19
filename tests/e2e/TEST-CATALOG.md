@@ -31,7 +31,10 @@ multiple API keys must consume the same allowance, expose remaining/reset
 headers, and return HTTP 429 after the account quota is exhausted.
 
 Authentication acceptance rejects external or protocol-relative callback URLs
-and redirects successful sign-in only to a normalized SubtitleOps path.
+and redirects successful sign-in only to a normalized SubtitleOps path. Public
+navigation exposes Pricing, Sign In, and Sign Up as a balanced action group.
+Sign Up offers Google and GitHub registration while email/password registration
+remains unavailable.
 
 Payment acceptance must include checkout, webhook retry behavior, subscription
 activation, customer portal access, cancellation, and entitlement downgrade.

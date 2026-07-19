@@ -53,6 +53,12 @@ export function LoginForm({
     websiteConfig.auth?.enableCredentialLogin ?? false;
   const credentialRegistrationEnabled =
     websiteConfig.auth?.enableCredentialRegistration ?? true;
+  const socialRegistrationEnabled =
+    websiteConfig.auth?.enableGoogleLogin === true ||
+    websiteConfig.auth?.enableGitHubLogin === true ||
+    websiteConfig.auth?.enableAppleLogin === true;
+  const registrationEnabled =
+    credentialRegistrationEnabled || socialRegistrationEnabled;
   const LoginSchema = z.object({
     email: z.email({ message: m.auth_login_email_required() }),
     password: z.string().min(1, { message: m.auth_login_password_required() }),
@@ -95,11 +101,9 @@ export function LoginForm({
     <AuthCard
       headerLabel={m.auth_login_welcome_back()}
       bottomButtonLabel={
-        credentialRegistrationEnabled ? m.auth_login_sign_up_hint() : undefined
+        registrationEnabled ? m.auth_login_sign_up_hint() : undefined
       }
-      bottomButtonHref={
-        credentialRegistrationEnabled ? Routes.Register : undefined
-      }
+      bottomButtonHref={registrationEnabled ? Routes.Register : undefined}
       className={cn('', className)}
     >
       {credentialLoginEnabled && (

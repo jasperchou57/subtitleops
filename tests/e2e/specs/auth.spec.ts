@@ -22,9 +22,9 @@ test.describe('authentication and protected routes', () => {
     await expect(page.getByRole('button', { name: /Google/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /GitHub/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /Apple/i })).toHaveCount(0);
-    await expect(page.getByRole('link', { name: /sign up|注册/i })).toHaveCount(
-      0
-    );
+    await expect(
+      page.getByRole('link', { name: /sign up|注册/i })
+    ).toBeVisible();
   });
 
   test('allows a verified user to sign in and view dashboard', async ({
@@ -56,10 +56,43 @@ test.describe('authentication and protected routes', () => {
     );
   });
 
-  test('does not expose email registration', async ({ page }) => {
+  test('offers social registration without email registration', async ({
+    page,
+  }) => {
     await page.goto('/auth/register');
-    await expect(page).toHaveURL(/\/auth\/login\/?$/);
+    await expect(page).toHaveURL(/\/auth\/register\/?$/);
     await expect(page.locator('input[name="name"]')).toHaveCount(0);
+    await expect(page.locator('input[name="email"]')).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: /sign up with Google|Google 注册/i })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /sign up with GitHub|GitHub 注册/i })
+    ).toBeVisible();
+    await expect(page.getByRole('button', { name: /Apple/i })).toHaveCount(0);
+  });
+
+  test('shows pricing, sign in, and sign up in the public header', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const header = page.locator('[data-analytics-area="header"]');
+
+    await expect(header.getByRole('link', { name: 'Pricing' })).toBeVisible();
+    await expect(header.getByRole('link', { name: 'Sign In' })).toBeVisible();
+    await expect(header.getByRole('link', { name: 'Sign Up' })).toBeVisible();
+  });
+
+  test('shows sign in and sign up inside the mobile menu', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    const header = page.locator('[data-analytics-area="header"]');
+
+    await header.getByRole('button', { name: 'Toggle menu' }).click();
+    await expect(header.getByRole('link', { name: 'Pricing' })).toBeVisible();
+    await expect(header.getByRole('link', { name: 'Sign In' })).toBeVisible();
+    await expect(header.getByRole('link', { name: 'Sign Up' })).toBeVisible();
   });
 
   test('redirects non-admin users away from admin pages', async ({

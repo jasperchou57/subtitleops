@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from '@/compat/next-link';
+import { authClient } from '@/auth/client';
+import { UserButton } from '@/components/shared/user-button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type NavItem = {
   name: string;
   href: string;
   title: string;
-  highlight?: boolean;
 };
 
 const navTools: NavItem[] = [
@@ -41,23 +43,24 @@ const navTools: NavItem[] = [
     href: '/tools',
     title: 'Browse all free subtitle conversion tools',
   },
-  {
-    name: 'Pricing',
-    href: '/pricing',
-    title: 'Compare SubtitleOps Free and Pro plans',
-    highlight: true,
-  },
 ];
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header
       data-analytics-area="header"
       className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     >
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 xl:grid xl:grid-cols-[1fr_auto_1fr]">
         <Link
           href="/"
           title="SubtitleOps — Free Online Subtitle Converter"
@@ -87,27 +90,57 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-1 text-sm">
+        <nav className="hidden items-center gap-1 text-sm xl:flex">
           {navTools.map((tool) => (
             <Link
               key={tool.href}
               href={tool.href}
               title={tool.title}
-              className={
-                tool.highlight
-                  ? 'rounded-md bg-foreground px-3 py-2 text-background transition-opacity hover:opacity-85'
-                  : 'rounded-md px-3 py-2.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
-              }
+              className="rounded-md px-3 py-2.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               {tool.name}
             </Link>
           ))}
         </nav>
 
+        <div className="hidden items-center justify-self-end gap-1 text-sm xl:flex">
+          <Link
+            href="/pricing"
+            title="Compare SubtitleOps Free, Pro, and Studio plans"
+            className="rounded-md px-3 py-2.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            Pricing
+          </Link>
+          {!mounted || isPending ? (
+            <Skeleton className="ml-2 h-8 w-20 rounded-md" />
+          ) : user ? (
+            <div className="ml-2">
+              <UserButton user={user} />
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/auth/login"
+                title="Sign in to SubtitleOps"
+                className="rounded-md px-3 py-2.5 transition-colors hover:bg-accent"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/auth/register"
+                title="Create a SubtitleOps account"
+                className="rounded-md bg-foreground px-3 py-2 text-background transition-opacity hover:opacity-85"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
+
         {/* Mobile hamburger */}
         <button
           type="button"
-          className="flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-accent lg:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-accent xl:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -145,7 +178,7 @@ export function Header() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <nav className="animate-in fade-in slide-in-from-top-2 border-t bg-background px-4 py-3 duration-200 lg:hidden">
+        <nav className="animate-in fade-in slide-in-from-top-2 border-t bg-background px-4 py-3 duration-200 xl:hidden">
           <div className="flex flex-col gap-1">
             {navTools.map((tool) => (
               <Link
@@ -153,15 +186,46 @@ export function Header() {
                 href={tool.href}
                 title={tool.title}
                 onClick={() => setMobileOpen(false)}
-                className={
-                  tool.highlight
-                    ? 'rounded-md bg-foreground px-3 py-2.5 text-sm text-background'
-                    : 'rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
-                }
+                className="rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
                 {tool.name}
               </Link>
             ))}
+            <Link
+              href="/pricing"
+              title="Compare SubtitleOps Free, Pro, and Studio plans"
+              onClick={() => setMobileOpen(false)}
+              className="rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              Pricing
+            </Link>
+            {mounted && !isPending && !user && (
+              <div className="mt-2 grid grid-cols-2 gap-2 border-t pt-3">
+                <Link
+                  href="/auth/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-md border px-3 py-2.5 text-center text-sm"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/register"
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-md bg-foreground px-3 py-2.5 text-center text-sm text-background"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+            {mounted && !isPending && user && (
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="mt-2 rounded-md bg-foreground px-3 py-2.5 text-center text-sm text-background"
+              >
+                Open Dashboard
+              </Link>
+            )}
           </div>
         </nav>
       )}
