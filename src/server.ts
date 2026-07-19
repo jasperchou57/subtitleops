@@ -47,8 +47,10 @@ export default {
     if (canonicalRedirectUrl)
       return Response.redirect(canonicalRedirectUrl, 308);
 
-    const assetResponse = await env.ASSETS.fetch(request);
-    if (assetResponse.status !== 404) return assetResponse;
+    if (request.method === 'GET' || request.method === 'HEAD') {
+      const assetResponse = await env.ASSETS.fetch(request);
+      if (assetResponse.status !== 404) return assetResponse;
+    }
 
     const response = await localeMiddleware(request, () =>
       handler.fetch(request, {
