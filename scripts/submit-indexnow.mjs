@@ -1,22 +1,24 @@
-const HOST = "subtitleops.com";
+const HOST = 'subtitleops.com';
 const BASE_URL = `https://${HOST}`;
-const KEY = "405e2322f901befd0cf4c4379b1c5fdf";
+const KEY = '405e2322f901befd0cf4c4379b1c5fdf';
 const KEY_LOCATION = `${BASE_URL}/${KEY}.txt`;
 const SITEMAP_URL = `${BASE_URL}/sitemap.xml`;
-const ENDPOINT = "https://api.indexnow.org/IndexNow";
+const ENDPOINT = 'https://api.indexnow.org/IndexNow';
 
 function extractUrlsFromSitemap(xml) {
-  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1].trim());
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) =>
+    match[1].trim()
+  );
 }
 
 function normalizeUrl(url) {
   const parsed = new URL(url);
-  parsed.hash = "";
+  parsed.hash = '';
   return parsed.toString();
 }
 
 async function getUrls() {
-  const args = process.argv.slice(2).filter((arg) => arg !== "--dry-run");
+  const args = process.argv.slice(2).filter((arg) => arg !== '--dry-run');
 
   if (args.length > 0) {
     return args.map(normalizeUrl);
@@ -24,7 +26,9 @@ async function getUrls() {
 
   const response = await fetch(SITEMAP_URL);
   if (!response.ok) {
-    throw new Error(`Failed to fetch sitemap: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch sitemap: ${response.status} ${response.statusText}`
+    );
   }
 
   const sitemap = await response.text();
@@ -32,11 +36,13 @@ async function getUrls() {
 }
 
 async function submitIndexNow() {
-  const isDryRun = process.argv.includes("--dry-run");
-  const urls = [...new Set(await getUrls())].filter((url) => new URL(url).hostname === HOST);
+  const isDryRun = process.argv.includes('--dry-run');
+  const urls = [...new Set(await getUrls())].filter(
+    (url) => new URL(url).hostname === HOST
+  );
 
   if (urls.length === 0) {
-    throw new Error("No subtitleops.com URLs found to submit.");
+    throw new Error('No subtitleops.com URLs found to submit.');
   }
 
   const payload = {
@@ -52,16 +58,18 @@ async function submitIndexNow() {
   }
 
   const response = await fetch(ENDPOINT, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json; charset=utf-8",
+      'Content-Type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify(payload),
   });
 
   const body = await response.text();
   if (![200, 202].includes(response.status)) {
-    throw new Error(`IndexNow submission failed: ${response.status} ${response.statusText}${body ? `\n${body}` : ""}`);
+    throw new Error(
+      `IndexNow submission failed: ${response.status} ${response.statusText}${body ? `\n${body}` : ''}`
+    );
   }
 
   console.log(`Submitted ${urls.length} URLs to IndexNow.`);

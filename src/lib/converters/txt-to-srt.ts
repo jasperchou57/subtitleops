@@ -1,10 +1,10 @@
-import type { SrtEntry } from "./ass-to-srt";
+import type { SrtEntry } from './ass-to-srt';
 
 export interface TxtToSrtOptions {
   secondsPerLine?: number;
   gap?: number;
   startSeconds?: number;
-  splitMode?: "line" | "sentence";
+  splitMode?: 'line' | 'sentence';
   maxCharsPerLine?: number;
 }
 
@@ -19,15 +19,17 @@ export function convertTxtToSrt(
   gap = 0.5
 ): SrtEntry[] {
   const options =
-    typeof secondsPerLineOrOptions === "number"
+    typeof secondsPerLineOrOptions === 'number'
       ? { secondsPerLine: secondsPerLineOrOptions, gap }
       : secondsPerLineOrOptions;
   const secondsPerLine = options.secondsPerLine ?? 3;
   const gapSeconds = options.gap ?? 0.5;
   const startSeconds = options.startSeconds ?? 0;
-  const splitMode = options.splitMode ?? "line";
+  const splitMode = options.splitMode ?? 'line';
   const maxCharsPerLine = options.maxCharsPerLine ?? 0;
-  const lines = getTextUnits(txtContent, splitMode).map((line) => wrapSubtitleLine(line, maxCharsPerLine));
+  const lines = getTextUnits(txtContent, splitMode).map((line) =>
+    wrapSubtitleLine(line, maxCharsPerLine)
+  );
 
   const entries: SrtEntry[] = [];
   let currentTime = startSeconds;
@@ -49,9 +51,12 @@ export function convertTxtToSrt(
   return entries;
 }
 
-function getTextUnits(txtContent: string, splitMode: TxtToSrtOptions["splitMode"]): string[] {
-  if (splitMode === "sentence") {
-    const normalized = txtContent.replace(/\s+/g, " ").trim();
+function getTextUnits(
+  txtContent: string,
+  splitMode: TxtToSrtOptions['splitMode']
+): string[] {
+  if (splitMode === 'sentence') {
+    const normalized = txtContent.replace(/\s+/g, ' ').trim();
     return (normalized.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [])
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
@@ -67,7 +72,7 @@ function wrapSubtitleLine(text: string, maxCharsPerLine: number): string {
   if (maxCharsPerLine < 12 || text.length <= maxCharsPerLine) return text;
 
   const wrapped: string[] = [];
-  let currentLine = "";
+  let currentLine = '';
 
   for (const word of text.split(/\s+/)) {
     if (!currentLine) {
@@ -86,7 +91,7 @@ function wrapSubtitleLine(text: string, maxCharsPerLine: number): string {
 
   if (currentLine) wrapped.push(currentLine);
 
-  return wrapped.join("\n");
+  return wrapped.join('\n');
 }
 
 function formatSrtTime(totalSeconds: number): string {
@@ -96,12 +101,12 @@ function formatSrtTime(totalSeconds: number): string {
   const ms = Math.round((totalSeconds % 1) * 1000);
 
   return (
-    String(hours).padStart(2, "0") +
-    ":" +
-    String(minutes).padStart(2, "0") +
-    ":" +
-    String(seconds).padStart(2, "0") +
-    "," +
-    String(ms).padStart(3, "0")
+    String(hours).padStart(2, '0') +
+    ':' +
+    String(minutes).padStart(2, '0') +
+    ':' +
+    String(seconds).padStart(2, '0') +
+    ',' +
+    String(ms).padStart(3, '0')
   );
 }

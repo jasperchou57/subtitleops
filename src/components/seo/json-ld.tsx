@@ -1,4 +1,4 @@
-const BASE_URL = "https://subtitleops.com";
+const BASE_URL = 'https://subtitleops.com';
 
 interface JsonLdProps {
   data: Record<string, unknown>;
@@ -16,27 +16,27 @@ export function JsonLd({ data }: JsonLdProps) {
 export function homepageJsonLd(faqs: { question: string; answer: string }[]) {
   return [
     {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: "SubtitleOps",
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'SubtitleOps',
       url: BASE_URL,
       description:
-        "Convert SRT, ASS, VTT, TXT, and SBV subtitles in your browser. Free tools for format conversion, text extraction, timing shift, and FPS fixes.",
+        'Convert SRT, ASS, VTT, TXT, and SBV subtitles in your browser. Free tools for format conversion, text extraction, timing shift, and FPS fixes.',
     },
     {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "SubtitleOps",
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'SubtitleOps',
       url: BASE_URL,
     },
     {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
       mainEntity: faqs.map((faq) => ({
-        "@type": "Question",
+        '@type': 'Question',
         name: faq.question,
         acceptedAnswer: {
-          "@type": "Answer",
+          '@type': 'Answer',
           text: faq.answer,
         },
       })),
@@ -57,38 +57,43 @@ export function toolPageJsonLd({
 }) {
   return [
     {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
       name,
       description,
       url: `${BASE_URL}${url}`,
-      applicationCategory: "MultimediaApplication",
-      operatingSystem: "Any (Web Browser)",
+      applicationCategory: 'MultimediaApplication',
+      operatingSystem: 'Any (Web Browser)',
       offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
       },
     },
     {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
       mainEntity: faqs.map((faq) => ({
-        "@type": "Question",
+        '@type': 'Question',
         name: faq.question,
         acceptedAnswer: {
-          "@type": "Answer",
+          '@type': 'Answer',
           text: faq.answer,
         },
       })),
     },
     {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-        { "@type": "ListItem", position: 2, name: "Tools", item: `${BASE_URL}/tools` },
-        { "@type": "ListItem", position: 3, name, item: `${BASE_URL}${url}` },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Tools',
+          item: `${BASE_URL}/tools`,
+        },
+        { '@type': 'ListItem', position: 3, name, item: `${BASE_URL}${url}` },
       ],
     },
   ];
@@ -98,11 +103,11 @@ export function toolsItemListJsonLd(
   tools: { name: string; description: string; href: string }[]
 ) {
   return {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "SubtitleOps subtitle tools",
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'SubtitleOps subtitle tools',
     itemListElement: tools.map((tool, index) => ({
-      "@type": "ListItem",
+      '@type': 'ListItem',
       position: index + 1,
       url: `${BASE_URL}${tool.href}`,
       name: tool.name,
@@ -123,13 +128,13 @@ export function blogPostJsonLd({
   datePublished: string;
 }) {
   return {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
     headline,
     description,
     url: `${BASE_URL}${url}`,
     datePublished,
-    author: { "@type": "Organization", name: "SubtitleOps", url: BASE_URL },
-    publisher: { "@type": "Organization", name: "SubtitleOps", url: BASE_URL },
+    author: { '@type': 'Organization', name: 'SubtitleOps', url: BASE_URL },
+    publisher: { '@type': 'Organization', name: 'SubtitleOps', url: BASE_URL },
   };
 }

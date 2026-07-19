@@ -17,7 +17,7 @@ export function generateTraceId(): string {
 export interface TraceLog {
   traceId: string;
   tool: string;
-  action: "convert" | "download" | "error";
+  action: 'convert' | 'download' | 'error';
   timestamp: number;
   fileName?: string;
   fileSize?: number;
@@ -29,11 +29,11 @@ export interface TraceLog {
 }
 
 const MAX_LOGS = 50;
-const LOG_KEY = "subtitleops_trace_logs";
+const LOG_KEY = 'subtitleops_trace_logs';
 
 export function logTrace(entry: TraceLog): void {
   // Console log for dev debugging
-  if (entry.action === "error") {
+  if (entry.action === 'error') {
     console.warn(`[SubtitleOps] ${entry.traceId}`, entry);
   } else {
     console.log(`[SubtitleOps] ${entry.traceId}`, entry);
@@ -41,7 +41,9 @@ export function logTrace(entry: TraceLog): void {
 
   // Persist to localStorage (ring buffer of last 50 entries)
   try {
-    const existing = JSON.parse(localStorage.getItem(LOG_KEY) || "[]") as TraceLog[];
+    const existing = JSON.parse(
+      localStorage.getItem(LOG_KEY) || '[]'
+    ) as TraceLog[];
     existing.push(entry);
     if (existing.length > MAX_LOGS) {
       existing.splice(0, existing.length - MAX_LOGS);
@@ -58,19 +60,19 @@ export function logTrace(entry: TraceLog): void {
  */
 export function getTraceLogs(): TraceLog[] {
   try {
-    return JSON.parse(localStorage.getItem(LOG_KEY) || "[]");
+    return JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
   } catch {
     return [];
   }
 }
 
 // Expose to window for console debugging
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   (window as unknown as Record<string, unknown>).SubtitleOps = {
     getTraceLogs,
     clearLogs: () => {
       localStorage.removeItem(LOG_KEY);
-      console.log("[SubtitleOps] Trace logs cleared");
+      console.log('[SubtitleOps] Trace logs cleared');
     },
   };
 }

@@ -1,21 +1,12 @@
-const TOKEN_URL = "https://oauth2.googleapis.com/token";
-const STS_TOKEN_URL = "https://sts.googleapis.com/v1/token";
-const GA4_SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
-const GSC_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
+const TOKEN_URL = 'https://oauth2.googleapis.com/token';
+const GA4_SCOPE = 'https://www.googleapis.com/auth/analytics.readonly';
+const GSC_SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 
 type GoogleAccessTokenResponse = {
   access_token?: string;
   expires_in?: number;
   error?: string;
   error_description?: string;
-};
-
-type GoogleStsTokenResponse = GoogleAccessTokenResponse;
-
-type IamCredentialsAccessTokenResponse = {
-  accessToken?: string;
-  expireTime?: string;
-  error?: { message?: string };
 };
 
 type Ga4RunReportResponse = {
@@ -66,23 +57,23 @@ export type SeoAnalyticsReportRow = {
 export class GoogleSeoAnalyticsConfigurationError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "GoogleSeoAnalyticsConfigurationError";
+    this.name = 'GoogleSeoAnalyticsConfigurationError';
   }
 }
 
 let tokenCache: AccessTokenCache | undefined;
 
 export function isSeoAnalyticsRequestAuthorized(request: Request) {
-  const expectedToken = getEnv("SEO_ANALYTICS_TOKEN");
+  const expectedToken = getEnv('SEO_ANALYTICS_TOKEN');
   if (!expectedToken) {
     throw new GoogleSeoAnalyticsConfigurationError(
-      "SEO_ANALYTICS_TOKEN is not configured.",
+      'SEO_ANALYTICS_TOKEN is not configured.'
     );
   }
 
-  const authHeader = request.headers.get("authorization") ?? "";
+  const authHeader = request.headers.get('authorization') ?? '';
   const bearerToken = authHeader.match(/^Bearer\s+(.+)$/i)?.[1];
-  const headerToken = request.headers.get("x-seo-analytics-token");
+  const headerToken = request.headers.get('x-seo-analytics-token');
 
   return (bearerToken ?? headerToken) === expectedToken;
 }
@@ -90,14 +81,13 @@ export function isSeoAnalyticsRequestAuthorized(request: Request) {
 export async function getSeoAnalyticsOverview(input: {
   days?: number;
   endDate?: string;
-  oidcToken?: string;
   rowLimit?: number;
 }) {
   assertSeoAnalyticsConfigured();
 
   const range = getDateRange(input.days, input.endDate);
   const rowLimit = clampInteger(input.rowLimit ?? 50, 1, 250);
-  const accessToken = await getGoogleAccessToken(input.oidcToken);
+  const accessToken = await getGoogleAccessToken();
 
   const [
     gscSummary,
@@ -112,52 +102,57 @@ export async function getSeoAnalyticsOverview(input: {
     ga4Devices,
   ] = await Promise.all([
     querySearchConsole(accessToken, range, [], 1),
-    querySearchConsole(accessToken, range, ["query"], rowLimit),
-    querySearchConsole(accessToken, range, ["page"], rowLimit),
-    querySearchConsole(accessToken, range, ["date"], rowLimit),
-    querySearchConsole(accessToken, range, ["device"], 10),
-    runGa4Report(accessToken, range, [], [
-      "activeUsers",
-      "sessions",
-      "screenPageViews",
-      "engagedSessions",
-      "eventCount",
-    ]),
+    querySearchConsole(accessToken, range, ['query'], rowLimit),
+    querySearchConsole(accessToken, range, ['page'], rowLimit),
+    querySearchConsole(accessToken, range, ['date'], rowLimit),
+    querySearchConsole(accessToken, range, ['device'], 10),
     runGa4Report(
       accessToken,
       range,
-      ["pagePath", "pageTitle"],
-      ["activeUsers", "sessions", "screenPageViews"],
-      rowLimit,
+      [],
+      [
+        'activeUsers',
+        'sessions',
+        'screenPageViews',
+        'engagedSessions',
+        'eventCount',
+      ]
     ),
     runGa4Report(
       accessToken,
       range,
-      ["sessionSourceMedium"],
-      ["activeUsers", "sessions"],
-      rowLimit,
+      ['pagePath', 'pageTitle'],
+      ['activeUsers', 'sessions', 'screenPageViews'],
+      rowLimit
     ),
     runGa4Report(
       accessToken,
       range,
-      ["date"],
-      ["activeUsers", "sessions", "screenPageViews"],
-      rowLimit,
+      ['sessionSourceMedium'],
+      ['activeUsers', 'sessions'],
+      rowLimit
     ),
     runGa4Report(
       accessToken,
       range,
-      ["deviceCategory"],
-      ["activeUsers", "sessions"],
-      10,
+      ['date'],
+      ['activeUsers', 'sessions', 'screenPageViews'],
+      rowLimit
+    ),
+    runGa4Report(
+      accessToken,
+      range,
+      ['deviceCategory'],
+      ['activeUsers', 'sessions'],
+      10
     ),
   ]);
 
   return {
     generatedAt: new Date().toISOString(),
     range,
-    siteUrl: getEnv("GOOGLE_SEO_GSC_SITE_URL"),
-    ga4PropertyId: normalizeGa4PropertyId(getEnv("GOOGLE_SEO_GA4_PROPERTY_ID")),
+    siteUrl: getEnv('GOOGLE_SEO_GSC_SITE_URL'),
+    ga4PropertyId: normalizeGa4PropertyId(getEnv('GOOGLE_SEO_GA4_PROPERTY_ID')),
     gsc: {
       summary: gscSummary.rows[0] ?? null,
       queries: gscQueries.rows,
@@ -176,25 +171,26 @@ export async function getSeoAnalyticsOverview(input: {
 }
 
 function assertSeoAnalyticsConfigured() {
-  const missing = ["GOOGLE_SEO_GA4_PROPERTY_ID", "GOOGLE_SEO_GSC_SITE_URL"].filter(
-    (name) => !getEnv(name),
-  );
+  const missing = [
+    'GOOGLE_SEO_GA4_PROPERTY_ID',
+    'GOOGLE_SEO_GSC_SITE_URL',
+  ].filter((name) => !getEnv(name));
 
   if (missing.length > 0) {
     throw new GoogleSeoAnalyticsConfigurationError(
-      `Missing Google SEO analytics configuration: ${missing.join(", ")}.`,
+      `Missing Google SEO analytics configuration: ${missing.join(', ')}.`
     );
   }
 
   if (!hasGoogleAuthCredentials()) {
     throw new GoogleSeoAnalyticsConfigurationError(
-      "Missing Google SEO analytics authentication: configure OAuth refresh token, GOOGLE_SERVICE_ACCOUNT_JSON, or Google Workload Identity Federation.",
+      'Missing Google SEO analytics authentication: configure OAuth refresh-token credentials or GOOGLE_SERVICE_ACCOUNT_JSON.'
     );
   }
 }
 
-async function getGoogleAccessToken(oidcToken?: string) {
-  const scopeKey = [GA4_SCOPE, GSC_SCOPE].sort().join(" ");
+async function getGoogleAccessToken() {
+  const scopeKey = [GA4_SCOPE, GSC_SCOPE].sort().join(' ');
   if (
     tokenCache?.scopeKey === scopeKey &&
     tokenCache.expiresAt > Date.now() + 60_000
@@ -206,52 +202,44 @@ async function getGoogleAccessToken(oidcToken?: string) {
     return getOAuthAccessToken(scopeKey);
   }
 
-  if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+  if (getEnv('GOOGLE_SERVICE_ACCOUNT_JSON')) {
     return getServiceAccountAccessToken(scopeKey);
   }
 
-  return getWorkloadIdentityAccessToken(scopeKey, oidcToken);
+  throw new GoogleSeoAnalyticsConfigurationError(
+    'Google SEO analytics authentication is not configured.'
+  );
 }
 
 function hasGoogleAuthCredentials() {
   return (
     hasGoogleOAuthCredentials() ||
-    Boolean(getEnv("GOOGLE_SERVICE_ACCOUNT_JSON")) ||
-    hasWorkloadIdentityCredentials()
+    Boolean(getEnv('GOOGLE_SERVICE_ACCOUNT_JSON'))
   );
 }
 
 function hasGoogleOAuthCredentials() {
   return Boolean(
-    getEnv("GOOGLE_OAUTH_CLIENT_ID") && getEnv("GOOGLE_OAUTH_REFRESH_TOKEN"),
-  );
-}
-
-function hasWorkloadIdentityCredentials() {
-  return Boolean(
-    getEnv("GOOGLE_WIF_PROJECT_NUMBER") &&
-      getEnv("GOOGLE_WIF_POOL_ID") &&
-      getEnv("GOOGLE_WIF_PROVIDER_ID") &&
-      getEnv("GOOGLE_SERVICE_ACCOUNT_EMAIL"),
+    getEnv('GOOGLE_OAUTH_CLIENT_ID') && getEnv('GOOGLE_OAUTH_REFRESH_TOKEN')
   );
 }
 
 async function getOAuthAccessToken(scopeKey: string) {
   const body = new URLSearchParams({
-    client_id: getEnv("GOOGLE_OAUTH_CLIENT_ID"),
-    refresh_token: getEnv("GOOGLE_OAUTH_REFRESH_TOKEN"),
-    grant_type: "refresh_token",
+    client_id: getEnv('GOOGLE_OAUTH_CLIENT_ID'),
+    refresh_token: getEnv('GOOGLE_OAUTH_REFRESH_TOKEN'),
+    grant_type: 'refresh_token',
   });
 
-  const clientSecret = getEnv("GOOGLE_OAUTH_CLIENT_SECRET");
+  const clientSecret = getEnv('GOOGLE_OAUTH_CLIENT_SECRET');
   if (clientSecret) {
-    body.set("client_secret", clientSecret);
+    body.set('client_secret', clientSecret);
   }
 
   const response = await fetch(TOKEN_URL, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body,
   });
@@ -271,93 +259,18 @@ async function getOAuthAccessToken(scopeKey: string) {
   return result.access_token;
 }
 
-async function getWorkloadIdentityAccessToken(
-  scopeKey: string,
-  oidcToken?: string,
-) {
-  const vercelOidcToken = oidcToken?.trim() || getEnv("VERCEL_OIDC_TOKEN");
-  if (!vercelOidcToken) {
-    throw new GoogleSeoAnalyticsConfigurationError(
-      "VERCEL_OIDC_TOKEN or x-vercel-oidc-token is not available.",
-    );
-  }
-
-  const audience =
-    `//iam.googleapis.com/projects/${getEnv("GOOGLE_WIF_PROJECT_NUMBER")}` +
-    `/locations/global/workloadIdentityPools/${getEnv("GOOGLE_WIF_POOL_ID")}` +
-    `/providers/${getEnv("GOOGLE_WIF_PROVIDER_ID")}`;
-  const stsBody = new URLSearchParams({
-    grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
-    audience,
-    scope: "https://www.googleapis.com/auth/cloud-platform",
-    requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
-    subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-    subject_token: vercelOidcToken,
-  });
-
-  const stsResponse = await fetch(STS_TOKEN_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: stsBody,
-  });
-  const stsResult = (await stsResponse.json()) as GoogleStsTokenResponse;
-
-  if (!stsResponse.ok || !stsResult.access_token) {
-    const detail =
-      stsResult.error_description ?? stsResult.error ?? stsResponse.status;
-    throw new Error(`Google STS token exchange failed: ${detail}`);
-  }
-
-  const serviceAccountEmail = getEnv("GOOGLE_SERVICE_ACCOUNT_EMAIL");
-  const iamResponse = await fetch(
-    `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${encodeURIComponent(
-      serviceAccountEmail,
-    )}:generateAccessToken`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${stsResult.access_token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        scope: scopeKey.split(" "),
-        lifetime: "3600s",
-      }),
-    },
-  );
-  const iamResult =
-    (await iamResponse.json()) as IamCredentialsAccessTokenResponse;
-
-  if (!iamResponse.ok || !iamResult.accessToken) {
-    const detail = iamResult.error?.message ?? iamResponse.status;
-    throw new Error(`Google IAM Credentials request failed: ${detail}`);
-  }
-
-  tokenCache = {
-    accessToken: iamResult.accessToken,
-    expiresAt: iamResult.expireTime
-      ? new Date(iamResult.expireTime).getTime()
-      : Date.now() + 3600 * 1000,
-    scopeKey,
-  };
-
-  return iamResult.accessToken;
-}
-
 async function getServiceAccountAccessToken(scopeKey: string) {
   const serviceAccount = getServiceAccount();
   const assertion = await createSignedJwt(serviceAccount, scopeKey);
   const body = new URLSearchParams({
-    grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+    grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
     assertion,
   });
 
   const response = await fetch(serviceAccount.token_uri ?? TOKEN_URL, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body,
   });
@@ -380,11 +293,11 @@ async function getServiceAccountAccessToken(scopeKey: string) {
 function getServiceAccount() {
   try {
     const parsed = JSON.parse(
-      getEnv("GOOGLE_SERVICE_ACCOUNT_JSON"),
+      getEnv('GOOGLE_SERVICE_ACCOUNT_JSON')
     ) as ServiceAccountJson;
 
     if (!parsed.client_email || !parsed.private_key) {
-      throw new Error("Missing client_email or private_key.");
+      throw new Error('Missing client_email or private_key.');
     }
 
     return {
@@ -395,18 +308,20 @@ function getServiceAccount() {
   } catch (error) {
     throw new GoogleSeoAnalyticsConfigurationError(
       `Invalid GOOGLE_SERVICE_ACCOUNT_JSON: ${
-        error instanceof Error ? error.message : "unknown error"
-      }`,
+        error instanceof Error ? error.message : 'unknown error'
+      }`
     );
   }
 }
 
 async function createSignedJwt(
-  serviceAccount: Required<Pick<ServiceAccountJson, "client_email" | "private_key">>,
-  scope: string,
+  serviceAccount: Required<
+    Pick<ServiceAccountJson, 'client_email' | 'private_key'>
+  >,
+  scope: string
 ) {
   const now = Math.floor(Date.now() / 1000);
-  const header = { alg: "RS256", typ: "JWT" };
+  const header = { alg: 'RS256', typ: 'JWT' };
   const claimSet = {
     iss: serviceAccount.client_email,
     scope,
@@ -417,31 +332,31 @@ async function createSignedJwt(
   const unsignedToken = `${base64UrlJson(header)}.${base64UrlJson(claimSet)}`;
   const key = await importPrivateKey(serviceAccount.private_key);
   const signature = await crypto.subtle.sign(
-    "RSASSA-PKCS1-v1_5",
+    'RSASSA-PKCS1-v1_5',
     key,
-    new TextEncoder().encode(unsignedToken),
+    new TextEncoder().encode(unsignedToken)
   );
 
   return `${unsignedToken}.${base64Url(new Uint8Array(signature))}`;
 }
 
 async function importPrivateKey(privateKey: string) {
-  const normalizedKey = privateKey.replace(/\\n/g, "\n");
+  const normalizedKey = privateKey.replace(/\\n/g, '\n');
   const pemBody = normalizedKey
-    .replace("-----BEGIN PRIVATE KEY-----", "")
-    .replace("-----END PRIVATE KEY-----", "")
-    .replace(/\s+/g, "");
+    .replace('-----BEGIN PRIVATE KEY-----', '')
+    .replace('-----END PRIVATE KEY-----', '')
+    .replace(/\s+/g, '');
   const binary = Uint8Array.from(atob(pemBody), (char) => char.charCodeAt(0));
 
   return crypto.subtle.importKey(
-    "pkcs8",
+    'pkcs8',
     binary,
     {
-      name: "RSASSA-PKCS1-v1_5",
-      hash: "SHA-256",
+      name: 'RSASSA-PKCS1-v1_5',
+      hash: 'SHA-256',
     },
     false,
-    ["sign"],
+    ['sign']
   );
 }
 
@@ -449,9 +364,9 @@ async function querySearchConsole(
   accessToken: string,
   range: SeoAnalyticsRange,
   dimensions: string[],
-  rowLimit: number,
+  rowLimit: number
 ) {
-  const siteUrl = encodeURIComponent(getEnv("GOOGLE_SEO_GSC_SITE_URL"));
+  const siteUrl = encodeURIComponent(getEnv('GOOGLE_SEO_GSC_SITE_URL'));
   const response = await googleJsonFetch<SearchConsoleResponse>(
     `https://www.googleapis.com/webmasters/v3/sites/${siteUrl}/searchAnalytics/query`,
     accessToken,
@@ -460,8 +375,8 @@ async function querySearchConsole(
       endDate: range.endDate,
       dimensions,
       rowLimit,
-      type: "web",
-    },
+      type: 'web',
+    }
   );
 
   return {
@@ -469,8 +384,8 @@ async function querySearchConsole(
       dimensions: Object.fromEntries(
         dimensions.map((dimension, index) => [
           dimension,
-          row.keys?.[index] ?? "",
-        ]),
+          row.keys?.[index] ?? '',
+        ])
       ),
       metrics: {
         clicks: row.clicks ?? 0,
@@ -487,10 +402,10 @@ async function runGa4Report(
   range: SeoAnalyticsRange,
   dimensions: string[],
   metrics: string[],
-  limit = 1,
+  limit = 1
 ) {
   const propertyId = normalizeGa4PropertyId(
-    getEnv("GOOGLE_SEO_GA4_PROPERTY_ID"),
+    getEnv('GOOGLE_SEO_GA4_PROPERTY_ID')
   );
   const response = await googleJsonFetch<Ga4RunReportResponse>(
     `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
@@ -500,7 +415,7 @@ async function runGa4Report(
       dimensions: dimensions.map((name) => ({ name })),
       metrics: metrics.map((name) => ({ name })),
       limit: `${limit}`,
-    },
+    }
   );
 
   return {
@@ -512,13 +427,13 @@ async function runGa4Report(
 async function googleJsonFetch<T>(
   url: string,
   accessToken: string,
-  body: Record<string, unknown>,
+  body: Record<string, unknown>
 ) {
   const response = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
   });
@@ -526,7 +441,7 @@ async function googleJsonFetch<T>(
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(
-      `Google API request failed ${response.status}: ${detail.slice(0, 500)}`,
+      `Google API request failed ${response.status}: ${detail.slice(0, 500)}`
     );
   }
 
@@ -534,7 +449,7 @@ async function googleJsonFetch<T>(
 }
 
 function normalizeGa4Rows(
-  response: Ga4RunReportResponse,
+  response: Ga4RunReportResponse
 ): SeoAnalyticsReportRow[] {
   const dimensionNames =
     response.dimensionHeaders?.map((header) => header.name) ?? [];
@@ -545,14 +460,14 @@ function normalizeGa4Rows(
     dimensions: Object.fromEntries(
       dimensionNames.map((name, index) => [
         name,
-        row.dimensionValues?.[index]?.value ?? "",
-      ]),
+        row.dimensionValues?.[index]?.value ?? '',
+      ])
     ),
     metrics: Object.fromEntries(
       metricNames.map((name, index) => [
         name,
         Number(row.metricValues?.[index]?.value ?? 0),
-      ]),
+      ])
     ),
   }));
 }
@@ -569,7 +484,7 @@ function normalizeGa4Totals(response: Ga4RunReportResponse) {
     metricNames.map((name, index) => [
       name,
       Number(totalValues[index]?.value ?? 0),
-    ]),
+    ])
   );
 }
 
@@ -587,7 +502,7 @@ function getDateRange(days = 28, endDate?: string): SeoAnalyticsRange {
 
 function parseDate(value: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    throw new Error("endDate must use YYYY-MM-DD format.");
+    throw new Error('endDate must use YYYY-MM-DD format.');
   }
 
   return new Date(`${value}T00:00:00.000Z`);
@@ -609,11 +524,11 @@ function clampInteger(value: number, min: number, max: number) {
 }
 
 function normalizeGa4PropertyId(propertyId: string) {
-  return propertyId.replace(/^properties\//, "").trim();
+  return propertyId.replace(/^properties\//, '').trim();
 }
 
 function getEnv(name: string) {
-  return process.env[name]?.trim() ?? "";
+  return process.env[name]?.trim() ?? '';
 }
 
 function base64UrlJson(value: unknown) {
@@ -621,13 +536,13 @@ function base64UrlJson(value: unknown) {
 }
 
 function base64Url(bytes: Uint8Array) {
-  let binary = "";
+  let binary = '';
   for (const byte of bytes) {
     binary += String.fromCharCode(byte);
   }
 
   return btoa(binary)
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
 }

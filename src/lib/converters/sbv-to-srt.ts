@@ -15,18 +15,18 @@
 
 function padHours(ts: string): string {
   // SBV uses H:MM:SS.mmm, SRT needs HH:MM:SS,mmm
-  const parts = ts.trim().split(":");
+  const parts = ts.trim().split(':');
   if (parts.length === 3) {
-    parts[0] = parts[0].padStart(2, "0");
+    parts[0] = parts[0].padStart(2, '0');
     // Replace dot with comma for milliseconds
-    const lastPart = parts[2].replace(".", ",");
+    const lastPart = parts[2].replace('.', ',');
     return `${parts[0]}:${parts[1]}:${lastPart}`;
   }
   return ts;
 }
 
 export function convertSbvToSrt(content: string): string {
-  const lines = content.replace(/\r\n/g, "\n").split("\n");
+  const lines = content.replace(/\r\n/g, '\n').split('\n');
   const entries: { start: string; end: string; text: string[] }[] = [];
   let i = 0;
 
@@ -48,7 +48,7 @@ export function convertSbvToSrt(content: string): string {
       i++;
 
       const textLines: string[] = [];
-      while (i < lines.length && lines[i].trim() !== "") {
+      while (i < lines.length && lines[i].trim() !== '') {
         textLines.push(lines[i]);
         i++;
       }
@@ -64,7 +64,7 @@ export function convertSbvToSrt(content: string): string {
   return entries
     .map(
       (entry, idx) =>
-        `${idx + 1}\n${entry.start} --> ${entry.end}\n${entry.text.join("\n")}`
+        `${idx + 1}\n${entry.start} --> ${entry.end}\n${entry.text.join('\n')}`
     )
-    .join("\n\n");
+    .join('\n\n');
 }
