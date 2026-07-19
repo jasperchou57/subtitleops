@@ -13,6 +13,7 @@
     "html_handling": "drop-trailing-slash",
     "run_worker_first": [
       "/",
+      "/api/*",
       "/tools",
       "/tools/*",
       "/pricing",
