@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { websiteConfig } from '@/config/website';
 import { authClient } from '@/auth/client';
 import { resolveAuthCallbackPath } from '@/lib/auth-callback';
+import { trackEvent } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 import { DEFAULT_LOGIN_REDIRECT, Routes } from '@/lib/routes';
 import { getPathWithLocale } from '@/lib/urls';
@@ -72,6 +73,7 @@ export function LoginForm({
       ? new URLSearchParams(window.location.search).get('error')
       : null;
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    trackEvent('login_start', { method: 'password' });
     await authClient.signIn.email(
       {
         email: values.email,
@@ -86,10 +88,15 @@ export function LoginForm({
         },
         onResponse: () => setIsPending(false),
         onSuccess: () => {
+          trackEvent('login', { method: 'password' });
           onSuccess?.();
         },
         onError: (ctx) => {
           setError(getAuthErrorMessage(ctx.error));
+          trackEvent('login_error', {
+            method: 'password',
+            error_code: ctx.error.code || 'invalid_credentials',
+          });
         },
       }
     );
@@ -108,7 +115,11 @@ export function LoginForm({
     >
       {credentialLoginEnabled && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            data-analytics-area="auth"
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6"
+          >
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -155,6 +166,7 @@ export function LoginForm({
                         />
                       </FormControl>
                       <Button
+                        data-analytics-id="login_password_visibility"
                         type="button"
                         variant="ghost"
                         size="sm"
@@ -182,6 +194,7 @@ export function LoginForm({
             <FormError message={error || urlError || undefined} />
             <FormSuccess message={success} />
             <Button
+              data-analytics-id="login_submit"
               disabled={isPending}
               size="lg"
               type="submit"

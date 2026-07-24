@@ -12,9 +12,9 @@ export function GoogleAnalytics() {
 
   const inlineHtml = `
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${id}');
+    window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', '${id}');
   `;
   return (
     <>

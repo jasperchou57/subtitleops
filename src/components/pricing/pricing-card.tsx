@@ -150,6 +150,8 @@ export function PricingCard({
             <CheckoutButton
               planId={plan.id}
               priceId={price.priceId}
+              amount={price.amount}
+              currency={price.currency}
               metadata={metadata}
               className="mt-4 w-full"
             >
@@ -165,6 +167,7 @@ export function PricingCard({
             </Button>
           ) : (
             <Link
+              data-analytics-id={`pricing_${plan.id}_login`}
               to={Routes.Login}
               className={cn(
                 buttonVariants({ variant: 'default' }),

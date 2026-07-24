@@ -1,14 +1,17 @@
 import { m } from '@/locale/paraglide/messages';
 import { createCheckoutSession } from '@/api/payment';
 import { Button } from '@/components/ui/button';
+import { websiteConfig } from '@/config/website';
 import { cn } from '@/lib/utils';
-import { trackSaasEvent } from '@/lib/analytics';
+import { trackEvent } from '@/lib/analytics';
 import { IconLoader2 } from '@tabler/icons-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 interface CheckoutButtonProps {
   planId: string;
   priceId: string;
+  amount: number;
+  currency: string;
   metadata?: Record<string, string>;
   variant?:
     | 'default'
@@ -25,6 +28,8 @@ interface CheckoutButtonProps {
 export function CheckoutButton({
   planId,
   priceId,
+  amount,
+  currency,
   metadata,
   variant = 'default',
   size = 'default',
@@ -32,10 +37,25 @@ export function CheckoutButton({
   children,
 }: CheckoutButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const value = amount / 100;
+
   const handleClick = async () => {
     try {
       setIsLoading(true);
-      trackSaasEvent('checkout_start', { plan_id: planId, price_id: priceId });
+      trackEvent('begin_checkout', {
+        currency: currency.toUpperCase(),
+        payment_provider: websiteConfig.payment?.provider || 'unknown',
+        plan_id: planId,
+        value,
+        items: [
+          {
+            item_id: priceId,
+            item_name: planId,
+            price: value,
+            quantity: 1,
+          },
+        ],
+      });
       // merge metadata with existing metadata
       const mergedMetadata = metadata ? { ...metadata } : {};
       const result = await createCheckoutSession({
@@ -49,11 +69,18 @@ export function CheckoutButton({
       if (result?.url) {
         window.location.href = result.url;
       } else {
+        trackEvent('checkout_error', {
+          plan_id: planId,
+          error_code: 'missing_checkout_url',
+        });
         toast.error(m.pricing_checkout_failed());
       }
     } catch (err) {
       console.error('Checkout error:', err);
-      trackSaasEvent('checkout_error', { plan_id: planId, price_id: priceId });
+      trackEvent('checkout_error', {
+        plan_id: planId,
+        error_code: 'checkout_request_failed',
+      });
       toast.error(m.pricing_checkout_failed());
     } finally {
       setIsLoading(false);
@@ -61,6 +88,7 @@ export function CheckoutButton({
   };
   return (
     <Button
+      data-analytics-id={`checkout_${planId}`}
       variant={variant}
       size={size}
       className={cn(className)}

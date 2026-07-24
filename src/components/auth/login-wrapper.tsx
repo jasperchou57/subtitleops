@@ -8,6 +8,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { getSafeAuthCallbackPath } from '@/lib/auth-callback';
+import { trackEvent } from '@/lib/analytics';
 import { Routes } from '@/lib/routes';
 import { useRouter } from '@tanstack/react-router';
 import React, { useEffect, useState } from 'react';
@@ -36,6 +37,10 @@ export function LoginWrapper({
     setMounted(true);
   }, []);
   const handleRedirect = () => {
+    trackEvent('auth_cta_click', {
+      auth_mode: 'redirect',
+      page_path: window.location.pathname,
+    });
     router.navigate({
       to: Routes.Login,
       search: safeCallbackUrl ? { callbackUrl: safeCallbackUrl } : {},
@@ -43,22 +48,31 @@ export function LoginWrapper({
   };
   const handleModalSuccess = () => {
     setOpen(false);
+    trackEvent('login_prompt_close', { close_reason: 'login_success' });
     if (safeCallbackUrl) {
       router.navigate({ to: safeCallbackUrl });
     }
+  };
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+    trackEvent(nextOpen ? 'login_prompt_view' : 'login_prompt_close', {
+      close_reason: nextOpen ? undefined : 'user_close',
+    });
   };
   if (!mounted) {
     return <span>{children}</span>;
   }
   if (mode === 'modal') {
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger
           render={
             asChild && React.isValidElement(children) ? (
               children
             ) : (
-              <button type="button">{children}</button>
+              <button data-analytics-id="login_prompt_open" type="button">
+                {children}
+              </button>
             )
           }
         />
@@ -76,7 +90,12 @@ export function LoginWrapper({
     );
   }
   return (
-    <button type="button" onClick={handleRedirect} className="inline">
+    <button
+      data-analytics-id="login_redirect"
+      type="button"
+      onClick={handleRedirect}
+      className="inline"
+    >
       {children}
     </button>
   );

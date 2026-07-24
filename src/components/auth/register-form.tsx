@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { websiteConfig } from '@/config/website';
 import { authClient } from '@/auth/client';
 import { resolveAuthCallbackPath } from '@/lib/auth-callback';
+import { trackEvent } from '@/lib/analytics';
 import { DEFAULT_LOGIN_REDIRECT, Routes } from '@/lib/routes';
 import { getPathWithLocale } from '@/lib/urls';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -57,6 +58,7 @@ export function RegisterForm({
     defaultValues: { email: '', password: '', name: '' },
   });
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
+    trackEvent('sign_up_start', { method: 'password' });
     await authClient.signUp.email(
       {
         email: values.email,
@@ -72,6 +74,7 @@ export function RegisterForm({
         },
         onResponse: () => setIsPending(false),
         onSuccess: () => {
+          trackEvent('sign_up', { method: 'password' });
           if (websiteConfig.mail?.enable) {
             setSuccess(m.auth_register_check_email());
             return;
@@ -80,6 +83,10 @@ export function RegisterForm({
         },
         onError: (ctx) => {
           setError(getAuthErrorMessage(ctx.error));
+          trackEvent('sign_up_error', {
+            method: 'password',
+            error_code: ctx.error.code || 'sign_up_failed',
+          });
         },
       }
     );
@@ -95,7 +102,11 @@ export function RegisterForm({
     >
       {credentialRegistrationEnabled && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            data-analytics-area="auth"
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6"
+          >
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -149,6 +160,7 @@ export function RegisterForm({
                         />
                       </FormControl>
                       <Button
+                        data-analytics-id="sign_up_password_visibility"
                         type="button"
                         variant="ghost"
                         size="sm"
@@ -176,6 +188,7 @@ export function RegisterForm({
             <FormError message={error} />
             <FormSuccess message={success} />
             <Button
+              data-analytics-id="sign_up_submit"
               disabled={isPending}
               size="lg"
               type="submit"
