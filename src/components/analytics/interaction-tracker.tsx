@@ -97,7 +97,9 @@ function getControlElementId(
   elementType: string
 ): string {
   const stableId = element.id || element.getAttribute('name');
-  if (stableId && !stableId.startsWith(':')) {
+  const isGeneratedId =
+    stableId?.startsWith(':') || stableId?.startsWith('base-ui-');
+  if (stableId && !isGeneratedId) {
     const normalizedId = toAnalyticsId(stableId);
     if (normalizedId) return normalizedId;
   }
