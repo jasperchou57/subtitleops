@@ -63,8 +63,8 @@ export const websiteConfig: WebsiteConfig = {
   mail: {
     enable: clientEnv.VITE_MAIL_ENABLED,
     provider: 'resend',
-    fromEmail: 'SubtitleOps <help@subtitleops.com>',
-    supportEmail: 'SubtitleOps <help@subtitleops.com>',
+    fromEmail: 'SubtitleOps <support@subtitleops.com>',
+    supportEmail: 'SubtitleOps <support@subtitleops.com>',
   },
   newsletter: {
     enable: false,

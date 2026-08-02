@@ -33,8 +33,8 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
         className={cn('', className)}
       >
         <p className="text-sm text-muted-foreground">
-          Password reset email is not enabled yet. Contact help@subtitleops.com
-          for account assistance.
+          Password reset email is not enabled yet. Contact
+          support@subtitleops.com for account assistance.
         </p>
       </AuthCard>
     );

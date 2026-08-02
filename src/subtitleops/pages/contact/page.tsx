@@ -27,10 +27,10 @@ export default function ContactPage() {
           <p>
             Send us an email at{' '}
             <a
-              href="mailto:help@subtitleops.com"
+              href="mailto:support@subtitleops.com"
               className="font-medium underline underline-offset-4 hover:text-foreground/70"
             >
-              help@subtitleops.com
+              support@subtitleops.com
             </a>{' '}
             and we will get back to you as soon as possible.
           </p>
@@ -64,7 +64,7 @@ export default function ContactPage() {
           </h2>
           <p>
             For questions about file handling, analytics, advertising, or our
-            privacy policy, email us at help@subtitleops.com.
+            privacy policy, email us at support@subtitleops.com.
           </p>
         </div>
       </div>

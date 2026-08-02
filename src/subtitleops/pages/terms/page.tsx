@@ -126,10 +126,10 @@ export default function TermsPage() {
         <p>
           Questions about these terms? Contact us at{' '}
           <a
-            href="mailto:help@subtitleops.com"
+            href="mailto:support@subtitleops.com"
             className="font-medium underline underline-offset-4 hover:text-foreground/70"
           >
-            help@subtitleops.com
+            support@subtitleops.com
           </a>
           .
         </p>

@@ -101,9 +101,9 @@ export default function CookiePolicyPage() {
           Questions about this policy can be sent to{' '}
           <a
             className="font-medium underline underline-offset-4 hover:text-foreground/70"
-            href="mailto:help@subtitleops.com"
+            href="mailto:support@subtitleops.com"
           >
-            help@subtitleops.com
+            support@subtitleops.com
           </a>
           .
         </p>
