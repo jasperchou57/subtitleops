@@ -12,7 +12,6 @@ import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { DefaultCatchBoundary } from '@/components/layout/default-catch-boundary';
 import { DefaultNotFound } from '@/components/layout/default-not-found';
-import { ClientScript } from '@/components/shared/client-script';
 import { Toaster } from '@/components/shared/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -77,11 +76,18 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const adsenseClientId = clientEnv.VITE_ADSENSE_CLIENT_ID?.trim();
+  const adsenseScriptSrc =
+    clientEnv.VITE_ADSENSE_ENABLED && adsenseClientId
+      ? `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(adsenseClientId)}`
+      : undefined;
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        {adsenseScriptSrc && (
+          <script async src={adsenseScriptSrc} crossOrigin="anonymous" />
+        )}
       </head>
       <body className="font-sans antialiased">
         <ThemeProvider>
@@ -92,13 +98,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           </TooltipProvider>
         </ThemeProvider>
         <Analytics />
-        {clientEnv.VITE_ADSENSE_ENABLED && adsenseClientId && (
-          <ClientScript
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(adsenseClientId)}`}
-            async
-            crossOrigin="anonymous"
-          />
-        )}
         <Scripts />
       </body>
     </html>
