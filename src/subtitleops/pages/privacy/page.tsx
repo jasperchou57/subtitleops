@@ -84,13 +84,14 @@ export default function PrivacyPage() {
           Advertising
         </h2>
         <p>
-          When advertising is enabled, we use Google AdSense to display
-          advertising. Google and its partners may use cookies, web beacons, IP
-          addresses, device information, and similar technologies to serve ads,
-          limit how often ads are shown, measure ad performance, and help keep
-          ads relevant. Where required, advertising and analytics choices are
-          collected through a Google-certified consent management platform. Read
-          our{' '}
+          SubtitleOps uses Google AdSense when advertising is eligible to serve.
+          Third-party vendors, including Google, use cookies to serve ads based
+          on a person&apos;s prior visits to SubtitleOps or other websites.
+          Google&apos;s advertising cookies enable Google and its partners to
+          serve, limit, and measure ads, and to help keep ads relevant. They may
+          also use web beacons, IP addresses, device information, and similar
+          technologies. Where required, we will request consent before serving
+          personalized advertising. Read our{' '}
           <a
             href="/cookie"
             className="font-medium underline underline-offset-4 hover:text-foreground/70"
@@ -106,6 +107,25 @@ export default function PrivacyPage() {
             className="font-medium underline underline-offset-4 hover:text-foreground/70"
           >
             Google&apos;s partner sites policy
+          </a>
+          . You can opt out of Google&apos;s personalized advertising in{' '}
+          <a
+            href="https://www.google.com/settings/ads"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline underline-offset-4 hover:text-foreground/70"
+          >
+            Google Ads Settings
+          </a>{' '}
+          or opt out of some third-party vendors&apos; personalized advertising
+          at{' '}
+          <a
+            href="https://optout.aboutads.info/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline underline-offset-4 hover:text-foreground/70"
+          >
+            aboutads.info
           </a>
           .
         </p>

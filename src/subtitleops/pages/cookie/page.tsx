@@ -53,12 +53,13 @@ export default function CookiePolicyPage() {
           Advertising Cookies
         </h2>
         <p>
-          When advertising is enabled, Google AdSense and its partners may use
-          cookies, device information, IP addresses, and similar technologies to
-          serve, limit, and measure ads. For visitors in the European Economic
-          Area, the United Kingdom, and Switzerland, SubtitleOps uses a
-          Google-certified consent management platform that supports the IAB
-          Transparency and Consent Framework.
+          Google AdSense and its partners may use cookies, device information,
+          IP addresses, and similar technologies to serve, limit, and measure
+          ads. Third-party vendors, including Google, use advertising cookies
+          based on a person&apos;s prior visits to SubtitleOps or other
+          websites. For visitors in the European Economic Area, the United
+          Kingdom, and Switzerland, we will request consent before serving
+          personalized advertising.
         </p>
 
         <h2 className="pt-4 text-xl font-semibold text-foreground">
@@ -69,6 +70,26 @@ export default function CookiePolicyPage() {
           the purposes and vendors available in that message. You can also clear
           cookies in your browser. Clearing cookies may sign you out, reset
           interface preferences, and cause a consent message to appear again.
+          You can opt out of Google&apos;s personalized advertising in{' '}
+          <a
+            className="font-medium underline underline-offset-4 hover:text-foreground/70"
+            href="https://www.google.com/settings/ads"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Google Ads Settings
+          </a>{' '}
+          or opt out of some third-party vendors&apos; personalized advertising
+          at{' '}
+          <a
+            className="font-medium underline underline-offset-4 hover:text-foreground/70"
+            href="https://optout.aboutads.info/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            aboutads.info
+          </a>
+          .
         </p>
 
         <h2 className="pt-4 text-xl font-semibold text-foreground">
