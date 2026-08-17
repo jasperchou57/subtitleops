@@ -14,7 +14,7 @@ describe('convertSrtToTxt', () => {
       '1\n00:00:01,000 --> 00:00:05,000\n5\n\n' +
       '2\n00:00:06,000 --> 00:00:10,000\n2025\n\n' +
       '3\n00:00:11,000 --> 00:00:15,000\nHello\n';
-    expect(convertSrtToTxt(input).split('\n')).toEqual(['5', '2025', 'Hello']);
+    expect(convertSrtToTxt(input)).toBe('5\n\n2025\n\nHello');
   });
 
   it('strips HTML tags from text', () => {
@@ -27,6 +27,15 @@ describe('convertSrtToTxt', () => {
     expect(
       convertSrtToTxt('1\n00:00:01,000 --> 00:00:05,000\nLine 1\nLine 2\n')
     ).toBe('Line 1\nLine 2');
+  });
+
+  it('separates subtitle cues with exactly one blank line', () => {
+    expect(
+      convertSrtToTxt(
+        '1\n00:00:01,000 --> 00:00:05,000\nLine 1\nLine 2\n\n' +
+          '2\n00:00:06,000 --> 00:00:10,000\nNext cue\n'
+      )
+    ).toBe('Line 1\nLine 2\n\nNext cue');
   });
 
   it('handles CRLF line endings', () => {

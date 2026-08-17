@@ -19,6 +19,17 @@ describe('universalConvert', () => {
     expect(out).toContain('2\n00:00:03,500 --> 00:00:06,500\nB');
   });
 
+  it('preserves VTT cue boundaries in TXT output', () => {
+    const out = universalConvert(
+      'WEBVTT\n\n00:00:01.000 --> 00:00:05.000\nLine 1\nLine 2\n\n' +
+        '00:00:06.000 --> 00:00:10.000\nNext cue\n',
+      'vtt',
+      'txt'
+    );
+
+    expect(out).toBe('Line 1\nLine 2\n\nNext cue');
+  });
+
   it('rejects files that do not produce subtitle cues', () => {
     expect(() => universalConvert('not a subtitle', 'srt', 'ass')).toThrow(
       'No subtitle cues'

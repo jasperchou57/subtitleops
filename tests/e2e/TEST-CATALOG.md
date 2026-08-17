@@ -17,7 +17,9 @@ intentionally preserves English-only canonical URLs.
 ## Converter logic acceptance
 
 Vitest covers all converter modules plus shared timing logic. These tests must
-remain green before and after the framework migration.
+remain green before and after the framework migration. TXT extraction must
+preserve line breaks within a cue and place exactly one blank line between
+separate subtitle cues.
 
 ## SaaS acceptance
 

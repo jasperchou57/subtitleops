@@ -1,6 +1,6 @@
 /**
  * Extract plain text from SRT content.
- * Strips index numbers, timestamps, and empty lines.
+ * Strips index numbers and timestamps while preserving cue boundaries.
  *
  * Parses SRT as cue blocks (separated by blank lines) rather than line-by-line
  * so that subtitle text consisting purely of digits (e.g. "5", "2025") is not
@@ -28,5 +28,5 @@ export function convertSrtToTxt(srtContent: string): string {
     if (text) textLines.push(text);
   }
 
-  return textLines.join('\n');
+  return textLines.join('\n\n');
 }

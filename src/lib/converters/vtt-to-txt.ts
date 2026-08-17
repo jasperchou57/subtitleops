@@ -2,18 +2,28 @@
  * VTT to TXT converter.
  *
  * Strips the WEBVTT header, timestamps, cue settings, and cue identifiers,
- * leaving only the visible subtitle text as clean plain text.
+ * leaving only the visible subtitle text as clean plain text. Lines within a
+ * cue stay together, and separate cues have one blank line between them.
  */
 
 export function convertVttToTxt(content: string): string {
   const lines = content.replace(/\r\n/g, '\n').split('\n');
-  const textLines: string[] = [];
+  const cues: string[] = [];
+  const cueTextLines: string[] = [];
   let pastHeader = false;
+
+  const flushCue = () => {
+    if (cueTextLines.length > 0) {
+      cues.push(cueTextLines.join('\n'));
+      cueTextLines.length = 0;
+    }
+  };
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
     if (line.trim().startsWith('NOTE')) {
+      flushCue();
       while (i + 1 < lines.length && lines[i + 1].trim() !== '') i++;
       continue;
     }
@@ -27,7 +37,10 @@ export function convertVttToTxt(content: string): string {
     }
 
     // Skip timestamp lines (contain -->)
-    if (line.includes('-->')) continue;
+    if (line.includes('-->')) {
+      flushCue();
+      continue;
+    }
 
     // Skip cue identifiers (standalone numbers or identifiers before timestamps)
     if (
@@ -36,11 +49,15 @@ export function convertVttToTxt(content: string): string {
       lines[i + 1].includes('-->') &&
       line.trim() !== ''
     ) {
+      flushCue();
       continue;
     }
 
-    // Skip blank lines
-    if (line.trim() === '') continue;
+    // A blank line marks the end of a VTT cue
+    if (line.trim() === '') {
+      flushCue();
+      continue;
+    }
 
     // Strip VTT tags like <v Speaker>, <c.classname>, <b>, <i>, etc.
     const cleaned = line
@@ -57,9 +74,10 @@ export function convertVttToTxt(content: string): string {
       .trim();
 
     if (cleaned) {
-      textLines.push(cleaned);
+      cueTextLines.push(cleaned);
     }
   }
 
-  return textLines.join('\n');
+  flushCue();
+  return cues.join('\n\n');
 }

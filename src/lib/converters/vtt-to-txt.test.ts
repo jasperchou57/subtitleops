@@ -46,7 +46,7 @@ describe('convertVttToTxt', () => {
       'WEBVTT\n\n00:00:01.000 --> 00:00:05.000\nA\n\n' +
       'NOTE internal editor note\nnot visible to viewers\n\n' +
       '00:00:06.000 --> 00:00:10.000\nB\n';
-    expect(convertVttToTxt(vtt)).toBe('A\nB');
+    expect(convertVttToTxt(vtt)).toBe('A\n\nB');
   });
 
   it('decodes common HTML entities from visible caption text', () => {
@@ -65,12 +65,13 @@ describe('convertVttToTxt', () => {
     expect(out).toBe('Hello');
   });
 
-  it('joins multiple cues with newlines', () => {
+  it('preserves lines within a cue and separates cues with one blank line', () => {
     expect(
       convertVttToTxt(
-        'WEBVTT\n\n00:00:01.000 --> 00:00:05.000\nA\n\n00:00:06.000 --> 00:00:10.000\nB\n'
+        'WEBVTT\n\n00:00:01.000 --> 00:00:05.000\nLine 1\nLine 2\n\n' +
+          '00:00:06.000 --> 00:00:10.000\nNext cue\n'
       )
-    ).toBe('A\nB');
+    ).toBe('Line 1\nLine 2\n\nNext cue');
   });
 
   it('returns empty string for empty input', () => {
