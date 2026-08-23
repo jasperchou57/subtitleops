@@ -37,7 +37,7 @@ const articleJsonLd = blogPostJsonLd({
 
 export default function WhatIsVttFilePage() {
   return (
-    <article className="mx-auto max-w-3xl px-4 sm:px-6 py-16">
+    <article className="responsive-content mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <JsonLd data={articleJsonLd} />
       <header className="mb-10">
         <Link

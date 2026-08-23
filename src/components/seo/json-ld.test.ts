@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { blogPostJsonLd, homepageJsonLd, toolPageJsonLd } from './json-ld';
+import {
+  blogPostJsonLd,
+  homepageJsonLd,
+  pricingPageJsonLd,
+  toolPageJsonLd,
+  toolsPageJsonLd,
+} from './json-ld';
 
 describe('public structured data', () => {
   it('uses supported homepage entities without deprecated FAQ markup', () => {
@@ -8,6 +14,11 @@ describe('public structured data', () => {
       'WebSite',
       'Organization',
     ]);
+    expect(data[0]).toMatchObject({
+      name: 'SubtitleOps',
+      alternateName: ['subtitleops.com'],
+      '@id': 'https://subtitleops.com#website',
+    });
   });
 
   it('keeps tool data truthful without invented ratings', () => {
@@ -23,6 +34,45 @@ describe('public structured data', () => {
     ]);
     expect(data[0]).not.toHaveProperty('aggregateRating');
     expect(data[0]).not.toHaveProperty('review');
+    expect(data[0]).toMatchObject({
+      '@id': 'https://subtitleops.com/tools/srt-to-vtt#software',
+      offers: { price: '0', priceCurrency: 'USD' },
+    });
+  });
+
+  it('describes the tools hub as a collection with a visible hierarchy', () => {
+    const data = toolsPageJsonLd([
+      {
+        name: 'SRT to TXT',
+        description: 'Extract clean text.',
+        href: '/tools/srt-to-txt',
+      },
+    ]);
+
+    expect(data.map((entry) => entry['@type'])).toEqual([
+      'CollectionPage',
+      'ItemList',
+      'BreadcrumbList',
+    ]);
+    expect(data[0]).toMatchObject({
+      mainEntity: { '@id': 'https://subtitleops.com/tools#tool-list' },
+    });
+  });
+
+  it('uses only a breadcrumb for pricing while paid plans are in beta', () => {
+    const data = pricingPageJsonLd();
+    expect(data).toMatchObject({
+      '@type': 'BreadcrumbList',
+      '@id': 'https://subtitleops.com/pricing#breadcrumb',
+      itemListElement: [
+        { position: 1, name: 'Home', item: 'https://subtitleops.com' },
+        {
+          position: 2,
+          name: 'Pricing',
+          item: 'https://subtitleops.com/pricing',
+        },
+      ],
+    });
   });
 
   it('includes the article image and real modification date', () => {

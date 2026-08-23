@@ -10,11 +10,12 @@ import {
 } from '@/components/ui/accordion';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
+import { ToolFileContract } from '@/components/tools/tool-file-contract';
 
 export const metadata: Metadata = {
-  title: 'Free VTT to TXT Converter Online',
+  title: 'VTT to TXT Converter — Clean Caption Text',
   description:
-    'Extract plain text from WebVTT caption files. Remove timestamps, headers, and cue settings to get a clean transcript for translation, review, or analysis.',
+    'Use this VTT to TXT converter to remove timestamps, headers, cue settings, notes, and tags. Keep readable cue spacing, preview clean text, and download TXT.',
   keywords: [
     'vtt to txt',
     'vtt to text',
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLdData = toolPageJsonLd({
   name: 'VTT to TXT Converter',
   description:
-    'Extract plain text from WebVTT caption files. Free, browser-based, no upload needed.',
+    'Extract visible text from WebVTT captions locally while removing timing, cue settings, notes, voice labels, and tags.',
   url: '/tools/vtt-to-txt',
   faqs: [
     {
@@ -90,28 +91,32 @@ const relatedTools = [
 
 export default function VttToTxtPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="VTT to TXT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          VTT to TXT — Extract Text from WebVTT Captions
+          VTT to TXT Converter for Clean Caption Text
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Use this free VTT to TXT converter to pull clean, readable text out of
-          WebVTT caption files. The tool strips the WEBVTT header, timestamps,
-          cue settings, voice tags, and formatting markup so you get a plain
-          text output ready for translation, review, text analysis, or study
-          material creation.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Extract readable dialogue from a WebVTT caption file without the
+          timing syntax. SubtitleOps keeps lines within each cue together,
+          separates cues clearly, and lets you inspect the TXT locally.
         </p>
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <VttToTxtConverter />
         </div>
+        <ToolFileContract
+          input="A .vtt WebVTT caption file"
+          result="A .txt plain-text transcript"
+          keeps="Visible text and line breaks within each cue"
+          changes="Removes timing, cue IDs and settings, notes, voice labels, and tags; adds one blank line between cues"
+        />
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
           <svg
             className="h-5 w-5 shrink-0 text-blue-500 mt-0.5"

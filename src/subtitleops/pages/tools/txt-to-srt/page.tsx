@@ -12,9 +12,9 @@ import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
 
 export const metadata: Metadata = {
-  title: 'TXT to SRT Converter - Paste Text or Upload Files',
+  title: 'TXT to SRT Converter — Draft Timed Subtitles',
   description:
-    'Convert plain text, transcripts, scripts, or lyrics to SRT subtitles with auto timestamps. Paste text or upload a TXT file and export locally in your browser.',
+    'Use this TXT to SRT converter to turn plain text into an editable SRT draft. Choose cue splitting and timing rules, preview the result, then download.',
   keywords: [
     'txt to srt',
     'text to srt',
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
 };
 
 const jsonLdData = toolPageJsonLd({
-  name: 'TXT to SRT Converter',
+  name: 'TXT to SRT Converter for Editable Subtitle Drafts',
   description:
-    'Convert plain text, transcripts, scripts, or lyrics to SRT subtitles with auto timestamps. Paste text or upload a TXT file and export locally in your browser.',
+    'Turn plain text into an editable SRT draft with adjustable cue splitting, start time, duration, gap, and line wrapping.',
   url: '/tools/txt-to-srt',
   faqs: [
     {
@@ -94,27 +94,48 @@ const relatedTools = [
 
 export default function TxtToSrtPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="TXT to SRT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          TXT to SRT Converter
+          TXT to SRT Converter for Editable Subtitle Drafts
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Paste text directly or upload a .txt file when you have dialogue,
-          lyrics, a script, or a transcript but no subtitle timing yet. Each
-          non-empty line becomes one subtitle cue, and the converter generates
-          sequential timestamps automatically so you can export a usable SRT
-          draft from raw text.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Turn a transcript, script, lyrics, or other plain text into an
+          editable SRT draft. Choose line or sentence splitting, set the start
+          time, cue duration, gap, and line length, then preview the rule-based
+          result before downloading.
         </p>
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <TxtToSrtConverter />
+        </div>
+        <div className="mt-6 grid gap-3 text-sm sm:grid-cols-3">
+          <div className="rounded-xl border bg-card p-4">
+            <p className="font-semibold text-green-700">Created</p>
+            <p className="mt-1 text-muted-foreground">
+              Numbered SRT cues with the text and timing rules you selected.
+            </p>
+          </div>
+          <div className="rounded-xl border bg-card p-4">
+            <p className="font-semibold text-blue-700">Adjustable</p>
+            <p className="mt-1 text-muted-foreground">
+              Start time, duration, gap, split mode, and maximum characters per
+              line.
+            </p>
+          </div>
+          <div className="rounded-xl border bg-card p-4">
+            <p className="font-semibold text-amber-700">Not automatic sync</p>
+            <p className="mt-1 text-muted-foreground">
+              The tool does not listen to audio. Review the draft against your
+              video before delivery.
+            </p>
+          </div>
         </div>
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
           <svg
@@ -132,11 +153,12 @@ export default function TxtToSrtPage() {
           </svg>
           <div className="text-sm">
             <p className="font-medium text-foreground">
-              Don&apos;t forget to check the timing
+              Rule-based timing is a first draft
             </p>
             <p className="text-muted-foreground mt-0.5">
-              Auto-generated timestamps are a draft — fine-tune in your editor.
-              Already have an SRT and need the text?{' '}
+              These timestamps follow your settings; they are not aligned to
+              speech. Fine-tune them in an editor. Already have an SRT and need
+              the text?{' '}
               <Link
                 href="/tools/srt-to-txt"
                 title="Convert SRT to TXT plain text"
@@ -157,9 +179,9 @@ export default function TxtToSrtPage() {
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
           A TXT to SRT converter turns plain text into a first-pass SubRip
-          subtitle file. Because TXT has no timing data, this tool treats each
-          non-empty line as one subtitle cue and generates sequential timestamps
-          that you can refine later in a subtitle editor.
+          subtitle file. Because TXT has no timing data, this tool splits the
+          source by non-empty line or sentence and generates sequential,
+          rule-based timestamps that you can refine later in a subtitle editor.
         </p>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <div>
@@ -202,12 +224,12 @@ Let's begin with the basics.`}</pre>
               2
             </span>
             <h3 className="font-semibold mb-1">
-              Generate Subtitle Timing Automatically
+              Set the Subtitle Timing Rules
             </h3>
             <p className="text-sm text-muted-foreground">
-              Because plain text has no timestamps, the converter creates them
-              for you. Set the start time, cue duration, gap, split mode, and
-              line length before generating the subtitle draft.
+              Because plain text has no timestamps, choose the start time, cue
+              duration, gap, split mode, and line length used to create the
+              subtitle draft.
             </p>
           </li>
           <li className="rounded-lg border bg-card p-5">
@@ -237,21 +259,19 @@ Let's begin with the basics.`}</pre>
         <ul className="space-y-3 text-sm text-muted-foreground">
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0 w-44">
-              Every non-empty line becomes one subtitle entry:
+              Choose line or sentence splitting:
             </span>
-            The converter treats each line as one subtitle block. That makes it
-            easy to build a first draft from structured dialogue or lyrics. If a
-            single line is too long, you may want to split it into two lines
-            before converting so the on-screen text stays readable.
+            Line mode treats each non-empty source line as one cue. Sentence
+            mode splits pasted paragraphs at sentence boundaries. Both create a
+            structural draft, not speech-aware timing.
           </li>
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0 w-44">
-              The first subtitle starts at zero:
+              The first subtitle uses your start time:
             </span>
-            The generated SRT begins at 00:00:00,000, giving you a clean
-            starting point for later editing. You can use a subtitle shifter
-            afterward to offset all timestamps if your video has an intro or
-            delay before dialogue begins.
+            The default is 00:00:00,000, but you can enter a later start before
+            conversion. Use a subtitle shifter afterward only when every cue
+            needs the same additional offset.
           </li>
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0 w-44">

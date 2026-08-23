@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { CopyOutputButton } from '@/components/tools/copy-output-button';
+import { ToolWorkflowPush } from '@/components/tools/tool-workflow-push';
 import {
   detectTimingFormat,
   shiftSubtitles,
@@ -258,6 +259,7 @@ export function SubtitleShiftConverter() {
     >
       {!file ? (
         <div
+          data-analytics-area="file_dropzone"
           onDragOver={(e) => {
             e.preventDefault();
             setIsDragOver(true);
@@ -269,7 +271,7 @@ export function SubtitleShiftConverter() {
             const f = e.dataTransfer.files[0];
             if (f) handleFile(f);
           }}
-          className={`relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-12 md:p-16 transition-all cursor-pointer ${
+          className={`relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 sm:p-12 md:p-16 transition-all cursor-pointer ${
             isDragOver
               ? 'border-blue-400 bg-blue-50/50 scale-[1.01]'
               : 'border-border hover:border-blue-300 hover:bg-muted/20'
@@ -279,6 +281,7 @@ export function SubtitleShiftConverter() {
             data-analytics-control="choose_file"
             type="file"
             accept=".srt,.vtt"
+            aria-label="Upload an SRT or VTT subtitle file to shift timing"
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) handleFile(f);
@@ -287,6 +290,7 @@ export function SubtitleShiftConverter() {
           />
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 mb-4">
             <svg
+              aria-hidden="true"
               className="h-7 w-7 text-blue-500"
               fill="none"
               viewBox="0 0 24 24"
@@ -306,10 +310,10 @@ export function SubtitleShiftConverter() {
           <span className="mt-4 inline-flex items-center rounded-xl bg-foreground px-6 py-3 text-sm font-medium text-background">
             Choose File
           </span>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-foreground/70">
             Accepts .srt and .vtt &middot; runs in your browser
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-xs text-foreground/70">
             Files are processed locally in your browser.
           </p>
 
@@ -509,6 +513,9 @@ export function SubtitleShiftConverter() {
                   Your file is processed locally and won&apos;t be available
                   after you leave this page.
                 </p>
+                <div className="mt-5">
+                  <ToolWorkflowPush />
+                </div>
               </div>
             )}
           </div>

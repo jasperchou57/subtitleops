@@ -107,7 +107,7 @@ export const metadata = ({
           { property: 'og:image:height', content: '630' },
           {
             property: 'og:image:alt',
-            content: 'SubtitleOps browser-based subtitle tools',
+            content: 'SubtitleOps subtitle workflow tools',
           },
         ]
       : []),
@@ -124,7 +124,7 @@ export const metadata = ({
           { name: 'twitter:image', content: image },
           {
             name: 'twitter:image:alt',
-            content: 'SubtitleOps browser-based subtitle tools',
+            content: 'SubtitleOps subtitle workflow tools',
           },
         ]
       : []),

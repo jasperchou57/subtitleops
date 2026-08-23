@@ -23,16 +23,17 @@ function absoluteUrl(value: string) {
 }
 
 export function legacyHead(metadata: LegacyMetadata, fallbackPath: string) {
-  const rawTitle = metadata.title ?? 'Free Online Subtitle Converter & Tools';
-  const title = rawTitle.includes('SubtitleOps')
-    ? rawTitle
-    : `${rawTitle} | SubtitleOps`;
+  const rawTitle = metadata.title ?? 'Subtitle Converter for Real Workflows';
+  const brandedTitle = rawTitle.replaceAll('Subtitle OPS', 'SubtitleOps');
+  const title = brandedTitle.includes('SubtitleOps')
+    ? brandedTitle
+    : `${brandedTitle} | SubtitleOps`;
   const description = metadata.description ?? '';
   const canonical = absoluteUrl(metadata.alternates?.canonical ?? fallbackPath);
   const ogUrl = absoluteUrl(metadata.openGraph?.url ?? fallbackPath);
   const image = absoluteUrl(metadata.openGraph?.image ?? DEFAULT_OG_IMAGE);
   const imageAlt =
-    metadata.openGraph?.imageAlt ?? 'SubtitleOps browser-based subtitle tools';
+    metadata.openGraph?.imageAlt ?? 'SubtitleOps subtitle workflow tools';
   const robots = metadata.robots
     ? `${metadata.robots.index === false ? 'noindex' : 'index'}, ${metadata.robots.follow === false ? 'nofollow' : 'follow'}, max-image-preview:large`
     : 'index, follow, max-image-preview:large';

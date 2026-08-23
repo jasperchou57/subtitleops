@@ -1,4 +1,4 @@
-export type SubtitleToolCategoryId = 'format' | 'transcript' | 'timing';
+export type SubtitleToolCategoryId = 'format' | 'extract' | 'create' | 'timing';
 
 export type SubtitleTool = {
   id: string;
@@ -25,7 +25,7 @@ export const subtitleTools: SubtitleTool[] = [
     id: 'vtt-to-srt',
     name: 'VTT to SRT',
     description:
-      'Remove WebVTT-specific syntax while preserving subtitle content for desktop players and editors.',
+      'Keep cue text and timing while removing WebVTT-only headers and settings for wider compatibility.',
     href: '/tools/vtt-to-srt',
     title: 'Convert VTT to SRT subtitle format',
     category: 'format',
@@ -35,10 +35,10 @@ export const subtitleTools: SubtitleTool[] = [
     id: 'txt-to-srt',
     name: 'TXT to SRT',
     description:
-      'Turn dialogue, lyrics, or a transcript into a usable subtitle draft that can be refined later.',
+      'Turn dialogue, lyrics, or a transcript into a rule-based SRT draft that can be timed more precisely later.',
     href: '/tools/txt-to-srt',
     title: 'Convert TXT to SRT subtitle format',
-    category: 'transcript',
+    category: 'create',
     featured: true,
   },
   {
@@ -55,10 +55,10 @@ export const subtitleTools: SubtitleTool[] = [
     id: 'srt-to-txt',
     name: 'SRT to TXT',
     description:
-      'Extract readable text from subtitle files by removing timestamps and formatting in one step.',
+      'Keep readable text and cue boundaries while removing SRT timestamps, cue numbers, and basic tags.',
     href: '/tools/srt-to-txt',
     title: 'Convert SRT to TXT plain text',
-    category: 'transcript',
+    category: 'extract',
     featured: false,
   },
   {
@@ -75,7 +75,7 @@ export const subtitleTools: SubtitleTool[] = [
     id: 'srt-to-ass',
     name: 'SRT to ASS',
     description:
-      'Generate a styled ASS file from plain SRT subtitles for editing in Aegisub with fonts, colors, and positioning.',
+      'Create a valid ASS base file with SRT text and timing, ready for styling in a subtitle editor.',
     href: '/tools/srt-to-ass',
     title: 'Convert SRT to ASS subtitle format',
     category: 'format',
@@ -85,10 +85,10 @@ export const subtitleTools: SubtitleTool[] = [
     id: 'vtt-to-txt',
     name: 'VTT to TXT',
     description:
-      'Extract clean transcript text from WebVTT caption files by stripping timestamps, headers, and cue settings.',
+      'Extract clean text by removing WebVTT timestamps, headers, cue settings, and caption metadata.',
     href: '/tools/vtt-to-txt',
     title: 'Extract text from VTT captions',
-    category: 'transcript',
+    category: 'extract',
     featured: false,
   },
   {
@@ -125,23 +125,31 @@ export const subtitleToolCategories: {
 }[] = [
   {
     id: 'format',
-    name: 'Format Converters',
+    name: 'Convert a Format',
     description:
       'Move subtitle files between SRT, ASS, VTT, SBV, and related working formats.',
     intro:
       'Use format converters when you need compatibility between players, editors, web captions, and YouTube caption exports.',
   },
   {
-    id: 'transcript',
-    name: 'Transcript Tools',
+    id: 'extract',
+    name: 'Extract Clean Text',
     description:
-      'Extract readable text from subtitle files or create a first subtitle draft from plain text.',
+      'Remove subtitle timing and file syntax when the next job needs readable transcript text.',
     intro:
-      'Use transcript tools when you need plain text for review, translation, analysis, or a first timed subtitle draft.',
+      'Use extraction tools when you need plain text for review, translation, analysis, or publishing.',
+  },
+  {
+    id: 'create',
+    name: 'Create an SRT Draft',
+    description:
+      'Turn plain text into numbered SRT cues with rule-based, adjustable timing.',
+    intro:
+      'Use the draft tool when you have text but no subtitle structure or speech-aligned timestamps yet.',
   },
   {
     id: 'timing',
-    name: 'Timing Tools',
+    name: 'Fix Subtitle Timing',
     description:
       'Fix subtitle delay, constant offsets, and frame-rate drift without uploading files.',
     intro:

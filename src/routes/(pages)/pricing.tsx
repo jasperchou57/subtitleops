@@ -1,6 +1,8 @@
 import { authClient } from '@/auth/client';
 import Container from '@/components/layout/container';
 import { PricingTable } from '@/components/pricing/pricing-table';
+import { JsonLd, pricingPageJsonLd } from '@/components/seo/json-ld';
+import Link from '@/compat/next-link';
 import { websiteConfig } from '@/config/website';
 import { useCurrentPlan } from '@/hooks/use-payment';
 import { seo } from '@/lib/seo';
@@ -8,6 +10,7 @@ import type { PricePlan } from '@/payment/types';
 import { createFileRoute } from '@tanstack/react-router';
 import { trackSaasEvent } from '@/lib/analytics';
 import { useEffect, useState } from 'react';
+import { FileText, Repeat2, Users } from 'lucide-react';
 
 const checkoutEnabled =
   websiteConfig.auth?.enable === true && websiteConfig.payment?.enable === true;
@@ -21,7 +24,7 @@ const pricingFaqs = [
   {
     question: 'What is included in Pro and Studio?',
     answer:
-      'Pro includes batch processing, saved presets, 180-day private project history, and subtitle quality checks. Studio adds a three-seat shared workspace, review workflows, 365-day history, larger batches, and production API access.',
+      'The planned Pro beta includes batch processing, saved presets, 180-day private project history, and subtitle quality checks. The Studio beta adds a three-seat shared workspace, review workflows, 365-day history, larger batches, and production API access.',
   },
   {
     question: 'Are my subtitle files uploaded?',
@@ -31,7 +34,7 @@ const pricingFaqs = [
   {
     question: 'Can I cancel a Pro subscription?',
     answer:
-      'Yes. You can cancel at any time from billing settings and keep paid access until the end of the current billing period.',
+      'Yes. After paid checkout opens, you will be able to cancel from billing settings and keep paid access until the end of the current billing period.',
   },
   {
     question: 'Does Pro include AI transcription or translation?',
@@ -43,9 +46,9 @@ const pricingFaqs = [
 export const Route = createFileRoute('/(pages)/pricing')({
   head: () =>
     seo('/pricing', {
-      title: `SubtitleOps Pricing - Free Tools and Pro Workflows`,
+      title: 'SubtitleOps Pricing — Free, Pro & Studio Workflows',
       description:
-        'Keep every current SubtitleOps converter free. Compare Pro workflows and the three-seat Studio plan for teams, review, and automation.',
+        'Compare SubtitleOps Free, Pro, and Studio by workflow frequency. Keep single-file tools free; join private beta for batch, presets, review, and API workflows.',
     }),
   component: PricingPage,
 });
@@ -83,14 +86,35 @@ function PricingPageContent({
   return (
     <>
       <PricingPageAnalytics />
+      <JsonLd data={pricingPageJsonLd()} />
       <section className="border-b bg-muted/25">
-        <Container className="px-4 py-16 text-center sm:px-6 md:py-20">
-          <div className="mx-auto max-w-3xl space-y-5">
+        <Container className="px-4 sm:px-6">
+          <nav
+            aria-label="Breadcrumb"
+            className="pt-5 text-sm text-muted-foreground"
+          >
+            <ol className="flex items-center gap-2">
+              <li>
+                <Link
+                  href="/"
+                  title="SubtitleOps home"
+                  className="hover:text-foreground"
+                >
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li aria-current="page" className="text-foreground">
+                Pricing
+              </li>
+            </ol>
+          </nav>
+          <div className="mx-auto max-w-3xl space-y-5 py-12 text-center md:py-16">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">
-              Simple, transparent pricing
+              SubtitleOps workflow plans
             </p>
             <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl">
-              Free for quick fixes. Pro for repeat subtitle work.
+              Pricing for One-Off, Repeat, and Team Subtitle Work
             </h1>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-8 text-muted-foreground">
               Every current single-file tool stays free. Upgrade only when you
@@ -122,6 +146,48 @@ function PricingPageContent({
             metadata={userId ? { userId } : undefined}
             checkoutEnabled={checkoutEnabled}
           />
+
+          <section className="mx-auto max-w-5xl border-t pt-12">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-2xl font-bold tracking-tight">
+                Choose by workflow frequency, not company size
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                The useful dividing line is how often the same subtitle task
+                comes back and whether more than one person needs the result.
+              </p>
+            </div>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {[
+                {
+                  title: 'Use Free for one file now',
+                  description:
+                    'Convert, extract, create, or fix a single subtitle file locally without an account.',
+                  icon: FileText,
+                },
+                {
+                  title: 'Choose Pro for repeat runs',
+                  description:
+                    'Join the beta when the same format rules, naming, checks, or batches return every week.',
+                  icon: Repeat2,
+                },
+                {
+                  title: 'Choose Studio for shared work',
+                  description:
+                    'Join the team beta when people need shared presets, review status, history, or API automation.',
+                  icon: Users,
+                },
+              ].map(({ title, description, icon: Icon }) => (
+                <article key={title} className="rounded-xl border bg-card p-5">
+                  <Icon aria-hidden="true" className="h-5 w-5 text-blue-700" />
+                  <h3 className="mt-4 font-semibold">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    {description}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
 
           <section className="mx-auto max-w-4xl border-t pt-12">
             <div className="mb-8 text-center">

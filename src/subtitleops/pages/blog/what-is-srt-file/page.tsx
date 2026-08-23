@@ -37,7 +37,7 @@ const articleJsonLd = blogPostJsonLd({
 
 export default function WhatIsSrtFilePage() {
   return (
-    <article className="mx-auto max-w-3xl px-4 sm:px-6 py-16">
+    <article className="responsive-content mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <JsonLd data={articleJsonLd} />
       <header className="mb-10">
         <Link
@@ -605,13 +605,13 @@ It can span multiple rows.`}
           SubtitleOps converts between SRT, VTT, ASS, and TXT in the browser. No
           upload, no signup.{' '}
           <Link
-            href="/"
-            title="SubtitleOps — Free Online Subtitle Converter"
+            href="/tools"
+            title="Choose a SubtitleOps conversion tool"
             className="font-medium text-blue-600 underline underline-offset-4 hover:text-blue-800"
           >
-            Open the converter
+            Choose the right tool
           </Link>{' '}
-          and drop your file.
+          for the file and result you need.
         </p>
       </div>
 

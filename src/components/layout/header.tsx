@@ -12,36 +12,21 @@ type NavItem = {
   title: string;
 };
 
-const navTools: NavItem[] = [
+const primaryNav: NavItem[] = [
   {
-    name: 'ASS to SRT',
-    href: '/tools/ass-to-srt',
-    title: 'Convert ASS to SRT subtitle format',
-  },
-  {
-    name: 'VTT to SRT',
-    href: '/tools/vtt-to-srt',
-    title: 'Convert VTT to SRT subtitle format',
-  },
-  {
-    name: 'SRT to VTT',
-    href: '/tools/srt-to-vtt',
-    title: 'Convert SRT to VTT subtitle format',
-  },
-  {
-    name: 'TXT to SRT',
-    href: '/tools/txt-to-srt',
-    title: 'Convert TXT to SRT subtitle format',
-  },
-  {
-    name: 'Fix Timing',
-    href: '/tools/subtitle-shift',
-    title: 'Shift subtitles forward or backward by a fixed offset',
-  },
-  {
-    name: 'All Tools',
+    name: 'Tools',
     href: '/tools',
-    title: 'Browse all free subtitle conversion tools',
+    title: 'Choose a SubtitleOps tool by task',
+  },
+  {
+    name: 'Guides',
+    href: '/blog',
+    title: 'Read subtitle format and workflow guides',
+  },
+  {
+    name: 'Pricing',
+    href: '/pricing',
+    title: 'Compare SubtitleOps Free, Pro, and Studio plans',
   },
 ];
 
@@ -63,7 +48,7 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 xl:grid xl:grid-cols-[1fr_auto_1fr]">
         <Link
           href="/"
-          title="SubtitleOps — Free Online Subtitle Converter"
+          title="SubtitleOps — Subtitle Workflows, Under Control"
           className="flex items-center gap-2.5"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -91,26 +76,19 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 text-sm xl:flex">
-          {navTools.map((tool) => (
+          {primaryNav.map((item) => (
             <Link
-              key={tool.href}
-              href={tool.href}
-              title={tool.title}
+              key={item.href}
+              href={item.href}
+              title={item.title}
               className="rounded-md px-3 py-2.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
-              {tool.name}
+              {item.name}
             </Link>
           ))}
         </nav>
 
         <div className="hidden items-center justify-self-end gap-1 text-sm xl:flex">
-          <Link
-            href="/pricing"
-            title="Compare SubtitleOps Free, Pro, and Studio plans"
-            className="rounded-md px-3 py-2.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            Pricing
-          </Link>
           {!mounted || isPending ? (
             <Skeleton className="ml-2 h-8 w-20 rounded-md" />
           ) : user ? (
@@ -129,12 +107,19 @@ export function Header() {
               <Link
                 href="/auth/register"
                 title="Create a SubtitleOps account"
-                className="rounded-md bg-foreground px-3 py-2 text-background transition-opacity hover:opacity-85"
+                className="rounded-md border px-3 py-2 transition-colors hover:bg-accent"
               >
                 Sign Up
               </Link>
             </>
           )}
+          <Link
+            href="/tools"
+            title="Choose a SubtitleOps tool"
+            className="ml-1 rounded-md bg-foreground px-3 py-2 text-background transition-opacity hover:opacity-85"
+          >
+            Choose Tool
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -180,24 +165,24 @@ export function Header() {
       {mobileOpen && (
         <nav className="animate-in fade-in slide-in-from-top-2 border-t bg-background px-4 py-3 duration-200 xl:hidden">
           <div className="flex flex-col gap-1">
-            {navTools.map((tool) => (
+            {primaryNav.map((item) => (
               <Link
-                key={tool.href}
-                href={tool.href}
-                title={tool.title}
+                key={item.href}
+                href={item.href}
+                title={item.title}
                 onClick={() => setMobileOpen(false)}
                 className="rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
-                {tool.name}
+                {item.name}
               </Link>
             ))}
             <Link
-              href="/pricing"
-              title="Compare SubtitleOps Free, Pro, and Studio plans"
+              href="/tools"
+              title="Choose a SubtitleOps tool"
               onClick={() => setMobileOpen(false)}
-              className="rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              className="rounded-md bg-foreground px-3 py-2.5 text-center text-sm text-background"
             >
-              Pricing
+              Choose Tool
             </Link>
             {mounted && !isPending && !user && (
               <div className="mt-2 grid grid-cols-2 gap-2 border-t pt-3">
@@ -211,7 +196,7 @@ export function Header() {
                 <Link
                   href="/auth/register"
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-md bg-foreground px-3 py-2.5 text-center text-sm text-background"
+                  className="rounded-md border px-3 py-2.5 text-center text-sm"
                 >
                   Sign Up
                 </Link>

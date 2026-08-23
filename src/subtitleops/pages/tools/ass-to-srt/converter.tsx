@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { FileDropzone } from '@/components/tools/file-dropzone';
 import { ConversionResult } from '@/components/tools/conversion-result';
+import { ToolWorkflowPush } from '@/components/tools/tool-workflow-push';
 import { convertAssToSrt, formatSrt } from '@/lib/converters/ass-to-srt';
 import { generateTraceId, logTrace } from '@/lib/trace';
 import { trackEvent } from '@/lib/analytics';
@@ -171,6 +172,7 @@ export function AssToSrtConverter() {
             traceId={result.traceId}
             toolId="ass-to-srt"
             outputFormat="srt"
+            workflowPush={<ToolWorkflowPush />}
           />
         )}
       </div>

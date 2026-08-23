@@ -12,9 +12,9 @@ import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
 
 export const metadata: Metadata = {
-  title: 'SRT to TXT Converter - Remove Timestamps',
+  title: 'SRT to TXT Converter — Clean Transcript',
   description:
-    'Convert SRT subtitles to clean TXT. Remove timestamps, cue numbers, and basic markup for transcripts, translation, review, or text analysis.',
+    'Use this SRT to TXT converter to remove timestamps, cue numbers, and basic tags from an SRT file. Preview clean text, keep cue spacing, and download TXT.',
   keywords: [
     'srt to txt',
     'srt to text',
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
 };
 
 const jsonLdData = toolPageJsonLd({
-  name: 'SRT to TXT Converter',
+  name: 'SRT to TXT Converter for Clean Transcript Text',
   description:
-    'Convert SRT subtitles to clean TXT. Remove timestamps, cue numbers, and basic markup for transcripts, translation, review, or text analysis.',
+    'Remove timestamps, cue numbers, and basic tags from an SRT file while preserving readable text order and cue boundaries.',
   url: '/tools/srt-to-txt',
   faqs: [
     {
@@ -95,27 +95,48 @@ const relatedTools = [
 
 export default function SrtToTxtPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="SRT to TXT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          SRT to TXT Converter
+          SRT to TXT Converter for Clean Transcript Text
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Use this free SRT to TXT converter to pull readable text out of
-          subtitle files. The tool removes timestamps, cue numbers, and basic
-          subtitle markup so you get a clean plain text output that works as a
-          subtitle transcript, translation input, review document, or
-          text-analysis source.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Use this SRT to TXT converter to remove timestamps, cue numbers, and
+          basic tags from an SRT file. Preview the clean text, keep readable cue
+          boundaries, and download a TXT transcript for review, translation,
+          publishing, or analysis.
         </p>
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <SrtToTxtConverter />
+        </div>
+        <div className="mt-6 grid gap-3 text-sm sm:grid-cols-3">
+          <div className="rounded-xl border bg-card p-4">
+            <p className="font-semibold text-green-700">Kept</p>
+            <p className="mt-1 text-muted-foreground">
+              Dialogue order, Unicode text, line breaks inside a cue, and one
+              blank line between separate cues.
+            </p>
+          </div>
+          <div className="rounded-xl border bg-card p-4">
+            <p className="font-semibold text-amber-700">Removed</p>
+            <p className="mt-1 text-muted-foreground">
+              Cue numbers, timestamps, separator syntax, and basic formatting
+              tags.
+            </p>
+          </div>
+          <div className="rounded-xl border bg-card p-4">
+            <p className="font-semibold text-blue-700">Left as text</p>
+            <p className="mt-1 text-muted-foreground">
+              SDH labels such as [music] are not removed automatically.
+            </p>
+          </div>
         </div>
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
           <svg
@@ -269,12 +290,11 @@ Open the file menu.`}</pre>
           </li>
           <li className="flex gap-3">
             <span className="font-medium text-foreground shrink-0 w-44">
-              Multi-line blocks are joined:
+              Cue boundaries stay readable:
             </span>
-            Screen-optimized line breaks do not always make sense in transcript
-            form. The converter joins them into cleaner text output. The result
-            reads more like a continuous document than a series of fragmented
-            caption blocks.
+            Line breaks inside a cue remain intact, while separate subtitle cues
+            are divided by one blank line. This avoids merging unrelated cues
+            into one paragraph and keeps the transcript easy to review.
           </li>
         </ul>
       </section>

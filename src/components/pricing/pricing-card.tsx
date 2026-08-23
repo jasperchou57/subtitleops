@@ -95,7 +95,7 @@ export function PricingCard({
 
       <CardHeader>
         <CardTitle>
-          <h3 className="font-medium">{plan.name ?? plan.id}</h3>
+          <h2 className="font-medium">{plan.name ?? plan.id}</h2>
         </CardTitle>
         <div className="flex items-baseline gap-2">
           <span className="my-4 block text-4xl font-semibold">

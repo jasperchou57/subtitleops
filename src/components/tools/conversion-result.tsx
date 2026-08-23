@@ -109,6 +109,14 @@ export function ConversionResult({
 
   const ext = downloadFileName.split('.').pop() || 'file';
   const stats = analyzeOutput(downloadContent, outputFormat || ext);
+  const countLabel =
+    (outputFormat || ext).toLowerCase() === 'txt'
+      ? stats.entryCount === 1
+        ? 'text line'
+        : 'text lines'
+      : stats.entryCount === 1
+        ? 'subtitle entry'
+        : 'subtitle entries';
 
   return (
     <div
@@ -141,8 +149,7 @@ export function ConversionResult({
       <div className="mb-5 rounded-lg bg-muted/30 px-4 py-3 text-sm space-y-1">
         <p className="text-foreground">
           <span className="text-green-600 mr-1.5">&#10003;</span>
-          {stats.entryCount} subtitle{' '}
-          {stats.entryCount === 1 ? 'entry' : 'entries'}
+          {stats.entryCount} {countLabel}
           {stats.duration && (
             <span className="text-muted-foreground">
               {' '}

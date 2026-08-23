@@ -59,6 +59,8 @@ export function PricingTable({
       {(hasMonthly || hasYearly) && subscriptionPlans.length > 0 && (
         <div className="flex justify-center">
           <ToggleGroup
+            role="toolbar"
+            aria-label="Billing interval"
             size="sm"
             value={[interval] as const}
             onValueChange={(v) => {

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { SlidersHorizontal } from 'lucide-react';
+import Link from '@/compat/next-link';
 import { GenericConverter } from '@/components/tools/generic-converter';
 import { convertTxtToSrt } from '@/lib/converters/txt-to-srt';
 import { formatSrt } from '@/lib/converters/ass-to-srt';
@@ -33,13 +34,19 @@ export function TxtToSrtConverter() {
   };
 
   const settingsPanel = (
-    <div className="rounded-xl border bg-card p-4">
-      <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-        <SlidersHorizontal className="h-4 w-4 text-blue-500" />
-        Subtitle timing settings
-      </div>
+    <details className="group rounded-xl border bg-card p-4">
+      <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2 marker:hidden">
+        <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <SlidersHorizontal className="h-4 w-4 text-blue-600" />
+          Subtitle timing settings
+        </span>
+        <span className="text-xs text-foreground/70">
+          {startSeconds}s start · {secondsPerLine}s cue · {gap}s gap ·{' '}
+          {maxCharsPerLine} chars
+        </span>
+      </summary>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-4 grid gap-3 border-t pt-4 sm:grid-cols-2 lg:grid-cols-4">
         <label className="text-sm">
           <span className="font-medium text-foreground">Start time</span>
           <span className="mt-1 block text-xs text-muted-foreground">
@@ -153,7 +160,7 @@ export function TxtToSrtConverter() {
           ))}
         </div>
       </div>
-    </div>
+    </details>
   );
 
   return (
@@ -183,6 +190,23 @@ export function TxtToSrtConverter() {
         fileName: 'pasted-text.txt',
         actionLabel: 'Convert pasted text',
       }}
+      workflowPush={
+        <div className="rounded-lg border bg-muted/30 p-4 text-sm">
+          <p className="font-medium">Building subtitle drafts repeatedly?</p>
+          <p className="mt-1 text-muted-foreground">
+            Use this result as the editable first pass. Compare the Pro private
+            beta path for batches, saved timing presets, history, and quality
+            checks.{' '}
+            <Link
+              href="/pricing"
+              className="font-medium underline underline-offset-4"
+            >
+              Compare repeat workflows
+            </Link>
+            .
+          </p>
+        </div>
+      }
     />
   );
 }

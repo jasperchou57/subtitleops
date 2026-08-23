@@ -42,7 +42,7 @@ export function FileDropzone({
       }}
       onDragLeave={() => setIsDragOver(false)}
       onDrop={handleDrop}
-      className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-10 md:p-14 transition-all cursor-pointer ${
+      className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 sm:p-10 md:p-14 transition-all cursor-pointer ${
         isDragOver
           ? 'border-blue-400 bg-blue-50/50 scale-[1.01]'
           : 'border-border hover:border-blue-300 hover:bg-muted/20'
@@ -52,11 +52,13 @@ export function FileDropzone({
         data-analytics-control="choose_file"
         type="file"
         accept={accept}
+        aria-label={`Upload subtitle file. ${acceptLabel}`}
         onChange={handleChange}
         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
       />
       <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 mb-4">
         <svg
+          aria-hidden="true"
           className="h-7 w-7 text-blue-500"
           fill="none"
           viewBox="0 0 24 24"
@@ -78,7 +80,7 @@ export function FileDropzone({
       <span className="mt-4 inline-flex items-center rounded-lg bg-foreground px-5 py-2.5 text-sm font-medium text-background">
         Choose File
       </span>
-      <p className="mt-3 text-sm text-muted-foreground">
+      <p className="mt-3 text-sm text-foreground/70">
         {acceptLabel} &middot; processed locally in your browser
       </p>
     </div>

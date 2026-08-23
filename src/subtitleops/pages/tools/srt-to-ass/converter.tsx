@@ -1,6 +1,7 @@
 'use client';
 
 import { GenericConverter } from '@/components/tools/generic-converter';
+import { ToolWorkflowPush } from '@/components/tools/tool-workflow-push';
 import { convertSrtToAss } from '@/lib/converters/srt-to-ass';
 
 export function SrtToAssConverter() {
@@ -17,6 +18,7 @@ export function SrtToAssConverter() {
         return ass;
       }}
       outputExtension="ass"
+      workflowPush={<ToolWorkflowPush />}
     />
   );
 }

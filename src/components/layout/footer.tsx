@@ -64,7 +64,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link
               href="/"
-              title="SubtitleOps — Free Online Subtitle Converter"
+              title="SubtitleOps — Subtitle Workflows, Under Control"
               className="flex items-center gap-2.5 mb-4"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -90,8 +90,8 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Free online subtitle tools. Convert, sync and clean your files in
-              the browser.
+              Subtitle workflows, under control. Choose the right tool, finish
+              one file, then move into repeatable conversion and timing work.
             </p>
           </div>
 
@@ -153,7 +153,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/pricing"
-                  title="Compare SubtitleOps Free and Pro plans"
+                  title="Compare SubtitleOps Free, Pro, and Studio plans"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Pricing

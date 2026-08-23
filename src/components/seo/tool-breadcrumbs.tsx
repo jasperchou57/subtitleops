@@ -2,7 +2,7 @@ import Link from '@/compat/next-link';
 
 export function ToolBreadcrumbs({ current }: { current: string }) {
   return (
-    <nav aria-label="Breadcrumb" className="pt-5 text-sm text-muted-foreground">
+    <nav aria-label="Breadcrumb" className="pt-5 text-sm text-foreground/75">
       <ol className="flex flex-wrap items-center gap-2">
         <li>
           <Link

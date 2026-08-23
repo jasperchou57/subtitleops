@@ -10,11 +10,12 @@ import {
 } from '@/components/ui/accordion';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
+import { ToolFileContract } from '@/components/tools/tool-file-contract';
 
 export const metadata: Metadata = {
-  title: 'Free SBV to SRT Converter Online',
+  title: 'SBV to SRT Converter — YouTube Captions',
   description:
-    'Convert YouTube SBV subtitle files to SRT format in your browser. Rewrite timestamps, add cue numbers, and download a clean SubRip file.',
+    'Convert SBV to SRT in your browser. Keep YouTube caption text and timing, add numbered cues, preview the result, and download a reusable SubRip file.',
   keywords: [
     'sbv to srt',
     'convert sbv to srt',
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
 const jsonLdData = toolPageJsonLd({
   name: 'SBV to SRT Converter',
   description:
-    'Convert YouTube SBV subtitle files to SRT format. Free, browser-based, no upload needed.',
+    'Convert YouTube-style SBV captions into numbered SRT subtitles locally while keeping text, line breaks, and timing values.',
   url: '/tools/sbv-to-srt',
   faqs: [
     {
@@ -89,28 +90,32 @@ const relatedTools = [
 
 export default function SbvToSrtPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="SBV to SRT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          Convert SBV to SRT — YouTube Subtitles to SRT
+          SBV to SRT Converter for Reusable YouTube Captions
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Use this free SBV to SRT converter to turn YouTube caption files into
-          clean, universally compatible SRT output. The converter rewrites SBV
-          timestamps into SRT syntax, adds sequential cue numbers, and preserves
-          the original subtitle text. Everything runs in your browser — your
-          file never leaves your device.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Turn a YouTube-style SBV caption file into a more widely reusable SRT
+          copy. SubtitleOps rewrites the timestamp syntax, adds cue numbers, and
+          keeps the original caption text without uploading the file.
         </p>
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <SbvToSrtConverter />
         </div>
+        <ToolFileContract
+          input="A .sbv YouTube-style caption file"
+          result="A numbered .srt SubRip subtitle file"
+          keeps="Cue text, line breaks, cue order, and timing values"
+          changes="Rewrites timestamp syntax and adds cue numbers; it does not edit or translate the text"
+        />
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
           <svg
             className="h-5 w-5 shrink-0 text-blue-500 mt-0.5"

@@ -4,6 +4,7 @@ import { AssToSrtConverter } from './converter';
 import { VibeBackgroundGlow } from '@/components/ui/vibe-background-glow';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
+import { ToolFileContract } from '@/components/tools/tool-file-contract';
 import {
   Accordion,
   AccordionContent,
@@ -12,9 +13,9 @@ import {
 } from '@/components/ui/accordion';
 
 export const metadata: Metadata = {
-  title: 'Free ASS to SRT Converter Online',
+  title: 'ASS to SRT Converter — Remove Styling',
   description:
-    'Convert ASS or SSA subtitle files to SRT in your browser. Keep dialogue and timing, remove styling tags, export a clean SubRip file.',
+    'Convert ASS or SSA to SRT in your browser. Keep dialogue and timing, remove styling and positioning, preview the result, and download a clean SubRip file.',
   keywords: [
     'ass to srt',
     'convert ass to srt',
@@ -53,7 +54,7 @@ const relatedTools = [
 const jsonLdData = toolPageJsonLd({
   name: 'ASS to SRT Converter',
   description:
-    'Convert ASS/SSA subtitle files to SRT format. Free, browser-based, no upload needed.',
+    'Convert ASS or SSA to SRT locally. Keep dialogue and timing while removing ASS-only styling, positioning, and effects.',
   url: '/tools/ass-to-srt',
   faqs: [
     {
@@ -96,31 +97,34 @@ const jsonLdData = toolPageJsonLd({
 
 export default function AssToSrtPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="ASS to SRT Converter" />
       {/* ===== Zone 1: Tool Area (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
 
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          Convert ASS to SRT Instantly
+          ASS to SRT Converter for Clean, Compatible Subtitles
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Use this free online ASS to SRT converter to turn Advanced SubStation
-          Alpha subtitle files into clean, widely compatible SRT output. The
-          converter also handles SSA to SRT conversion for older SubStation
-          Alpha files. It preserves dialogue text and timing while removing
-          ASS-only styling such as fonts, colors, positioning, karaoke tags, and
-          animation cues. Everything runs in your browser, so your subtitle file
-          never leaves your device.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Turn ASS or SSA subtitle events into a simpler SRT compatibility copy.
+          SubtitleOps keeps dialogue and event timing, removes format-specific
+          visual instructions, and lets you inspect the SRT before download.
         </p>
 
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <AssToSrtConverter />
         </div>
+
+        <ToolFileContract
+          input="An .ass or .ssa subtitle file with an Events section"
+          result="A numbered .srt SubRip subtitle file"
+          keeps="Dialogue text and cue timing; events are ordered by start time"
+          changes="Styles, positions, layers, effects, names, and karaoke tags are removed"
+        />
 
         {/* Workflow suggestion */}
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">

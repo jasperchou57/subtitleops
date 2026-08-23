@@ -10,11 +10,12 @@ import {
 } from '@/components/ui/accordion';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
+import { ToolFileContract } from '@/components/tools/tool-file-contract';
 
 export const metadata: Metadata = {
-  title: 'Free SRT to ASS Converter Online',
+  title: 'SRT to ASS Converter — Editable Style Base',
   description:
-    'Convert SRT subtitle files to ASS (Advanced SubStation Alpha) format. Add default styling, rewrite timestamps, and export a ready-to-edit ASS file.',
+    'Convert SRT to ASS in your browser. Keep dialogue and timing, create a valid 1080p ASS file with one default style, preview it, and continue editing.',
   keywords: [
     'srt to ass',
     'convert srt to ass',
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
 const jsonLdData = toolPageJsonLd({
   name: 'SRT to ASS Converter',
   description:
-    'Convert SRT subtitle files to ASS format with default styling. Free, browser-based, no upload needed.',
+    'Convert SRT subtitles into a valid 1080p ASS base with one default style while keeping dialogue and cue timing.',
   url: '/tools/srt-to-ass',
   faqs: [
     {
@@ -44,7 +45,7 @@ const jsonLdData = toolPageJsonLd({
     {
       question: 'Will my subtitle timing change?',
       answer:
-        'No. The timing is converted from SRT format (HH:MM:SS,mmm) to ASS format (H:MM:SS.cc) but the actual values remain the same.',
+        'The cue timing stays functionally the same, but ASS stores centiseconds rather than SRT milliseconds. SubtitleOps rounds each timestamp to the nearest centisecond, so a timestamp can move by a few milliseconds.',
     },
     {
       question: 'Can I edit the ASS file in Aegisub after conversion?',
@@ -89,28 +90,32 @@ const relatedTools = [
 
 export default function SrtToAssPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="SRT to ASS Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          Convert SRT to ASS for Styled Subtitles
+          SRT to ASS Converter for an Editable Style Base
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Use this free SRT to ASS converter when you need to add visual
-          styling, positioning, or effects to a plain SRT subtitle file. The
-          converter generates a valid ASS file with default styling, proper
-          script metadata, and correctly formatted timestamps. Open the result
-          in Aegisub or any ASS editor to start customizing.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Create a valid ASS starting point from a plain SRT file. SubtitleOps
+          keeps dialogue and timing, generates the required script sections and
+          one default style, and leaves advanced styling for your ASS editor.
         </p>
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <SrtToAssConverter />
         </div>
+        <ToolFileContract
+          input="A .srt SubRip subtitle file"
+          result="A valid .ass subtitle base set to 1920 × 1080"
+          keeps="Cue text, cue order, and timing rounded to ASS centiseconds"
+          changes="Basic b/i/u tags are removed; one Default style is created, but effects and karaoke are not invented"
+        />
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
           <svg
             className="h-5 w-5 shrink-0 text-blue-500 mt-0.5"
@@ -359,8 +364,10 @@ Dialogue: 0,0:00:04.50,0:00:06.00,Default,,0,0,0,,Open the file menu.`}</pre>
           <AccordionItem value="timing">
             <AccordionTrigger>Will my subtitle timing change?</AccordionTrigger>
             <AccordionContent>
-              No. The timing is converted from SRT format to ASS format but the
-              actual values remain the same.
+              The cue timing stays functionally the same, but ASS stores
+              centiseconds rather than SRT milliseconds. SubtitleOps rounds each
+              timestamp to the nearest centisecond, so a timestamp can move by a
+              few milliseconds.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="aegisub">

@@ -10,11 +10,12 @@ import {
 } from '@/components/ui/accordion';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
+import { ToolFileContract } from '@/components/tools/tool-file-contract';
 
 export const metadata: Metadata = {
-  title: 'Free SRT to VTT Converter Online',
+  title: 'SRT to VTT Converter — Web Caption Files',
   description:
-    'Convert SRT subtitle files to WebVTT for HTML5 video. Add the WEBVTT header, rewrite timestamps, and export a clean VTT file.',
+    'Convert SRT to VTT for web video. Keep caption text and timing, add the WEBVTT header, rewrite timestamps, preview the result, and download WebVTT.',
   keywords: [
     'srt to vtt',
     'convert srt to vtt',
@@ -94,28 +95,32 @@ const relatedTools = [
 
 export default function SrtToVttPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="SRT to VTT Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          Convert SRT to VTT for HTML5 Video
+          SRT to VTT Converter for Web Video Captions
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Use this free SRT to VTT converter when your subtitle file needs to
-          work in a browser-based video player or any workflow built around
-          WebVTT. The tool adds the WEBVTT header, rewrites timestamp
-          punctuation, removes numbered cue indices, and produces browser-ready
-          caption output while preserving your subtitle text and timing.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Prepare an SRT subtitle file for a browser-based video workflow.
+          SubtitleOps keeps cue text and timing, adds the required WEBVTT
+          header, and lets you preview the rewritten caption file locally.
         </p>
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <SrtToVttConverter />
         </div>
+        <ToolFileContract
+          input="A .srt SubRip subtitle file"
+          result="A .vtt WebVTT caption file"
+          keeps="Visible cue text, cue order, and timing values"
+          changes="Adds WEBVTT, changes millisecond commas to dots, and removes SRT cue numbers"
+        />
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
           <svg
             className="h-5 w-5 shrink-0 text-blue-500 mt-0.5"

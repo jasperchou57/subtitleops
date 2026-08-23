@@ -1,6 +1,7 @@
 'use client';
 
 import { GenericConverter } from '@/components/tools/generic-converter';
+import { ToolWorkflowPush } from '@/components/tools/tool-workflow-push';
 import { convertSrtToVtt } from '@/lib/converters/srt-to-vtt';
 
 export function SrtToVttConverter() {
@@ -16,6 +17,7 @@ export function SrtToVttConverter() {
         return vtt;
       }}
       outputExtension="vtt"
+      workflowPush={<ToolWorkflowPush />}
     />
   );
 }

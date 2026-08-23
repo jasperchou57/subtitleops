@@ -37,9 +37,9 @@ export const websiteConfig: WebsiteConfig = {
   },
   metadata: {
     name: 'SubtitleOps',
-    title: 'Free Online Subtitle Converter & Tools',
+    title: 'Subtitle Converter for Real Workflows',
     description:
-      'Convert SRT, ASS, VTT, TXT, and SBV subtitles in your browser. Free tools for format conversion, text extraction, timing shift, and FPS fixes.',
+      'Convert, extract, create, and fix subtitle files with clear results and a path from one-file tasks to repeat workflows.',
     images: {
       ogImage: '/og/subtitleops-tools.png',
       logoLight: '/icon.svg',

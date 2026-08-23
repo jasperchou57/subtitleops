@@ -183,3 +183,25 @@ html {
 }
 
 /* custom markdown styles end */
+
+/* Keep long subtitle syntax and fixed-width labels inside mobile content. */
+.responsive-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.responsive-content :where(.flex, .grid) > * {
+  min-width: 0;
+}
+
+.responsive-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 639px) {
+  .responsive-content .flex > .font-medium.shrink-0 {
+    width: auto;
+    flex-shrink: 1;
+  }
+}

@@ -6,9 +6,9 @@ export const Route = createFileRoute('/')({
   head: () =>
     legacyHead(
       {
-        title: 'Free Online Subtitle Converter & Tools',
+        title: 'Subtitle Converter for Real Workflows',
         description:
-          'Convert SRT, ASS, VTT, TXT, and SBV subtitles in your browser. Free tools for format conversion, text extraction, timing shift, and FPS fixes.',
+          'Convert SRT, VTT, ASS, TXT, and SBV files with a subtitle converter built for clear results, format changes, and repeat workflows.',
         keywords: [
           'subtitle converter',
           'subtitle tools',

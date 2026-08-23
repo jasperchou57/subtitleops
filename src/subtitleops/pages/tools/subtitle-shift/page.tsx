@@ -4,6 +4,7 @@ import { SubtitleShiftConverter } from './converter';
 import { VibeBackgroundGlow } from '@/components/ui/vibe-background-glow';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
+import { ToolFileContract } from '@/components/tools/tool-file-contract';
 import {
   Accordion,
   AccordionContent,
@@ -12,9 +13,9 @@ import {
 } from '@/components/ui/accordion';
 
 export const metadata: Metadata = {
-  title: 'Subtitle Timing Shift — Fix Subtitle Delay Online',
+  title: 'Subtitle Timing Shift — Fix Constant Delay',
   description:
-    'Shift subtitle timing forward or backward by any number of seconds. Fix out-of-sync SRT and VTT files in your browser. Free, no upload, decimals supported.',
+    'Shift SRT or VTT subtitles earlier or later by a fixed offset. Preview every changed timestamp, see any zero clamps, and download a synced copy locally.',
   keywords: [
     'subtitle timing shift',
     'fix subtitle delay',
@@ -96,29 +97,34 @@ const relatedTools = [
 
 export default function SubtitleShiftPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="Subtitle Timing Shift" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          Subtitle Timing Shift
+          Subtitle Timing Shift for Constant Sync Errors
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Fix out-of-sync subtitles by shifting every cue forward or backward by
-          a fixed number of seconds. This free subtitle timing shift tool works
-          on SRT and VTT files directly in your browser — no upload, no install,
-          no sign-up. Supports decimals, negative values, and produces a clean
-          shifted copy with the original file left untouched.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Move every cue earlier or later by the same fixed offset. SubtitleOps
+          supports decimal and negative values, shows any timestamps clamped at
+          zero, and keeps the original SRT or VTT file untouched.
         </p>
 
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <SubtitleShiftConverter />
         </div>
+
+        <ToolFileContract
+          input="An .srt or .vtt subtitle file plus a fixed offset in seconds"
+          result="A new subtitle copy in the same file format"
+          keeps="Cue text, IDs, settings, order, and file format"
+          changes="Adds one offset to every timestamp; negative results are clamped to zero and reported"
+        />
 
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
           <svg

@@ -4,6 +4,7 @@ import { SubtitleFpsConverter } from './converter';
 import { VibeBackgroundGlow } from '@/components/ui/vibe-background-glow';
 import { JsonLd, toolPageJsonLd } from '@/components/seo/json-ld';
 import { ToolBreadcrumbs } from '@/components/seo/tool-breadcrumbs';
+import { ToolFileContract } from '@/components/tools/tool-file-contract';
 import {
   Accordion,
   AccordionContent,
@@ -12,9 +13,9 @@ import {
 } from '@/components/ui/accordion';
 
 export const metadata: Metadata = {
-  title: 'Subtitle FPS Converter — Rescale Subtitle Timing Online',
+  title: 'Subtitle FPS Converter — Fix Timing Drift',
   description:
-    'Convert subtitle timing between frame rates. Rescale SRT and VTT files from 23.976 to 25 fps, 29.97 to 30, or any custom ratio. Free, browser-based, no upload.',
+    'Rescale SRT or VTT timestamps between source and target frame rates. Preview the timing ratio, fix progressive drift, and download a new local copy.',
   keywords: [
     'subtitle fps converter',
     'subtitle frame rate converter',
@@ -97,30 +98,34 @@ const relatedTools = [
 
 export default function SubtitleFpsConverterPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <div className="responsive-content mx-auto max-w-4xl px-4 sm:px-6">
       {jsonLdData.map((data, i) => (
         <JsonLd key={i} data={data} />
       ))}
       <ToolBreadcrumbs current="Subtitle FPS Converter" />
 
       {/* ===== Zone 1: Tool (Hero) ===== */}
-      <section className="relative py-10 md:py-14">
+      <section className="relative py-8 md:py-14">
         <VibeBackgroundGlow />
         <h1 className="relative text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center">
-          Subtitle FPS Converter
+          Subtitle FPS Converter for Timing Drift
         </h1>
-        <p className="relative mt-3 text-center text-muted-foreground max-w-2xl mx-auto">
-          Rescale subtitle timing between frame rates in your browser. Use this
-          free subtitle FPS converter when SRT or VTT subtitles were timed for
-          one frame rate (for example 23.976) but you are playing them against a
-          video at a different frame rate (for example 25). The tool multiplies
-          every timestamp by the correct ratio so cues line up with spoken
-          dialogue from start to end.
+        <p className="relative mx-auto mt-3 max-w-2xl text-center text-foreground/75">
+          Fix subtitles that start close to correct but drift further out over
+          time. Choose the original and target frame rates; SubtitleOps applies
+          the visible source-to-target ratio to every SRT or VTT timestamp.
         </p>
 
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <SubtitleFpsConverter />
         </div>
+
+        <ToolFileContract
+          input="An .srt or .vtt file plus manually chosen source and target FPS"
+          result="A new subtitle copy in the same file format"
+          keeps="Cue text, IDs, settings, order, and file format"
+          changes="Multiplies every timestamp by source ÷ target FPS; the tool does not detect frame rates automatically"
+        />
 
         <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/50 p-4">
           <svg

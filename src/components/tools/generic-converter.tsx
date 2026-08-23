@@ -16,6 +16,7 @@ interface GenericConverterProps {
   outputExtension: string;
   previewLines?: number;
   settingsPanel?: ReactNode;
+  workflowPush?: ReactNode;
   directInput?: {
     label: string;
     helperText: string;
@@ -33,6 +34,7 @@ export function GenericConverter({
   outputExtension,
   previewLines = 12,
   settingsPanel,
+  workflowPush,
   directInput,
 }: GenericConverterProps) {
   const [directText, setDirectText] = useState('');
@@ -318,6 +320,7 @@ export function GenericConverter({
             traceId={result.traceId}
             toolId={toolId}
             outputFormat={outputExtension}
+            workflowPush={workflowPush}
           />
         )}
       </div>
