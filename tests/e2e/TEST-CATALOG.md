@@ -87,5 +87,15 @@ navigation exposes Pricing, Sign In, and Sign Up as a balanced action group.
 Sign Up offers Google and GitHub registration while email/password registration
 remains unavailable.
 
-Payment acceptance must include checkout, webhook retry behavior, subscription
-activation, customer portal access, cancellation, and entitlement downgrade.
+Payment acceptance must include checkout, customer portal access, cancellation,
+and entitlement downgrade. Stripe lifecycle coverage additionally requires:
+
+1. Invalid signatures return HTTP 400 and create no event record.
+2. Stripe event IDs and per-invoice or per-payment-intent business keys remain
+   idempotent across concurrent delivery, replay, and out-of-order delivery.
+3. `invoice.paid` independently grants subscription access; payment failures,
+   delayed one-time payments, unknown prices, refunds, and disputes follow their
+   explicit failure or revocation paths.
+4. An administrator can inspect payment transactions and webhook attempts, then
+   safely reconcile only a Stripe invoice, Checkout Session, or PaymentIntent
+   through Stripe's current object state.

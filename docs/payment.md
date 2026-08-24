@@ -45,17 +45,31 @@ Subscription and one-time payment support via a **provider pattern** — switch 
 3. **Stripe Dashboard**:
    - Create Products/Prices for Pro and Studio (monthly/yearly).
    - Webhook: `https://your-domain.com/api/webhooks/stripe`
-     Events: `checkout.session.completed`, `customer.subscription.created|updated|deleted`, `invoice.paid`.
+     Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+     `checkout.session.async_payment_failed`, `checkout.session.expired`,
+     `customer.subscription.created|updated|deleted`, `invoice.paid`,
+     `invoice.payment_failed`, `refund.created`, `charge.refunded`,
+     `charge.dispute.created|closed|funds_reinstated`.
 
 The production GitHub workflow is pinned to the SubtitleOps live Price IDs and
 verifies that `STRIPE_SECRET_KEY` belongs to the SubtitleOps Stripe account
 before building or deploying. This prevents a key from another website's
 Stripe account from being used accidentally.
 
-The webhook handler does not depend on Stripe event ordering. Initial Checkout
-fulfillment uses the Checkout Session payment status, while `invoice.paid`
-reconciles invoices and renewals. Duplicate deliveries remain safe through the
-unique session, subscription, and invoice identifiers in D1.
+The webhook handler does not depend on Stripe event ordering. A verified Event
+is claimed by its unique Stripe Event ID before processing. Subscription
+Checkout synchronizes identifiers, while each `invoice.paid` creates one
+business-idempotent `subscription_invoice:{invoiceId}` transaction. One-time
+payments use `one_time_payment:{paymentIntentId}`. Payment and fulfillment
+states are stored separately, so a failed fulfillment can be retried without
+duplicating the underlying purchase. The admin Payments page can search Stripe
+objects and safely reconcile an Invoice, Checkout Session, or PaymentIntent by
+re-fetching its status from Stripe; it never accepts an administrator-supplied
+amount or entitlement.
+
+SubtitleOps currently sells plan entitlements, not AI credits. Do not attach a
+credit amount to the existing Pro or Studio prices until the product defines an
+explicit server-side credit allocation and expiry/refund policy.
 
 ### Billing portal
 

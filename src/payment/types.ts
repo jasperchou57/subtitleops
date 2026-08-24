@@ -41,7 +41,9 @@ export type PaymentStatus =
   | 'unpaid'
   | 'completed'
   | 'processing'
-  | 'failed';
+  | 'failed'
+  | 'refunded'
+  | 'disputed';
 
 /**
  * Price definition for a plan
@@ -178,4 +180,10 @@ export interface PaymentProvider {
    * Handle webhook events
    */
   handleWebhookEvent(payload: string, signature: string): Promise<void>;
+
+  /**
+   * Re-fetch a Stripe object and safely replay its normal fulfillment path.
+   * Providers that do not support reconciliation may omit this method.
+   */
+  reconcilePayment?(objectId: string): Promise<void>;
 }

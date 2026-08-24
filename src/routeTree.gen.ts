@@ -55,6 +55,7 @@ import { Route as AuthErrorRouteImport } from './routes/auth/error'
 import { Route as ApiReadyRouteImport } from './routes/api/ready'
 import { Route as ApiPingRouteImport } from './routes/api/ping'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminPaymentsRouteImport } from './routes/admin/payments'
 import { Route as pagesPricingRouteImport } from './routes/(pages)/pricing'
 import { Route as pagesContactRouteImport } from './routes/(pages)/contact'
 import { Route as pagesAboutRouteImport } from './routes/(pages)/about'
@@ -304,6 +305,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
 const pagesPricingRoute = pagesPricingRouteImport.update({
   id: '/(pages)/pricing',
   path: '/pricing',
@@ -385,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof pagesAboutRoute
   '/contact': typeof pagesContactRoute
   '/pricing': typeof pagesPricingRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/ping': typeof ApiPingRoute
   '/api/ready': typeof ApiReadyRoute
@@ -443,6 +450,7 @@ export interface FileRoutesByTo {
   '/about': typeof pagesAboutRoute
   '/contact': typeof pagesContactRoute
   '/pricing': typeof pagesPricingRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/ping': typeof ApiPingRoute
   '/api/ready': typeof ApiReadyRoute
@@ -505,6 +513,7 @@ export interface FileRoutesById {
   '/(pages)/about': typeof pagesAboutRoute
   '/(pages)/contact': typeof pagesContactRoute
   '/(pages)/pricing': typeof pagesPricingRoute
+  '/admin/payments': typeof AdminPaymentsRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/ping': typeof ApiPingRoute
   '/api/ready': typeof ApiReadyRoute
@@ -568,6 +577,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/pricing'
+    | '/admin/payments'
     | '/admin/users'
     | '/api/ping'
     | '/api/ready'
@@ -626,6 +636,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/pricing'
+    | '/admin/payments'
     | '/admin/users'
     | '/api/ping'
     | '/api/ready'
@@ -687,6 +698,7 @@ export interface FileRouteTypes {
     | '/(pages)/about'
     | '/(pages)/contact'
     | '/(pages)/pricing'
+    | '/admin/payments'
     | '/admin/users'
     | '/api/ping'
     | '/api/ready'
@@ -1102,6 +1114,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/(pages)/pricing': {
       id: '/(pages)/pricing'
       path: '/pricing'
@@ -1197,11 +1216,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminPaymentsRoute: AdminPaymentsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }

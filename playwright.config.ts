@@ -32,6 +32,7 @@ export default defineConfig({
         'VITE_STRIPE_PRICE_PRO_YEARLY=e2e_pro_yearly',
         'VITE_STRIPE_PRICE_STUDIO_MONTHLY=e2e_studio_monthly',
         'VITE_STRIPE_PRICE_STUDIO_YEARLY=e2e_studio_yearly',
+        'VITE_STRIPE_PRICE_LIFETIME=e2e_lifetime',
         'BETTER_AUTH_SECRET=subtitleops-e2e-secret-32-characters-minimum',
         `pnpm dev --mode e2e --host 127.0.0.1 --port ${port}`,
       ].join(' '),

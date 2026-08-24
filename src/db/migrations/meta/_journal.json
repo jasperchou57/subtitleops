@@ -50,6 +50,13 @@
       "when": 1784215533512,
       "tag": "0006_gifted_peter_quill",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1787582286702,
+      "tag": "0007_rare_big_bertha",
+      "breakpoints": true
     }
   ]
 }

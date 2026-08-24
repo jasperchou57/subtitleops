@@ -67,3 +67,13 @@ export async function handleWebhookEvent(
   const provider = getPaymentProvider();
   await provider.handleWebhookEvent(payload, signature);
 }
+
+export async function reconcilePayment(objectId: string): Promise<void> {
+  const provider = getPaymentProvider();
+  if (!provider.reconcilePayment) {
+    throw new Error(
+      `${provider.getProviderName()} does not support reconciliation`
+    );
+  }
+  await provider.reconcilePayment(objectId);
+}

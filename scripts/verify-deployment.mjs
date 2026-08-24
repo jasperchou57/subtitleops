@@ -98,6 +98,19 @@ check(
   `Unsigned Stripe webhook should return 4xx, returned ${unsignedWebhook.response.status}`
 );
 
+const invalidWebhook = await get('/api/webhooks/stripe', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Stripe-Signature': 't=0,v1=invalid',
+  },
+  body: '{}',
+});
+check(
+  invalidWebhook.response.status === 400,
+  `Invalid Stripe signature should return 400, returned ${invalidWebhook.response.status}`
+);
+
 if (failures.length > 0) {
   console.error(`Deployment verification failed for ${baseUrl}:`);
   for (const failure of failures) console.error(`- ${failure}`);

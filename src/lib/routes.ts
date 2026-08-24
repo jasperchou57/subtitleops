@@ -55,6 +55,7 @@ export const Routes = {
   // Admin routes
   Admin: '/admin',
   AdminUsers: '/admin/users',
+  AdminPayments: '/admin/payments',
 } as const;
 
 /** Default login redirect route */

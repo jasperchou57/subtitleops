@@ -1,19 +1,21 @@
 import { getDb } from '@/db';
-import { payment } from '@/db/app.schema';
+import { payment, paymentTransactions } from '@/db/app.schema';
 import { user } from '@/db/auth.schema';
-import type { Payment } from '@/db/types';
-import {
-  PAYMENT_RECORD_RETRY_ATTEMPTS,
-  PAYMENT_RECORD_RETRY_DELAY,
-} from '@/payment/constants';
+import type { Payment, PaymentTransaction } from '@/db/types';
 import {
   findPlanByPlanId,
   findPlanByPriceId,
   findPriceInPlan,
 } from '@/lib/price-plan';
 import { sendPaymentNotification } from '@/notification';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq, gt, lt, or } from 'drizzle-orm';
 import { Stripe } from 'stripe';
+import { PaymentWebhookRequestError } from '../errors';
+import {
+  beginStripeWebhookEvent,
+  completeStripeWebhookEvent,
+  failStripeWebhookEvent,
+} from '../stripe-webhook-store';
 import type {
   CheckoutResult,
   CreateCheckoutParams,
@@ -39,6 +41,7 @@ function isUniqueConstraintError(error: unknown) {
 export class StripeProvider implements PaymentProvider {
   private stripe: Stripe;
   private webhookSecret: string;
+  private livemode: boolean;
 
   /**
    * Initialize Stripe provider with API key
@@ -57,6 +60,7 @@ export class StripeProvider implements PaymentProvider {
     // Initialize Stripe without specifying apiVersion to use default/latest version
     this.stripe = new Stripe(apiKey);
     this.webhookSecret = webhookSecret;
+    this.livemode = apiKey.startsWith('sk_live_');
   }
 
   getProviderName(): string {
@@ -349,54 +353,95 @@ export class StripeProvider implements PaymentProvider {
     payload: string,
     signature: string
   ): Promise<void> {
+    let event: Stripe.Event;
     try {
-      // Verify the event signature if webhook secret is available
-      const event = await this.stripe.webhooks.constructEventAsync(
+      event = await this.stripe.webhooks.constructEventAsync(
         payload,
         signature,
         this.webhookSecret
       );
-      const eventType = event.type;
-      console.log(`handle webhook event, type: ${eventType}`);
+    } catch (_error) {
+      throw new PaymentWebhookRequestError('Invalid Stripe webhook signature');
+    }
 
-      // Handle subscription events
-      if (eventType.startsWith('customer.subscription.')) {
-        const stripeSubscription = event.data.object as Stripe.Subscription;
+    if (event.livemode !== this.livemode) {
+      throw new PaymentWebhookRequestError(
+        'Stripe event mode does not match the configured API key'
+      );
+    }
 
-        // Process based on subscription status and event type
-        switch (eventType) {
-          case 'customer.subscription.created': {
-            await this.onCreateSubscription(stripeSubscription);
-            break;
-          }
-          case 'customer.subscription.updated': {
-            await this.onUpdateSubscription(stripeSubscription);
-            break;
-          }
-          case 'customer.subscription.deleted': {
-            await this.onDeleteSubscription(stripeSubscription);
-            break;
-          }
-        }
-      } else if (eventType.startsWith('invoice.')) {
-        // Handle invoice events
-        switch (eventType) {
-          case 'invoice.paid': {
-            const invoice = event.data.object as Stripe.Invoice;
-            await this.onInvoicePaid(invoice);
-            break;
-          }
-        }
-      } else if (eventType.startsWith('checkout.')) {
-        // Handle checkout events
-        if (eventType === 'checkout.session.completed') {
-          const session = event.data.object as Stripe.Checkout.Session;
-          await this.onCheckoutCompleted(session);
-        }
-      }
+    const shouldProcess = await beginStripeWebhookEvent(event);
+    if (!shouldProcess) {
+      console.log(`Stripe event already completed: ${event.id}`);
+      return;
+    }
+
+    try {
+      console.log(`Handle Stripe event ${event.id}: ${event.type}`);
+      await this.dispatchWebhookEvent(event);
+      await completeStripeWebhookEvent(event.id);
     } catch (error) {
-      console.error('handle webhook event error:', error);
-      throw new Error('Failed to handle webhook event');
+      await failStripeWebhookEvent(event.id, error);
+      console.error(`Stripe event ${event.id} failed:`, error);
+      throw error;
+    }
+  }
+
+  private async dispatchWebhookEvent(event: Stripe.Event) {
+    switch (event.type) {
+      case 'checkout.session.completed':
+        await this.onCheckoutCompleted(
+          event.data.object as Stripe.Checkout.Session
+        );
+        return;
+      case 'checkout.session.async_payment_succeeded':
+        await this.onAsyncPaymentSucceeded(
+          event.data.object as Stripe.Checkout.Session
+        );
+        return;
+      case 'checkout.session.async_payment_failed':
+      case 'checkout.session.expired':
+        await this.onCheckoutPaymentFailed(
+          event.data.object as Stripe.Checkout.Session,
+          event.type
+        );
+        return;
+      case 'invoice.paid':
+        await this.onInvoicePaid(event.data.object as Stripe.Invoice);
+        return;
+      case 'invoice.payment_failed':
+        await this.onInvoicePaymentFailed(event.data.object as Stripe.Invoice);
+        return;
+      case 'customer.subscription.created':
+        await this.onCreateSubscription(
+          event.data.object as Stripe.Subscription
+        );
+        return;
+      case 'customer.subscription.updated':
+        await this.onUpdateSubscription(
+          event.data.object as Stripe.Subscription
+        );
+        return;
+      case 'customer.subscription.deleted':
+        await this.onDeleteSubscription(
+          event.data.object as Stripe.Subscription
+        );
+        return;
+      case 'refund.created':
+        await this.onRefundCreated(event.data.object as Stripe.Refund);
+        return;
+      case 'charge.refunded':
+        await this.onChargeRefunded(event.data.object as Stripe.Charge);
+        return;
+      case 'charge.dispute.created':
+        await this.onDisputeCreated(event.data.object as Stripe.Dispute);
+        return;
+      case 'charge.dispute.closed':
+      case 'charge.dispute.funds_reinstated':
+        await this.onDisputeResolved(event.data.object as Stripe.Dispute);
+        return;
+      default:
+        console.log(`Ignoring unhandled Stripe event: ${event.type}`);
     }
   }
 
@@ -446,38 +491,6 @@ export class StripeProvider implements PaymentProvider {
   }
 
   /**
-   * Find payment record with retry mechanism to handle race conditions
-   * @param invoice Stripe invoice
-   * @returns Payment record or null if not found after all retries
-   */
-  private async findPaymentRecordWithRetry(
-    invoice: Stripe.Invoice
-  ): Promise<Payment | null> {
-    console.log(`>> Find payment record for invoice: ${invoice.id}`);
-
-    for (let attempt = 1; attempt <= PAYMENT_RECORD_RETRY_ATTEMPTS; attempt++) {
-      const paymentRecord = await this.findPaymentRecord(invoice);
-
-      if (paymentRecord) {
-        console.log(`<< Found payment record on attempt ${attempt}`);
-        return paymentRecord;
-      }
-
-      if (attempt < PAYMENT_RECORD_RETRY_ATTEMPTS) {
-        console.log(
-          `Payment record not found, retry in ${PAYMENT_RECORD_RETRY_DELAY}ms`
-        );
-        await new Promise((resolve) =>
-          setTimeout(resolve, PAYMENT_RECORD_RETRY_DELAY)
-        );
-      }
-    }
-
-    console.error('<< Payment record not found after all attempts');
-    return null;
-  }
-
-  /**
    * Handle successful invoice payment
    * Find existing payment record and update all fields appropriately
    *
@@ -503,234 +516,145 @@ export class StripeProvider implements PaymentProvider {
    */
   private async onInvoicePaid(invoice: Stripe.Invoice): Promise<void> {
     console.log('>> Handle invoice paid, invoiceId:', invoice.id);
-
-    try {
-      // Find existing payment record with retry mechanism
-      const paymentRecord = await this.findPaymentRecordWithRetry(invoice);
-      if (!paymentRecord) {
-        console.error('<< Payment record not found for invoice:', invoice.id);
-        throw new Error(`Payment record not found for invoice: ${invoice.id}`);
-      }
-
-      // Determine payment type based on existing payment record type
-      // This is more reliable than checking invoice.subscription field
-      const isSubscriptionPayment =
-        paymentRecord.type === PaymentTypes.SUBSCRIPTION;
-
-      if (isSubscriptionPayment) {
-        // This is a subscription payment
-        await this.updateSubscriptionPayment(invoice, paymentRecord);
-      } else {
-        // This is a one-time payment
-        await this.updateOneTimePayment(invoice, paymentRecord);
-      }
-    } catch (error) {
-      console.error('<< Handle invoice paid error:', error);
-
-      // Check if it's a duplicate invoice error (database constraint violation)
-      if (isUniqueConstraintError(error)) {
-        console.log('<< Invoice already processed:', invoice.id);
-        return; // Don't throw, this is expected for duplicate processing
-      }
-
-      // For other errors, let Stripe retry
-      throw error;
+    const subscription = await this.resolveInvoiceSubscription(invoice);
+    if (subscription) {
+      const paymentRecord = await this.upsertSubscriptionPaymentRecord(
+        subscription,
+        {
+          invoiceId: invoice.id,
+          paid: true,
+        }
+      );
+      const priceId = this.getConfiguredSubscriptionPrice(subscription);
+      const transaction = await this.ensurePaymentTransaction({
+        paymentRecord,
+        businessKey: `subscription_invoice:${invoice.id}`,
+        paymentIntentId: this.getStripeId(invoice.payment_intent),
+        invoiceId: invoice.id,
+        chargeId: this.getStripeId(invoice.charge),
+        priceId,
+        amount: invoice.amount_paid,
+        currency: invoice.currency,
+        paymentStatus: 'paid',
+        fulfillmentStatus: 'pending',
+        paidAt: this.getInvoicePaidAt(invoice),
+      });
+      await this.fulfillPaymentTransaction(transaction, paymentRecord);
+      return;
     }
 
-    console.log('<< Handle invoice paid success');
+    const paymentRecord = await this.findOrRecoverOneTimePayment(invoice);
+    if (!paymentRecord) {
+      throw new Error(`No one-time payment found for invoice ${invoice.id}`);
+    }
+    const paymentIntentId = this.getStripeId(invoice.payment_intent);
+    const businessKey = paymentIntentId
+      ? `one_time_payment:${paymentIntentId}`
+      : `one_time_invoice:${invoice.id}`;
+    const transaction = await this.ensurePaymentTransaction({
+      paymentRecord,
+      businessKey,
+      paymentIntentId,
+      invoiceId: invoice.id,
+      chargeId: this.getStripeId(invoice.charge),
+      priceId: paymentRecord.priceId,
+      amount: invoice.amount_paid,
+      currency: invoice.currency,
+      paymentStatus: 'paid',
+      fulfillmentStatus: 'pending',
+      paidAt: this.getInvoicePaidAt(invoice),
+    });
+    await this.fulfillPaymentTransaction(transaction, paymentRecord, true);
   }
 
-  /**
-   * Update subscription payment record and process benefits
-   *
-   * The order of events may be:
-   * checkout.session.completed
-   * customer.subscription.created
-   * customer.subscription.updated
-   * invoice.paid
-   *
-   * @param invoice Stripe invoice
-   * @param paymentRecord Payment record
-   */
-  private async updateSubscriptionPayment(
-    invoice: Stripe.Invoice,
-    paymentRecord: Payment
-  ): Promise<void> {
-    console.log('>> Update subscription payment record');
+  private async onInvoicePaymentFailed(invoice: Stripe.Invoice) {
+    const subscription = await this.resolveInvoiceSubscription(invoice);
+    if (!subscription) return;
+
+    const paymentRecord = await this.upsertSubscriptionPaymentRecord(
+      subscription,
+      { invoiceId: invoice.id }
+    );
+    const priceId = this.getConfiguredSubscriptionPrice(subscription);
+    await this.ensurePaymentTransaction({
+      paymentRecord,
+      businessKey: `subscription_invoice:${invoice.id}`,
+      paymentIntentId: this.getStripeId(invoice.payment_intent),
+      invoiceId: invoice.id,
+      chargeId: this.getStripeId(invoice.charge),
+      priceId,
+      amount: invoice.amount_due,
+      currency: invoice.currency,
+      paymentStatus: 'failed',
+      fulfillmentStatus: 'not_applicable',
+      failureMessage: 'Stripe invoice payment failed',
+    });
+  }
+
+  private async fulfillPaymentTransaction(
+    transaction: PaymentTransaction,
+    paymentRecord: Payment,
+    notify = false
+  ) {
+    const claimed = await this.claimPaymentTransaction(transaction.businessKey);
+    if (!claimed) return;
 
     try {
-      let subscriptionId = invoice.subscription as string | null;
-
-      // If invoice.subscription is null, try to use paymentRecord.subscriptionId
-      if (!subscriptionId && paymentRecord.subscriptionId) {
-        subscriptionId = paymentRecord.subscriptionId;
-        console.log('subscriptionId from paymentRecord:', subscriptionId);
-      }
-
-      if (!subscriptionId) {
-        console.warn('<< No subscriptionId found in invoice or paymentRecord');
-        return;
-      }
-
-      // Get subscription details from Stripe
-      const subscription =
-        await this.stripe.subscriptions.retrieve(subscriptionId);
-      const customerId = subscription.customer as string;
-
-      // Get priceId from subscription items
-      const priceId = subscription.items.data[0]?.price.id;
-      if (!priceId) {
-        console.warn('<< No priceId found for subscription');
-        return;
-      }
-
-      // Get userId from subscription metadata or fallback to customerId lookup
-      let userId: string | undefined = subscription.metadata?.userId;
-
-      // If no userId in metadata (common in renewals), find by customerId
-      if (!userId) {
-        console.log('No userId in metadata, finding by customerId');
-        userId = await this.findUserIdByCustomerId(customerId);
-
-        if (!userId) {
-          console.error('<< No userId found, this should not happen');
-          return;
-        }
-      }
-
-      const periodStart = this.getPeriodStart(subscription);
-      const periodEnd = this.getPeriodEnd(subscription);
-      const trialStart = subscription.trial_start
-        ? new Date(subscription.trial_start * 1000)
-        : null;
-      const trialEnd = subscription.trial_end
-        ? new Date(subscription.trial_end * 1000)
-        : null;
-      const currentDate = new Date();
-
-      // Update payment record with all subscription details
       const db = getDb();
+      const now = new Date();
       await db
         .update(payment)
         .set({
-          // invoiceId: invoice.id, // do not update invoiceId
-          paid: true, // Mark as paid
-          interval: this.mapStripeIntervalToPlanInterval(subscription),
-          status: this.mapSubscriptionStatusToPaymentStatus(
-            subscription.status
-          ),
-          periodStart,
-          periodEnd,
-          cancelAtPeriodEnd: subscription.cancel_at_period_end,
-          trialStart,
-          trialEnd,
-          updatedAt: currentDate,
+          paid: true,
+          status:
+            paymentRecord.type === 'one_time'
+              ? 'completed'
+              : paymentRecord.status,
+          updatedAt: now,
         })
         .where(eq(payment.id, paymentRecord.id));
-
-      // Process subscription benefits (no credits in MkFast)
-      await this.processSubscriptionPurchase(userId, priceId);
-    } catch (error) {
-      console.error('<< Update subscription payment error:', error);
-      throw error;
-    }
-
-    console.log('<< Update subscription payment record success');
-  }
-
-  /**
-   * Process subscription purchase
-   * @param _userId User ID (reserved for future use, e.g. credits)
-   * @param _priceId Price ID (reserved for future use, e.g. credits)
-   */
-  private async processSubscriptionPurchase(
-    _userId: string,
-    _priceId: string
-  ): Promise<void> {
-    console.log('>> Process subscription purchase');
-
-    // No credits in MkFast; keep log for consistency with MkSaaS flow
-    console.log('<< Process subscription purchase success');
-  }
-
-  /**
-   * Update one-time payment record and process benefits
-   *
-   * The order of events may be:
-   * checkout.session.completed
-   * invoice.paid
-   *
-   * @param invoice Stripe invoice
-   * @param paymentRecord Payment record
-   */
-  private async updateOneTimePayment(
-    invoice: Stripe.Invoice,
-    paymentRecord: Payment
-  ): Promise<void> {
-    console.log('>> Update one-time payment record');
-
-    try {
-      // Update payment record with invoice details
-      const db = getDb();
       await db
-        .update(payment)
+        .update(paymentTransactions)
         .set({
-          // invoiceId: invoice.id, // do not update invoiceId
-          status: 'completed', // One-time payments are completed when invoice is paid
-          paid: true, // Mark as paid
+          paymentStatus: 'paid',
+          fulfillmentStatus: 'fulfilled',
+          failureMessage: null,
+          fulfilledAt: now,
+          paidAt: transaction.paidAt ?? now,
+          updatedAt: now,
+        })
+        .where(eq(paymentTransactions.businessKey, transaction.businessKey));
+
+      if (notify && paymentRecord.sessionId) {
+        await sendPaymentNotification({
+          sessionId: paymentRecord.sessionId,
+          customerId: paymentRecord.customerId,
+          userName: 'Customer',
+          amount: transaction.amount / 100,
+        });
+      }
+    } catch (error) {
+      await getDb()
+        .update(paymentTransactions)
+        .set({
+          fulfillmentStatus: 'failed',
+          failureMessage:
+            error instanceof Error
+              ? error.message.slice(0, 1000)
+              : 'Unknown error',
           updatedAt: new Date(),
         })
-        .where(eq(payment.id, paymentRecord.id));
-
-      // Process benefits: lifetime plan purchase only (no credits in MkFast)
-      if (paymentRecord.sessionId) {
-        const session = await this.stripe.checkout.sessions.retrieve(
-          paymentRecord.sessionId
-        );
-        await this.processLifetimePlanPurchase(invoice, paymentRecord, session);
-      }
-    } catch (error) {
-      console.error('<< Update one-time payment error:', error);
+        .where(eq(paymentTransactions.businessKey, transaction.businessKey));
       throw error;
     }
-
-    console.log('<< Update one-time payment record success');
   }
 
-  /**
-   * Process lifetime plan purchase
-   * @param invoice Stripe invoice
-   * @param paymentRecord Payment record
-   * @param session Checkout session (for userName in notification)
-   */
-  private async processLifetimePlanPurchase(
-    invoice: Stripe.Invoice,
-    paymentRecord: Payment,
-    session: Stripe.Checkout.Session
-  ): Promise<void> {
-    console.log('>> Process lifetime plan purchase');
-
-    // Send notification
-    const amount = invoice.amount_paid ? invoice.amount_paid / 100 : 0;
-    await sendPaymentNotification({
-      sessionId: paymentRecord.sessionId!,
-      customerId: paymentRecord.customerId,
-      userName: (session.metadata?.userName as string) ?? 'Customer',
-      amount,
-    });
-
-    console.log('<< Process lifetime plan purchase success');
-  }
-
-  /**
-   * Handle subscription creation
-   * Only log the event, payment records created in checkout.session.completed
-   * @param stripeSubscription Stripe subscription
-   */
   private async onCreateSubscription(
     stripeSubscription: Stripe.Subscription
   ): Promise<void> {
-    console.log('Handle subscription creation:', stripeSubscription.id);
+    await this.upsertSubscriptionPaymentRecord(stripeSubscription, {
+      paid: stripeSubscription.status === 'trialing' ? true : undefined,
+    });
   }
 
   /**
@@ -750,53 +674,9 @@ export class StripeProvider implements PaymentProvider {
   private async onUpdateSubscription(
     stripeSubscription: Stripe.Subscription
   ): Promise<void> {
-    console.log('>> Handle subscription update:', stripeSubscription.id);
-
-    // get priceId from subscription items (this is always available)
-    const priceId = stripeSubscription.items.data[0]?.price.id;
-    if (!priceId) {
-      console.warn('<< No priceId found for subscription');
-      return;
-    }
-
-    // get new period start and end
-    const newPeriodStart = this.getPeriodStart(stripeSubscription);
-    const newPeriodEnd = this.getPeriodEnd(stripeSubscription);
-    const trialStart = stripeSubscription.trial_start
-      ? new Date(stripeSubscription.trial_start * 1000)
-      : undefined;
-    const trialEnd = stripeSubscription.trial_end
-      ? new Date(stripeSubscription.trial_end * 1000)
-      : undefined;
-
-    // update fields
-    const updateFields: Record<string, unknown> = {
-      planId: findPlanByPriceId(priceId)?.id,
-      priceId: priceId,
-      interval: this.mapStripeIntervalToPlanInterval(stripeSubscription),
-      status: this.mapSubscriptionStatusToPaymentStatus(
-        stripeSubscription.status
-      ),
-      periodStart: newPeriodStart,
-      periodEnd: newPeriodEnd,
-      cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
-      trialStart: trialStart,
-      trialEnd: trialEnd,
-      updatedAt: new Date(),
-    };
-
-    const db = getDb();
-    const result = await db
-      .update(payment)
-      .set(updateFields)
-      .where(eq(payment.subscriptionId, stripeSubscription.id))
-      .returning({ id: payment.id });
-
-    if (result.length > 0) {
-      console.log('<< Updated payment record for subscription');
-    } else {
-      console.warn('<< No payment record found for subscription update');
-    }
+    await this.upsertSubscriptionPaymentRecord(stripeSubscription, {
+      paid: stripeSubscription.status === 'trialing' ? true : undefined,
+    });
   }
 
   /**
@@ -812,25 +692,9 @@ export class StripeProvider implements PaymentProvider {
   private async onDeleteSubscription(
     stripeSubscription: Stripe.Subscription
   ): Promise<void> {
-    console.log('>> Handle subscription deletion:', stripeSubscription.id);
-
-    const db = getDb();
-    const result = await db
-      .update(payment)
-      .set({
-        status: this.mapSubscriptionStatusToPaymentStatus(
-          stripeSubscription.status
-        ),
-        updatedAt: new Date(),
-      })
-      .where(eq(payment.subscriptionId, stripeSubscription.id))
-      .returning({ id: payment.id });
-
-    if (result.length > 0) {
-      console.log('<< Marked payment record for subscription as canceled');
-    } else {
-      console.warn('<< No payment record found for subscription deletion');
-    }
+    await this.upsertSubscriptionPaymentRecord(stripeSubscription, {
+      paid: false,
+    });
   }
 
   /**
@@ -861,6 +725,88 @@ export class StripeProvider implements PaymentProvider {
     console.log('<< Handle checkout session completion success');
   }
 
+  private async onAsyncPaymentSucceeded(session: Stripe.Checkout.Session) {
+    if (session.mode !== 'payment' || session.payment_status !== 'paid') {
+      throw new Error(
+        `Async success session ${session.id} is not a paid one-time checkout`
+      );
+    }
+    await this.createOneTimePaymentRecord(session);
+  }
+
+  private async onCheckoutPaymentFailed(
+    session: Stripe.Checkout.Session,
+    eventType:
+      | 'checkout.session.async_payment_failed'
+      | 'checkout.session.expired'
+  ) {
+    const db = getDb();
+    let [paymentRecord] = await db
+      .select()
+      .from(payment)
+      .where(eq(payment.sessionId, session.id))
+      .limit(1);
+
+    if (!paymentRecord && session.mode === 'payment') {
+      paymentRecord = await this.createOneTimePaymentRecord(session);
+    }
+    if (!paymentRecord) return;
+    if (paymentRecord.paid) {
+      console.log(
+        `Ignoring ${eventType} for already-paid checkout session ${session.id}`
+      );
+      return;
+    }
+
+    const now = new Date();
+    await db
+      .update(payment)
+      .set({ paid: false, status: 'failed', updatedAt: now })
+      .where(eq(payment.id, paymentRecord.id));
+
+    const paymentIntentId = this.getStripeId(session.payment_intent);
+    const businessKey = paymentIntentId
+      ? `one_time_payment:${paymentIntentId}`
+      : `one_time_checkout:${session.id}`;
+    await this.ensurePaymentTransaction({
+      paymentRecord,
+      businessKey,
+      checkoutSessionId: session.id,
+      paymentIntentId,
+      invoiceId: this.getStripeId(session.invoice),
+      priceId: paymentRecord.priceId,
+      amount: session.amount_total ?? 0,
+      currency: session.currency ?? 'usd',
+      paymentStatus: 'failed',
+      fulfillmentStatus: 'not_applicable',
+      failureMessage: eventType,
+    });
+  }
+
+  private async fulfillOneTimeCheckout(
+    session: Stripe.Checkout.Session,
+    paymentRecord: Payment
+  ) {
+    const paymentIntentId = this.getStripeId(session.payment_intent);
+    const businessKey = paymentIntentId
+      ? `one_time_payment:${paymentIntentId}`
+      : `one_time_checkout:${session.id}`;
+    const transaction = await this.ensurePaymentTransaction({
+      paymentRecord,
+      businessKey,
+      checkoutSessionId: session.id,
+      paymentIntentId,
+      invoiceId: this.getStripeId(session.invoice),
+      priceId: paymentRecord.priceId,
+      amount: session.amount_total ?? 0,
+      currency: session.currency ?? 'usd',
+      paymentStatus: 'paid',
+      fulfillmentStatus: 'pending',
+      paidAt: new Date(),
+    });
+    await this.fulfillPaymentTransaction(transaction, paymentRecord, true);
+  }
+
   /**
    * Create subscription payment record in checkout.session.completed event
    * @param session Stripe checkout session
@@ -868,65 +814,17 @@ export class StripeProvider implements PaymentProvider {
   private async createSubscriptionPaymentRecord(
     session: Stripe.Checkout.Session
   ): Promise<void> {
-    console.log('>> Create subscription payment record');
-
     if (!session.subscription) {
-      console.warn('<< No subscription found in session');
-      return;
+      throw new Error(`Checkout session ${session.id} has no subscription`);
     }
-
-    const subscriptionId = session.subscription as string;
-    const subscription =
-      await this.stripe.subscriptions.retrieve(subscriptionId);
-
-    // Get priceId from subscription items
-    const priceId = subscription.items.data[0]?.price.id;
-    if (!priceId) {
-      console.warn('<< No priceId found for subscription');
-      return;
-    }
-
-    // Validate session metadata and get userId, customerId
     const { userId, customerId } = this.validateSessionMetadata(session);
-
-    // No matter user uses coupon code or not, even amount=0, invoice id is available
-    const invoiceId: string | null = session.invoice as string | null;
-    console.log('createSubscriptionPaymentRecord, invoiceId:', invoiceId);
-
-    const periodStart = this.getPeriodStart(subscription);
-    const periodEnd = this.getPeriodEnd(subscription);
-    const trialStart = subscription.trial_start
-      ? new Date(subscription.trial_start * 1000)
-      : null;
-    const trialEnd = subscription.trial_end
-      ? new Date(subscription.trial_end * 1000)
-      : null;
-
-    // Checkout completion is sufficient to unlock the initial purchase. Stripe
-    // does not guarantee webhook ordering, so invoice.paid may arrive first or
-    // be retried later.
-    await this.insertPaymentRecord(
-      {
-        planId: session.metadata?.planId ?? findPlanByPriceId(priceId)?.id,
-        priceId,
-        type: PaymentTypes.SUBSCRIPTION,
-        scene: PaymentScenes.SUBSCRIPTION,
-        userId,
-        customerId,
-        subscriptionId,
-        sessionId: session.id,
-        invoiceId, // may be null initially
-        paid: isCheckoutSessionPaid(session.payment_status),
-        interval: this.mapStripeIntervalToPlanInterval(subscription),
-        status: this.mapSubscriptionStatusToPaymentStatus(subscription.status),
-        periodStart,
-        periodEnd,
-        cancelAtPeriodEnd: subscription.cancel_at_period_end,
-        trialStart,
-        trialEnd,
-      },
-      'subscription'
-    );
+    const subscription = await this.resolveCheckoutSubscription(session);
+    await this.upsertSubscriptionPaymentRecord(subscription, {
+      userId,
+      customerId,
+      sessionId: session.id,
+      invoiceId: this.getStripeId(session.invoice),
+    });
   }
 
   /**
@@ -935,42 +833,38 @@ export class StripeProvider implements PaymentProvider {
    */
   private async createOneTimePaymentRecord(
     session: Stripe.Checkout.Session
-  ): Promise<void> {
-    console.log('>> Create one-time payment record');
-
+  ): Promise<Payment> {
     const priceId = session.metadata?.priceId;
     if (!priceId) {
-      console.warn('<< No priceId found in session metadata');
-      return;
+      throw new Error(`Checkout session ${session.id} has no priceId metadata`);
     }
-
-    // Validate session metadata and get userId, customerId
+    const configured = this.requireConfiguredPrice(priceId);
+    if (configured.price.type !== PaymentTypes.ONE_TIME) {
+      throw new Error(`Stripe price ${priceId} is not a one-time price`);
+    }
     const { userId, customerId } = this.validateSessionMetadata(session);
-
-    // No matter user uses coupon code or not, even amount=0, invoice id is available
-    const invoiceId: string | null = session.invoice as string | null;
-    console.log('createOneTimePaymentRecord, invoiceId:', invoiceId);
-
-    // One-time payments in MkFast are lifetime only (no credits)
-    const scene = PaymentScenes.LIFETIME;
-
-    // Use Checkout's payment status for the initial fulfillment. invoice.paid
-    // remains the source for later reconciliation and notifications.
-    await this.insertPaymentRecord(
+    const paymentRecord = await this.insertPaymentRecord(
       {
-        planId: session.metadata?.planId ?? findPlanByPriceId(priceId)?.id,
+        planId: configured.plan.id,
         priceId,
         type: PaymentTypes.ONE_TIME,
-        scene,
+        scene: PaymentScenes.LIFETIME,
         userId,
         customerId,
         sessionId: session.id,
-        invoiceId, // may be null initially
-        paid: isCheckoutSessionPaid(session.payment_status),
-        status: 'completed', // one-time payments are completed once checkout is done
+        invoiceId: this.getStripeId(session.invoice),
+        paid: false,
+        status: isCheckoutSessionPaid(session.payment_status)
+          ? 'processing'
+          : 'incomplete',
       },
       'one-time'
     );
+
+    if (isCheckoutSessionPaid(session.payment_status)) {
+      await this.fulfillOneTimeCheckout(session, paymentRecord);
+    }
+    return paymentRecord;
   }
 
   /**
@@ -986,31 +880,504 @@ export class StripeProvider implements PaymentProvider {
       'id' | 'createdAt' | 'updatedAt'
     >,
     recordType: string
-  ): Promise<void> {
+  ): Promise<Payment> {
     const currentDate = new Date();
     const db = getDb();
 
     try {
+      const id = crypto.randomUUID();
       await db.insert(payment).values({
-        id: crypto.randomUUID(),
+        id,
         createdAt: currentDate,
         updatedAt: currentDate,
         ...paymentData,
       });
-
       console.log(`<< Created ${recordType} payment record success`);
+      const [created] = await db
+        .select()
+        .from(payment)
+        .where(eq(payment.id, id))
+        .limit(1);
+      if (!created) throw new Error(`Unable to read new ${recordType} payment`);
+      return created;
     } catch (error) {
-      // Handle duplicate key constraint violation gracefully
-      if (isUniqueConstraintError(error)) {
-        console.log(
-          `<< ${recordType} payment record already exists, skipping creation`
-        );
-        return; // Don't throw - expected for duplicate webhook events
-      }
-
-      // Re-throw unexpected errors
-      throw error;
+      if (!isUniqueConstraintError(error)) throw error;
+      const conditions = [
+        paymentData.sessionId
+          ? eq(payment.sessionId, paymentData.sessionId)
+          : undefined,
+        paymentData.subscriptionId
+          ? eq(payment.subscriptionId, paymentData.subscriptionId)
+          : undefined,
+        paymentData.invoiceId
+          ? eq(payment.invoiceId, paymentData.invoiceId)
+          : undefined,
+      ].filter((condition) => condition !== undefined);
+      const [existing] = await db
+        .select()
+        .from(payment)
+        .where(or(...conditions))
+        .limit(1);
+      if (!existing) throw error;
+      return existing;
     }
+  }
+
+  private requireConfiguredPrice(priceId: string) {
+    const plan = findPlanByPriceId(priceId);
+    if (!plan) throw new Error(`Unknown Stripe price ${priceId}`);
+    const price = findPriceInPlan(plan.id, priceId);
+    if (!price) throw new Error(`Unknown Stripe price ${priceId}`);
+    return { plan, price };
+  }
+
+  private getConfiguredSubscriptionPrice(subscription: Stripe.Subscription) {
+    const priceId = subscription.items.data[0]?.price.id;
+    if (!priceId) {
+      throw new Error(`Subscription ${subscription.id} has no price`);
+    }
+    const configured = this.requireConfiguredPrice(priceId);
+    if (configured.price.type !== PaymentTypes.SUBSCRIPTION) {
+      throw new Error(`Stripe price ${priceId} is not a subscription price`);
+    }
+    return priceId;
+  }
+
+  private async resolveCheckoutSubscription(session: Stripe.Checkout.Session) {
+    if (
+      session.subscription &&
+      typeof session.subscription === 'object' &&
+      !('deleted' in session.subscription)
+    ) {
+      return session.subscription;
+    }
+    const subscriptionId = this.getStripeId(session.subscription);
+    if (!subscriptionId) {
+      throw new Error(`Checkout session ${session.id} has no subscription`);
+    }
+    return this.stripe.subscriptions.retrieve(subscriptionId);
+  }
+
+  private async resolveInvoiceSubscription(invoice: Stripe.Invoice) {
+    if (
+      invoice.subscription &&
+      typeof invoice.subscription === 'object' &&
+      !('deleted' in invoice.subscription)
+    ) {
+      return invoice.subscription;
+    }
+    const subscriptionId = this.extractSubscriptionId(invoice);
+    return subscriptionId
+      ? this.stripe.subscriptions.retrieve(subscriptionId)
+      : null;
+  }
+
+  private async upsertSubscriptionPaymentRecord(
+    subscription: Stripe.Subscription,
+    options: {
+      userId?: string;
+      customerId?: string;
+      sessionId?: string;
+      invoiceId?: string | null;
+      paid?: boolean;
+    } = {}
+  ): Promise<Payment> {
+    const priceId = this.getConfiguredSubscriptionPrice(subscription);
+    const configured = this.requireConfiguredPrice(priceId);
+    const customerId =
+      options.customerId ?? this.getStripeId(subscription.customer);
+    if (!customerId) {
+      throw new Error(`Subscription ${subscription.id} has no customer`);
+    }
+    const userId =
+      options.userId ??
+      subscription.metadata?.userId ??
+      (await this.findUserIdByCustomerId(customerId));
+    if (!userId) {
+      throw new Error(`No user found for subscription ${subscription.id}`);
+    }
+
+    const db = getDb();
+    const [existing] = await db
+      .select()
+      .from(payment)
+      .where(eq(payment.subscriptionId, subscription.id))
+      .limit(1);
+    const now = new Date();
+    const values = {
+      planId: configured.plan.id,
+      priceId,
+      userId,
+      customerId,
+      subscriptionId: subscription.id,
+      sessionId: options.sessionId ?? existing?.sessionId ?? null,
+      invoiceId: existing?.invoiceId ?? options.invoiceId ?? null,
+      type: PaymentTypes.SUBSCRIPTION,
+      scene: PaymentScenes.SUBSCRIPTION,
+      interval: this.mapStripeIntervalToPlanInterval(subscription),
+      status: this.mapSubscriptionStatusToPaymentStatus(subscription.status),
+      paid: options.paid ?? existing?.paid ?? false,
+      periodStart: this.getPeriodStart(subscription),
+      periodEnd: this.getPeriodEnd(subscription),
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      trialStart: subscription.trial_start
+        ? new Date(subscription.trial_start * 1000)
+        : null,
+      trialEnd: subscription.trial_end
+        ? new Date(subscription.trial_end * 1000)
+        : null,
+      updatedAt: now,
+    };
+
+    if (existing) {
+      await db.update(payment).set(values).where(eq(payment.id, existing.id));
+      const [updated] = await db
+        .select()
+        .from(payment)
+        .where(eq(payment.id, existing.id))
+        .limit(1);
+      if (!updated) throw new Error(`Unable to update payment ${existing.id}`);
+      return updated;
+    }
+
+    const { updatedAt: _updatedAt, ...insertValues } = values;
+    return this.insertPaymentRecord(insertValues, 'subscription');
+  }
+
+  private async ensurePaymentTransaction(input: {
+    paymentRecord: Payment;
+    businessKey: string;
+    checkoutSessionId?: string | null;
+    paymentIntentId?: string | null;
+    invoiceId?: string | null;
+    chargeId?: string | null;
+    priceId: string;
+    amount: number;
+    currency: string;
+    paymentStatus: typeof paymentTransactions.$inferInsert.paymentStatus;
+    fulfillmentStatus: typeof paymentTransactions.$inferInsert.fulfillmentStatus;
+    failureMessage?: string | null;
+    paidAt?: Date | null;
+  }): Promise<PaymentTransaction> {
+    const db = getDb();
+    const now = new Date();
+    await db
+      .insert(paymentTransactions)
+      .values({
+        id: crypto.randomUUID(),
+        paymentId: input.paymentRecord.id,
+        userId: input.paymentRecord.userId,
+        businessKey: input.businessKey,
+        checkoutSessionId:
+          input.checkoutSessionId ?? input.paymentRecord.sessionId,
+        paymentIntentId: input.paymentIntentId,
+        invoiceId: input.invoiceId,
+        chargeId: input.chargeId,
+        priceId: input.priceId,
+        amount: input.amount,
+        currency: input.currency.toLowerCase(),
+        paymentStatus: input.paymentStatus,
+        fulfillmentStatus: input.fulfillmentStatus,
+        failureMessage: input.failureMessage,
+        paidAt: input.paidAt,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .onConflictDoNothing({ target: paymentTransactions.businessKey });
+
+    const [transaction] = await db
+      .select()
+      .from(paymentTransactions)
+      .where(eq(paymentTransactions.businessKey, input.businessKey))
+      .limit(1);
+    if (!transaction) {
+      throw new Error(`Unable to create transaction ${input.businessKey}`);
+    }
+    return transaction;
+  }
+
+  private async claimPaymentTransaction(businessKey: string) {
+    const db = getDb();
+    const now = new Date();
+    const staleBefore = new Date(now.getTime() - 5 * 60 * 1000);
+    const claimed = await db
+      .update(paymentTransactions)
+      .set({ fulfillmentStatus: 'processing', updatedAt: now })
+      .where(
+        and(
+          eq(paymentTransactions.businessKey, businessKey),
+          or(
+            eq(paymentTransactions.fulfillmentStatus, 'pending'),
+            eq(paymentTransactions.fulfillmentStatus, 'failed'),
+            eq(paymentTransactions.fulfillmentStatus, 'not_applicable'),
+            eq(paymentTransactions.fulfillmentStatus, 'revoked'),
+            and(
+              eq(paymentTransactions.fulfillmentStatus, 'processing'),
+              lt(paymentTransactions.updatedAt, staleBefore)
+            )
+          )
+        )
+      )
+      .returning({ id: paymentTransactions.id });
+    if (claimed.length > 0) return true;
+
+    const [existing] = await db
+      .select({ fulfillmentStatus: paymentTransactions.fulfillmentStatus })
+      .from(paymentTransactions)
+      .where(eq(paymentTransactions.businessKey, businessKey))
+      .limit(1);
+    if (existing?.fulfillmentStatus === 'fulfilled') return false;
+    throw new Error(`Transaction ${businessKey} is already processing`);
+  }
+
+  private async findOrRecoverOneTimePayment(invoice: Stripe.Invoice) {
+    const existing = await this.findPaymentRecord(invoice);
+    if (existing?.type === PaymentTypes.ONE_TIME) return existing;
+
+    const paymentIntentId = this.getStripeId(invoice.payment_intent);
+    if (!paymentIntentId) return null;
+    const sessions = await this.stripe.checkout.sessions.list({
+      payment_intent: paymentIntentId,
+      limit: 1,
+    });
+    const session = sessions.data[0];
+    return session ? this.createOneTimePaymentRecord(session) : null;
+  }
+
+  private getInvoicePaidAt(invoice: Stripe.Invoice) {
+    const paidAt = invoice.status_transitions?.paid_at;
+    return paidAt ? new Date(paidAt * 1000) : new Date();
+  }
+
+  private getStripeId(value: { id: string } | string | null | undefined) {
+    if (typeof value === 'string') return value;
+    return value?.id ?? null;
+  }
+
+  private async findTransactionByPaymentReference(input: {
+    paymentIntentId?: string | null;
+    chargeId?: string | null;
+  }) {
+    const conditions = [
+      input.paymentIntentId
+        ? eq(paymentTransactions.paymentIntentId, input.paymentIntentId)
+        : undefined,
+      input.chargeId
+        ? eq(paymentTransactions.chargeId, input.chargeId)
+        : undefined,
+    ].filter((condition) => condition !== undefined);
+    if (conditions.length === 0) return null;
+
+    const [transaction] = await getDb()
+      .select()
+      .from(paymentTransactions)
+      .where(or(...conditions))
+      .orderBy(desc(paymentTransactions.createdAt))
+      .limit(1);
+    return transaction ?? null;
+  }
+
+  private async revokePaymentTransaction(
+    transaction: PaymentTransaction,
+    status: 'refunded' | 'disputed'
+  ) {
+    const db = getDb();
+    const now = new Date();
+    await db
+      .update(paymentTransactions)
+      .set({
+        paymentStatus: status,
+        fulfillmentStatus: 'revoked',
+        updatedAt: now,
+      })
+      .where(eq(paymentTransactions.id, transaction.id));
+
+    const [paymentRecord] = await db
+      .select({ type: payment.type })
+      .from(payment)
+      .where(eq(payment.id, transaction.paymentId))
+      .limit(1);
+    const [newerFulfilledTransaction] =
+      paymentRecord?.type === PaymentTypes.SUBSCRIPTION
+        ? await db
+            .select({ id: paymentTransactions.id })
+            .from(paymentTransactions)
+            .where(
+              and(
+                eq(paymentTransactions.paymentId, transaction.paymentId),
+                gt(paymentTransactions.createdAt, transaction.createdAt),
+                eq(paymentTransactions.fulfillmentStatus, 'fulfilled'),
+                or(
+                  eq(paymentTransactions.paymentStatus, 'paid'),
+                  eq(paymentTransactions.paymentStatus, 'partially_refunded')
+                )
+              )
+            )
+            .limit(1)
+        : [];
+    await db
+      .update(payment)
+      .set({
+        paid: Boolean(newerFulfilledTransaction),
+        updatedAt: now,
+      })
+      .where(eq(payment.id, transaction.paymentId));
+  }
+
+  private async onRefundCreated(refund: Stripe.Refund) {
+    if (refund.status !== 'succeeded') {
+      console.log(
+        `Ignoring refund ${refund.id} until Stripe marks it succeeded`
+      );
+      return;
+    }
+    const transaction = await this.findTransactionByPaymentReference({
+      paymentIntentId: this.getStripeId(refund.payment_intent),
+      chargeId: this.getStripeId(refund.charge),
+    });
+    if (!transaction) {
+      console.warn(`No local transaction found for refund ${refund.id}`);
+      return;
+    }
+    if (refund.amount >= transaction.amount) {
+      await this.revokePaymentTransaction(transaction, 'refunded');
+      return;
+    }
+    await getDb()
+      .update(paymentTransactions)
+      .set({ paymentStatus: 'partially_refunded', updatedAt: new Date() })
+      .where(eq(paymentTransactions.id, transaction.id));
+  }
+
+  private async onChargeRefunded(charge: Stripe.Charge) {
+    const transaction = await this.findTransactionByPaymentReference({
+      paymentIntentId: this.getStripeId(charge.payment_intent),
+      chargeId: charge.id,
+    });
+    if (!transaction) {
+      console.warn(`No local transaction found for charge ${charge.id}`);
+      return;
+    }
+    if (charge.refunded || charge.amount_refunded >= transaction.amount) {
+      await this.revokePaymentTransaction(transaction, 'refunded');
+      return;
+    }
+    await getDb()
+      .update(paymentTransactions)
+      .set({ paymentStatus: 'partially_refunded', updatedAt: new Date() })
+      .where(eq(paymentTransactions.id, transaction.id));
+  }
+
+  private async onDisputeCreated(dispute: Stripe.Dispute) {
+    const transaction = await this.findTransactionByPaymentReference({
+      paymentIntentId: this.getStripeId(dispute.payment_intent),
+      chargeId: this.getStripeId(dispute.charge),
+    });
+    if (!transaction) {
+      console.warn(`No local transaction found for dispute ${dispute.id}`);
+      return;
+    }
+    await this.revokePaymentTransaction(transaction, 'disputed');
+  }
+
+  private async onDisputeResolved(dispute: Stripe.Dispute) {
+    if (dispute.status !== 'won' && dispute.status !== 'warning_closed') return;
+    const transaction = await this.findTransactionByPaymentReference({
+      paymentIntentId: this.getStripeId(dispute.payment_intent),
+      chargeId: this.getStripeId(dispute.charge),
+    });
+    if (!transaction) {
+      console.warn(`No local transaction found for dispute ${dispute.id}`);
+      return;
+    }
+
+    const db = getDb();
+    const [paymentRecord] = await db
+      .select()
+      .from(payment)
+      .where(eq(payment.id, transaction.paymentId))
+      .limit(1);
+    if (!paymentRecord) return;
+    const subscriptionActive =
+      paymentRecord.type === PaymentTypes.SUBSCRIPTION &&
+      (paymentRecord.status === 'active' ||
+        paymentRecord.status === 'trialing') &&
+      (!paymentRecord.periodEnd || paymentRecord.periodEnd > new Date());
+    const shouldRestore =
+      paymentRecord.type === PaymentTypes.ONE_TIME || subscriptionActive;
+    const now = new Date();
+    await db
+      .update(paymentTransactions)
+      .set({
+        paymentStatus: 'paid',
+        fulfillmentStatus: 'fulfilled',
+        failureMessage: null,
+        updatedAt: now,
+      })
+      .where(eq(paymentTransactions.id, transaction.id));
+    if (shouldRestore) {
+      await db
+        .update(payment)
+        .set({ paid: true, updatedAt: now })
+        .where(eq(payment.id, paymentRecord.id));
+    }
+  }
+
+  public async reconcilePayment(objectId: string): Promise<void> {
+    if (objectId.startsWith('in_')) {
+      const invoice = await this.stripe.invoices.retrieve(objectId);
+      if (invoice.paid || invoice.status === 'paid') {
+        await this.onInvoicePaid(invoice);
+      } else if (invoice.attempted) {
+        await this.onInvoicePaymentFailed(invoice);
+      } else {
+        throw new Error(`Invoice ${objectId} is not paid`);
+      }
+      return;
+    }
+
+    if (objectId.startsWith('cs_')) {
+      const session = await this.stripe.checkout.sessions.retrieve(objectId, {
+        expand: ['subscription'],
+      });
+      await this.onCheckoutCompleted(session);
+      const invoiceId = this.getStripeId(session.invoice);
+      if (invoiceId) {
+        const invoice = await this.stripe.invoices.retrieve(invoiceId, {
+          expand: ['subscription'],
+        });
+        if (invoice.paid || invoice.status === 'paid') {
+          await this.onInvoicePaid(invoice);
+        }
+      }
+      return;
+    }
+
+    if (objectId.startsWith('pi_')) {
+      const intent = await this.stripe.paymentIntents.retrieve(objectId);
+      if (intent.status !== 'succeeded') {
+        throw new Error(`PaymentIntent ${objectId} is not succeeded`);
+      }
+      const invoiceId = this.getStripeId(intent.invoice);
+      if (invoiceId) {
+        await this.reconcilePayment(invoiceId);
+        return;
+      }
+      const sessions = await this.stripe.checkout.sessions.list({
+        payment_intent: objectId,
+        limit: 1,
+      });
+      const session = sessions.data[0];
+      if (!session) {
+        throw new Error(`No Checkout Session found for ${objectId}`);
+      }
+      await this.onAsyncPaymentSucceeded(session);
+      return;
+    }
+
+    throw new Error(
+      'Use a Stripe Invoice, Checkout Session, or PaymentIntent ID'
+    );
   }
 
   /**
@@ -1115,23 +1482,6 @@ export class StripeProvider implements PaymentProvider {
           `invoice.lineItem.parent.subscription_item_details.subscription is string: ${subscriptionId}`
         );
         return subscriptionId;
-      }
-
-      if (typeof lineItem.subscription_item === 'string') {
-        console.log(
-          `invoice.lineItem.subscription_item is string: ${lineItem.subscription_item}`
-        );
-        return lineItem.subscription_item;
-      }
-      if (
-        lineItem.subscription_item &&
-        typeof lineItem.subscription_item === 'object' &&
-        'id' in lineItem.subscription_item
-      ) {
-        console.log(
-          `invoice.lineItem.subscription_item is object: ${lineItem.subscription_item.id}`
-        );
-        return lineItem.subscription_item.id;
       }
     }
 

@@ -108,6 +108,40 @@ jobs:
           verify_price "$VITE_STRIPE_PRICE_STUDIO_MONTHLY" 2499 month
           verify_price "$VITE_STRIPE_PRICE_STUDIO_YEARLY" 19900 year
 
+          webhook_endpoint="$(
+            curl --fail --silent --show-error \
+              --user "$STRIPE_SECRET_KEY:" \
+              'https://api.stripe.com/v1/webhook_endpoints?limit=100' |
+              jq --arg url 'https://subtitleops.com/api/webhooks/stripe' \
+                '[.data[] | select(.url == $url and .status == "enabled")][0]'
+          )"
+          if [ "$webhook_endpoint" = "null" ]; then
+            echo "Enabled SubtitleOps Stripe webhook endpoint was not found."
+            exit 1
+          fi
+          for event_type in \
+            checkout.session.completed \
+            checkout.session.async_payment_succeeded \
+            checkout.session.async_payment_failed \
+            checkout.session.expired \
+            customer.subscription.created \
+            customer.subscription.updated \
+            customer.subscription.deleted \
+            invoice.paid \
+            invoice.payment_failed \
+            refund.created \
+            charge.refunded \
+            charge.dispute.created \
+            charge.dispute.closed \
+            charge.dispute.funds_reinstated; do
+            if ! jq -e --arg event_type "$event_type" \
+              '.enabled_events | index("*") != null or index($event_type) != null' \
+              >/dev/null <<<"$webhook_endpoint"; then
+              echo "Stripe webhook is not subscribed to '$event_type'."
+              exit 1
+            fi
+          done
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v5
 
@@ -119,6 +153,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Apply D1 migrations
+        run: pnpm db:migrate:remote
 
       - name: Build
         run: VITE_MAIL_ENABLED="${VITE_MAIL_ENABLED:-false}" pnpm build

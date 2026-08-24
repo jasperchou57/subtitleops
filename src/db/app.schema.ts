@@ -15,6 +15,22 @@ import {
 import { user } from './auth.schema';
 import type { PaymentScene, PaymentStatus, PaymentType, PlanInterval } from '@/payment/types';
 
+export type StripeWebhookStatus = 'processing' | 'succeeded' | 'failed';
+export type PaymentTransactionStatus =
+  | 'pending'
+  | 'paid'
+  | 'failed'
+  | 'partially_refunded'
+  | 'refunded'
+  | 'disputed';
+export type PaymentFulfillmentStatus =
+  | 'pending'
+  | 'processing'
+  | 'fulfilled'
+  | 'failed'
+  | 'not_applicable'
+  | 'revoked';
+
 /**
  * Payment: subscription and one-time
  */
@@ -58,6 +74,108 @@ export const payment = sqliteTable(
 export const paymentRelations = relations(payment, ({ one }) => ({
   user: one(user, { fields: [payment.userId], references: [user.id] }),
 }));
+
+/**
+ * Every verified Stripe event is claimed before processing. The Stripe event
+ * ID is the delivery-level idempotency key; objectId + eventType remains
+ * searchable for the rarer case where Stripe emits two Event objects for the
+ * same underlying change.
+ */
+export const stripeWebhookEvents = sqliteTable(
+  'stripe_webhook_events',
+  {
+    id: text('id').primaryKey(),
+    eventType: text('event_type').notNull(),
+    objectId: text('object_id'),
+    status: text('status').notNull().$type<StripeWebhookStatus>(),
+    livemode: integer('livemode', { mode: 'boolean' }).notNull(),
+    attempts: integer('attempts').notNull().default(1),
+    lastError: text('last_error'),
+    receivedAt: integer('received_at', { mode: 'timestamp_ms' }).notNull(),
+    processedAt: integer('processed_at', { mode: 'timestamp_ms' }),
+    updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull(),
+  },
+  (table) => [
+    index('stripe_webhook_events_status_idx').on(table.status),
+    index('stripe_webhook_events_object_idx').on(
+      table.eventType,
+      table.objectId
+    ),
+    index('stripe_webhook_events_received_at_idx').on(table.receivedAt),
+  ]
+);
+
+/**
+ * One row per economic payment. businessKey is the business-level idempotency
+ * key (subscription_invoice:{invoiceId} or one_time_payment:{paymentIntentId}).
+ * This separates Stripe payment state from product fulfillment state and keeps
+ * every renewal independently auditable.
+ */
+export const paymentTransactions = sqliteTable(
+  'payment_transactions',
+  {
+    id: text('id').primaryKey(),
+    paymentId: text('payment_id')
+      .notNull()
+      .references(() => payment.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    businessKey: text('business_key').notNull(),
+    checkoutSessionId: text('checkout_session_id'),
+    paymentIntentId: text('payment_intent_id'),
+    invoiceId: text('invoice_id'),
+    chargeId: text('charge_id'),
+    priceId: text('price_id').notNull(),
+    amount: integer('amount').notNull(),
+    currency: text('currency').notNull(),
+    paymentStatus: text('payment_status')
+      .notNull()
+      .$type<PaymentTransactionStatus>(),
+    fulfillmentStatus: text('fulfillment_status')
+      .notNull()
+      .$type<PaymentFulfillmentStatus>(),
+    failureMessage: text('failure_message'),
+    paidAt: integer('paid_at', { mode: 'timestamp_ms' }),
+    fulfilledAt: integer('fulfilled_at', { mode: 'timestamp_ms' }),
+    createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
+    updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull(),
+  },
+  (table) => [
+    uniqueIndex('payment_transactions_business_key_unique').on(
+      table.businessKey
+    ),
+    uniqueIndex('payment_transactions_payment_intent_unique').on(
+      table.paymentIntentId
+    ),
+    uniqueIndex('payment_transactions_invoice_unique').on(table.invoiceId),
+    index('payment_transactions_payment_id_idx').on(table.paymentId),
+    index('payment_transactions_user_id_idx').on(table.userId),
+    index('payment_transactions_checkout_session_idx').on(
+      table.checkoutSessionId
+    ),
+    index('payment_transactions_charge_id_idx').on(table.chargeId),
+    index('payment_transactions_status_idx').on(
+      table.paymentStatus,
+      table.fulfillmentStatus
+    ),
+    index('payment_transactions_created_at_idx').on(table.createdAt),
+  ]
+);
+
+export const paymentTransactionRelations = relations(
+  paymentTransactions,
+  ({ one }) => ({
+    payment: one(payment, {
+      fields: [paymentTransactions.paymentId],
+      references: [payment.id],
+    }),
+    user: one(user, {
+      fields: [paymentTransactions.userId],
+      references: [user.id],
+    }),
+  })
+);
 
 /**
  * User files

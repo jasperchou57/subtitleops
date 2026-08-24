@@ -100,6 +100,7 @@ export async function getE2EUserState(
       planId: string | null;
       priceId: string;
       status: string;
+      paid: boolean;
       cancelAtPeriodEnd: boolean | null;
       periodEnd: string | null;
     } | null;
@@ -107,6 +108,20 @@ export async function getE2EUserState(
       planId: 'free' | 'pro' | 'studio';
       batchFileLimit: number;
     };
+    transactions: Array<{
+      businessKey: string;
+      paymentStatus: string;
+      fulfillmentStatus: string;
+      invoiceId: string | null;
+      paymentIntentId: string | null;
+      chargeId: string | null;
+    }>;
+    webhookEvents: Array<{
+      id: string;
+      eventType: string;
+      status: string;
+      attempts: number;
+    }>;
   }>;
 }
 

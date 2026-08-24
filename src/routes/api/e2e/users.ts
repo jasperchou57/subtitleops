@@ -2,7 +2,13 @@ import { createFileRoute } from '@tanstack/react-router';
 import { eq, inArray, like } from 'drizzle-orm';
 import { getDb } from '@/db';
 import { account, session, user } from '@/db/auth.schema';
-import { payment, productionApiUsage, userFiles } from '@/db/app.schema';
+import {
+  payment,
+  paymentTransactions,
+  productionApiUsage,
+  stripeWebhookEvents,
+  userFiles,
+} from '@/db/app.schema';
 import { getProductionApiUsageDate } from '@/lib/api-usage';
 import { getUserEntitlement } from '@/lib/entitlements';
 import { auth } from '@/auth/auth';
@@ -55,6 +61,7 @@ export const Route = createFileRoute('/api/e2e/users')({
             planId: payment.planId,
             priceId: payment.priceId,
             status: payment.status,
+            paid: payment.paid,
             cancelAtPeriodEnd: payment.cancelAtPeriodEnd,
             periodEnd: payment.periodEnd,
           })
@@ -62,10 +69,17 @@ export const Route = createFileRoute('/api/e2e/users')({
           .where(eq(payment.userId, userRow.id))
           .limit(1);
         const entitlement = await getUserEntitlement(userRow.id);
+        const transactions = await getDb()
+          .select()
+          .from(paymentTransactions)
+          .where(eq(paymentTransactions.userId, userRow.id));
+        const webhookEvents = await getDb().select().from(stripeWebhookEvents);
         return Response.json({
           user: userRow,
           payment: paymentRow ?? null,
           entitlement,
+          transactions,
+          webhookEvents,
         });
       },
       POST: async ({ request }) => {
@@ -237,6 +251,7 @@ export const Route = createFileRoute('/api/e2e/users')({
         await db.delete(session).where(inArray(session.userId, userIds));
         await db.delete(account).where(inArray(account.userId, userIds));
         await db.delete(payment).where(inArray(payment.userId, userIds));
+        await db.delete(stripeWebhookEvents);
         await db.delete(userFiles).where(inArray(userFiles.userId, userIds));
         await db.delete(user).where(inArray(user.id, userIds));
 

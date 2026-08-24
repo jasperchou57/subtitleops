@@ -22,8 +22,17 @@ const priceIds = isPaymentEnabled
       studioYearly: isCreemPayment
         ? (clientEnv.VITE_CREEM_PRODUCT_STUDIO_YEARLY ?? '')
         : (clientEnv.VITE_STRIPE_PRICE_STUDIO_YEARLY ?? ''),
+      lifetime: isCreemPayment
+        ? (clientEnv.VITE_CREEM_PRODUCT_LIFETIME ?? '')
+        : (clientEnv.VITE_STRIPE_PRICE_LIFETIME ?? ''),
     }
-  : { proMonthly: '', proYearly: '', studioMonthly: '', studioYearly: '' };
+  : {
+      proMonthly: '',
+      proYearly: '',
+      studioMonthly: '',
+      studioYearly: '',
+      lifetime: '',
+    };
 
 /**
  * Website config
@@ -175,6 +184,24 @@ export const websiteConfig: WebsiteConfig = {
           get limits() {
             return [...getMessageList(m.pricing_plans_studio_limits())];
           },
+        },
+        lifetime: {
+          id: 'lifetime',
+          prices: [
+            {
+              type: 'one_time',
+              priceId: priceIds.lifetime,
+              amount: 4900,
+              currency: 'USD',
+            },
+          ],
+          isFree: false,
+          isLifetime: true,
+          disabled: true,
+          name: 'Lifetime',
+          description: 'Reserved one-time purchase support.',
+          features: [],
+          limits: [],
         },
       },
     },
